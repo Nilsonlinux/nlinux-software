@@ -31,4 +31,26 @@ cat > /usr/local/bin/nlinux-software <<'EOF'
 exec /opt/nlinux-software/nlinux-software "$@"
 EOF
 chmod +x /usr/local/bin/nlinux-software
+# --- ícone + atalho no menu de aplicativos --------------------------
+cat > "$DEST/icon.svg" <<'SVG'
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<rect width="128" height="128" rx="24" fill="#0077cc"/>
+<text x="50%" y="54%" font-family="DejaVu Sans, sans-serif"
+      font-size="72" font-weight="bold" fill="#ffffff"
+      text-anchor="middle" dominant-baseline="middle">N</text>
+<circle cx="92" cy="96" r="14" fill="#22cc88"/>
+</svg>
+SVG
+cat > /usr/share/applications/nlinux-software.desktop <<'EOF'
+[Desktop Entry]
+Type=Application
+Name=NLinux Software
+GenericName=Loja de aplicativos
+Comment=Loja de aplicativos do NLinux (distribuição)
+Exec=/usr/local/bin/nlinux-software
+Icon=/opt/nlinux-software/icon.svg
+Terminal=false
+Categories=Network;Utility;
+StartupNotify=false
+EOF
 echo "Instalado: NLinux Software v91 (/usr/local/bin/nlinux-software)"
