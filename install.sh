@@ -31,4 +31,4 @@ cat > /usr/local/bin/nlinux-software <<'EOF'
 exec /opt/nlinux-software/nlinux-software "$@"
 EOF
 chmod +x /usr/local/bin/nlinux-software
-echo "Instalado: NLinux Software v89 (/usr/local/bin/nlinux-software)"
+echo "Instalado: NLinux Software v90 (/usr/local/bin/nlinux-software)"

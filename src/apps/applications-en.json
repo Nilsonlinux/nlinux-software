@@ -4953,50 +4953,6 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
-    },
-    "4-synaptic": {
-      "name": "Synaptic Package Manager",
-      "summary": "Advanced graphical tool for managing Apt on the system.",
-      "description": "A graphical package management program for <code>apt</code>. It provides the same features as the <code>apt-get</code> command line utility, allowing you to install, upgrade, remove or purge individual packages; modify repository settings; view change logs and even lock a package to a specific version. <br><br><span class=&#8217;fa fa-warning&#8217;></span> <b>This tool is primarily for advanced users, use with caution.</b> ",
-      "icon": "assets/4-synaptic.png",
-      "screenshots": [
-        "assets/4-synaptic-1.jpg"
-      ],
-      "developer-name": "Various Contributors",
-      "developer-url": "http://www.nongnu.org/synaptic/contribute.html",
-      "urls": {
-        "info": "http://www.nongnu.org/synaptic/index.html",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "pkexec synaptic",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "synaptic",
-          "install-packages": [
-            "synaptic"
-          ],
-          "remove-packages": [
-            "synaptic"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
     }
   },
   "multimedia": {
@@ -7490,9 +7446,9 @@
   },
   "stats": {
     "version": 7,
-    "revision": 89,
-    "compiled": 1790262834,
-    "apps": 169,
+    "revision": 90,
+    "compiled": 1790273908,
+    "apps": 168,
     "categories": 12
   },
   "distro": {
