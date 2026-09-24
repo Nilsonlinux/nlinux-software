@@ -1,0 +1,13 @@
+Dependencias de execucao do NLinux Software
+(nomes de pacote Arch Linux)
+
+Obrigatorias (instaladas automaticamente pelo install.sh):
+  - python
+  - python-gobject
+  - gtk3
+  - webkit2gtk-4.1
+  - polkit
+
+Opcionais:
+  - paru  (instalacao de pacotes AUR pela loja)
+  - curl  (diagnostico/testes)

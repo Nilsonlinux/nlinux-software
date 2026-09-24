@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Loja de Software NLinux</title>
+  <script>
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem("theme"); } catch (e) { }
+      if (t !== "light" && t !== "dark") t = "dark";
+      document.documentElement.setAttribute("data-theme", t);
+    })();
+  </script>
+  <link rel="icon" type="image/png" href="/media/nlinux-logo.png">
+  <link rel="stylesheet" href="/static/tabler/tabler-icons.min.css">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="orbs" aria-hidden="true"><span class="orb orb-a"></span><span class="orb orb-b"></span><span class="orb orb-c"></span></div>
+
+  <header class="topbar" id="topbar">
+    <a class="brand" href="/" aria-label="Início">
+      <img class="logo" src="/media/nlinux-logo.png" alt="NLinux" width="34" height="34">
+      <span class="brand-text">
+        <strong>Loja de Software</strong>
+        <i id="brand-name">NLinux</i>
+      </span>
+    </a>
+    <div class="search">
+      <i class="ti ti-search search-ic" aria-hidden="true"></i>
+      <input id="search" type="search" placeholder="Buscar aplicativos…" autocomplete="off" spellcheck="false">
+      <kbd class="kbd">/</kbd>
+    </div>
+    <div class="head-meta">
+      <span class="badge" id="arch-badge" title="Arquitetura"></span>
+      <a class="icon-btn tip" href="/admin" id="admin-link" data-tip="Gerenciar loja" aria-label="Gerenciar loja">
+        <i class="ti ti-settings"></i>
+      </a>
+      <button id="theme-toggle" class="icon-btn tip" data-tip="Tema: escuro" aria-label="Alternar tema">
+        <i id="theme-ic" class="ti ti-sun"></i>
+      </button>
+    </div>
+  </header>
+
+  <nav class="cats" id="cats" aria-label="Categorias"></nav>
+
+  <main class="main">
+    <div class="results-meta">
+      <span id="results-count"></span>
+      <span class="results-installed" id="results-installed"></span>
+    </div>
+
+    <div id="grid" class="grid" role="list"></div>
+
+    <div id="empty" class="empty hidden" hidden>
+      <div class="empty-art" aria-hidden="true"></div>
+      <h2>Nada por aqui</h2>
+      <p>Tente outra busca ou outra categoria.</p>
+    </div>
+  </main>
+
+  <footer class="foot">
+    <span id="foot-info"></span>
+    <span class="foot-heart">Feito com <b>·</b> para NLinux</span>
+  </footer>
+
+  <div class="install-status hidden" id="install-status" hidden>
+    <div class="status-card">
+      <div class="spinner" aria-hidden="true"></div>
+      <div class="status-body">
+        <strong id="status-title">Instalando…</strong>
+        <div class="progress"><i id="status-bar"></i></div>
+        <code id="status-line"></code>
+      </div>
+      <button class="icon-btn" id="status-close" aria-label="Ocultar"><i class="ti ti-x"></i></button>
+    </div>
+  </div>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <div class="modal" id="modal" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-card" role="dialog" aria-modal="true">
+      <button class="modal-close icon-btn" data-close aria-label="Fechar"><i class="ti ti-x"></i></button>
+      <div class="modal-content" id="modal-content"></div>
+    </div>
+  </div>
+
+  <div class="lightbox" id="lightbox" hidden>
+    <button class="lightbox-close icon-btn" data-close aria-label="Fechar"><i class="ti ti-x"></i></button>
+    <button class="lightbox-nav prev" id="lb-prev" aria-label="Anterior"><i class="ti ti-chevron-left"></i></button>
+    <img id="lightbox-img" alt="">
+    <button class="lightbox-nav next" id="lb-next" aria-label="Próxima"><i class="ti ti-chevron-right"></i></button>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
