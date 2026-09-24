@@ -4870,48 +4870,6 @@
     }
   },
   "more-software": {
-    "1-appgrid": {
-      "name": "App Grid",
-      "summary": "A fast, elegant and grid-looking software center.",
-      "description": "Helps you discover and install apps for Ubuntu MATE. Written from scratch, App Grid delivers stunning startup speed, and swift reactions throughout. A clean and simple design makes App Grid a joy to use. No confusion, no frustration. Discover the best of Open Source in the Ubuntu archives. Or purchase additional apps via Ubuntu One. Complete with ratings, reviews and screenshots. ",
-      "icon": "assets/1-appgrid.png",
-      "screenshots": [
-        "assets/1-appgrid-1.jpg"
-      ],
-      "developer-name": "pgg",
-      "developer-url": "https://launchpad.net/~pgg",
-      "urls": {
-        "info": "http://www.appgrid.org/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "appgrid",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "aur",
-          "main-package": "appgrid",
-          "install-packages": [
-            "appgrid"
-          ],
-          "remove-packages": [
-            "appgrid"
-          ]
-        }
-      },
-      "proprietary": true,
-      "alternate-to": null,
-      "listed": true
-    },
     "2-software": {
       "name": "Software",
       "summary": "A software center as seen in Ubuntu and many other Linux distributions.",
@@ -7446,9 +7404,9 @@
   },
   "stats": {
     "version": 7,
-    "revision": 90,
-    "compiled": 1790273908,
-    "apps": 168,
+    "revision": 91,
+    "compiled": 1790274136,
+    "apps": 167,
     "categories": 12
   },
   "distro": {
