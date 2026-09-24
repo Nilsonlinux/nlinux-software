@@ -14,8 +14,8 @@ if [ -n "$MISSING" ]; then
   echo "Instalando dependências:${MISSING}"
   pacman -S --noconfirm --needed $MISSING
 fi
-# paru (AUR) e curl são opcionais; apenas avisa se não estiverem aqui
-for opt in paru curl; do
+# paru/yay (AUR) e curl são opcionais; apenas avisa se não estiverem aqui
+for opt in paru yay curl; do
   command -v "$opt" >/dev/null 2>&1 || echo "Aviso: '$opt' não encontrado."
 done
 # --- instala a loja ----------------------------------------------------

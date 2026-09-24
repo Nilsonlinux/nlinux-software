@@ -40,7 +40,7 @@ PACKAGE_DEPS = [
     "webkit2gtk-4.1",
     "polkit",
 ]
-PACKAGE_DEPS_OPTIONAL = ("paru", "curl")
+PACKAGE_DEPS_OPTIONAL = ("paru", "yay", "curl")
 
 # Catálogo remoto (JSON raw do GitHub). APENAS a versão de distribuição sincroniza
 # (a de curadoria é a fonte e não deve ser sobrescrita — ver start_remote_refresh).
@@ -104,13 +104,15 @@ class InstallJob:
         self.done = False
         self.success = False
 
-    def _aur_script(self) -> tuple:
-        """Instala pacotes AUR via paru como usuario, com NOPASSWD temporario
-        apenas para o passo final de instalacao do pacote."""
-        inner_path = f"/tmp/boutique-paru-{self.id}.sh"
+    def _aur_script_by_pkg(packages) -> None:
+        """Instala pacotes AUR via paru OU yay (o que existir) como usuario,
+        com NOPASSWD temporario apenas para o passo final de instalacao."""
+        inner_path = f"/tmp/boutique-aur-{self.id}.sh"
         with open(inner_path, "w", encoding="utf-8") as fh:
             fh.write("#!/bin/bash\n")
-            fh.write("paru -S --noconfirm --needed ")
+            fh.write("AUR_HELPER=\"$(command -v paru || command -v yay)\"\n")
+            fh.write("[ -n \"$AUR_HELPER\" ] || { echo \"AUR helper ausente (instale paru ou yay).\" >&2; exit 2; }\n")
+            fh.write("\"$AUR_HELPER\" -S --noconfirm --needed ")
             fh.write(" ".join(shlex.quote(p) for p in self.packages))
             fh.write("\n")
         os.chmod(inner_path, 0o700)
@@ -773,8 +775,8 @@ def admin_build():
                     "  echo \"Instalando dependências:${MISSING}\"\n"
                     "  pacman -S --noconfirm --needed $MISSING\n"
                     "fi\n"
-                    "# paru (AUR) e curl são opcionais; apenas avisa se não estiverem aqui\n"
-                    "for opt in paru curl; do\n"
+                    "# paru/yay (AUR) e curl são opcionais; apenas avisa se não estiverem aqui\n"
+                    "for opt in paru yay curl; do\n"
                     "  command -v \"$opt\" >/dev/null 2>&1 || echo \"Aviso: '$opt' não encontrado.\"\n"
                     "done\n"
                     "# --- instala a loja ----------------------------------------------------\n"
