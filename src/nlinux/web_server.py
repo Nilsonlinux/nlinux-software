@@ -3,6 +3,7 @@ import json
 import os
 import re
 import shlex
+import shutil
 import subprocess
 import threading
 import time
@@ -21,7 +22,17 @@ DIST_DIR = os.path.join(os.path.dirname(SRC_ROOT), "dist")
 # Desativada na versão de distribuição (gerada pela página de administração).
 ADMIN_ENABLED = False
 
-# Dependências de execução (nomes de pacote Arch) incluídas no pacote gerado.
+# Publicação automática no GitHub quando o build da versão da loja terminar.
+# Desligue com NLINUX_GIT_PUSH=0. O repositório local é clonado no GIT_PUSH_DIR
+# na primeira vez (pede a senha do GitHub uma única vez).
+GIT_PUSH_ENABLED = os.environ.get("NLINUX_GIT_PUSH", "1") not in ("0", "false", "no")
+GIT_PUSH_URL = os.environ.get("NLINUX_GIT_URL") or \
+    "https://github.com/nilsonlinux/nlinux-software.git"
+GIT_PUSH_BRANCH = os.environ.get("NLINUX_GIT_BRANCH") or "main"
+GIT_PUSH_DIR = os.environ.get("NLINUX_GIT_DIR") or \
+    os.path.join(os.path.expanduser("~"), "nlinux-repo")
+GIT_PUSH_USER = os.environ.get("NLINUX_GIT_USER") or "NLinux Software"
+GIT_PUSH_EMAIL = os.environ.get("NLINUX_GIT_EMAIL") or "nlinux@users.noreply.github.com"
 PACKAGE_DEPS = [
     "python",
     "python-gobject",
@@ -809,10 +820,115 @@ def admin_build():
             with tarfile.open(tar_path, "w:gz") as tar:
                 tar.add(pkg_root, arcname=f"{name}/nlinux-software")
             size = os.path.getsize(tar_path)
+
+            publish = git_publish(pkg_root, tar_path, rev)
         except OSError as e:
             return {"error": f"falha ao gerar o pacote: {e}"}, 500
 
-    return {"ok": True, "revision": rev, "path": tar_path, "run": pkg_root, "size": size}, 200
+    return {"ok": True, "revision": rev, "path": tar_path, "run": pkg_root,
+            "size": size, "publish": publish}, 200
+
+
+def _prepare_git_clone() -> str:
+    """Garante o repositório local (~/nlinux-repo) clonado do GitHub e o retorna."""
+    clone_dir = GIT_PUSH_DIR
+    if os.path.isdir(os.path.join(clone_dir, ".git")):
+        return clone_dir
+    parent = os.path.dirname(clone_dir)
+    os.makedirs(parent, exist_ok=True)
+    print(f"[nlinux] clonando catálogo do GitHub pela primeira vez ({GIT_PUSH_URL})...")
+    result = subprocess.run(
+        ["git", "clone", GIT_PUSH_URL, clone_dir],
+        capture_output=True, text=True,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(result.stderr.strip() or result.stdout.strip() or "git clone falhou")
+    return clone_dir
+
+
+def git_publish(build_dir: str, tar_path: str, rev: int) -> dict:
+    """Publica o build no GitHub: copia o conteúdo, comita e faz push.
+
+    Retorna {"pushed": True} ou {"pushed": False, "reason": ...} — nunca lança
+    exceção (a falha de publicação não deve impedir a loja de continuar)."""
+    if not GIT_PUSH_ENABLED:
+        return {"pushed": False, "reason": "publicação desativada (NLINUX_GIT_PUSH=0)"}
+
+    try:
+        clone_dir = _prepare_git_clone()
+    except Exception as exc:
+        return {"pushed": False, "reason": f"clone: {exc}"}
+
+    try:
+        # Substitui o conteúdo do repositório (mantém apenas .git e .gitignore).
+        keep = {".git", ".gitignore"}
+        for entry in os.listdir(clone_dir):
+            if entry in keep:
+                continue
+            full = os.path.join(clone_dir, entry)
+            if os.path.isdir(full) and not os.path.islink(full):
+                shutil.rmtree(full)
+            else:
+                os.remove(full)
+
+        for entry in os.listdir(build_dir):
+            src = os.path.join(build_dir, entry)
+            dst = os.path.join(clone_dir, entry)
+            if os.path.isdir(src):
+                shutil.copytree(src, dst)
+            else:
+                shutil.copy2(src, dst)
+
+        shutil.copy2(tar_path, os.path.join(clone_dir, os.path.basename(tar_path)))
+
+        # .gitignore do próprio repositório, para não subir lixo.
+        gi = os.path.join(clone_dir, ".gitignore")
+        if not os.path.exists(gi):
+            with open(gi, "w") as fh:
+                fh.write("__pycache__/\n*.py[cod]\n")
+
+        def _git(*args, env=None):
+            return subprocess.run(
+                ["git", "-C", clone_dir, *args],
+                capture_output=True, text=True,
+                env=env or author_env,
+            )
+
+        author_env = os.environ.copy()
+        author_env.setdefault("GIT_AUTHOR_NAME", GIT_PUSH_USER)
+        author_env.setdefault("GIT_AUTHOR_EMAIL", GIT_PUSH_EMAIL)
+        author_env.setdefault("GIT_COMMITTER_NAME", GIT_PUSH_USER)
+        author_env.setdefault("GIT_COMMITTER_EMAIL", GIT_PUSH_EMAIL)
+
+        add = _git("add", "-A")
+        if add.returncode != 0:
+            return {"pushed": False, "reason": add.stderr.strip() or "git add falhou"}
+
+        status = _git("status", "--porcelain")
+        if not status.stdout.strip():
+            return {"pushed": True, "clean": True}
+
+        commit = _git(
+            "commit", "-q",
+            "-m", f"NLinux Software v{rev}: catálogo atualizado",
+            env=author_env,
+        )
+        if commit.returncode != 0:
+            return {"pushed": False, "reason": commit.stderr.strip() or "git commit falhou"}
+
+        push = subprocess.run(
+            ["git", "-C", clone_dir, "push", "origin",
+             f"HEAD:{GIT_PUSH_BRANCH}", "--force-with-lease"],
+            capture_output=True, text=True, env=author_env,
+        )
+        if push.returncode != 0:
+            return {"pushed": False, "reason": push.stderr.strip() or "git push falhou"}
+        return {"pushed": True, "branch": GIT_PUSH_BRANCH}
+    except Exception as exc:
+        return {"pushed": False, "reason": str(exc)}
+
+
+# FIM da seção de publicação no GitHub ------------------------------------------
 
 
 # ===================== Catálogo remoto (GitHub) ==============================
