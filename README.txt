@@ -1,4 +1,4 @@
-NLinux Software v91 - loja de aplicativos (distribuicao)
+NLinux Software v94 - loja de aplicativos (distribuicao)
 Sem opcao de administracao.
 
 Dependencias (veja DEPENDENCIES.txt):

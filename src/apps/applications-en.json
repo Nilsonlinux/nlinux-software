@@ -6603,52 +6603,6 @@
     }
   },
   "server": {
-    "caja-share": {
-      "name": "Caja Share",
-      "summary": "Extension for the file manager to create shares.",
-      "description": "An extension that allows you to quickly share a folder from the Caja file manager. It uses Samba, so your folders can be accessed by any operating system.",
-      "icon": "assets/caja-share.png",
-      "screenshots": [
-        "assets/caja-share-1.jpg"
-      ],
-      "developer-name": "MATE Desktop Team",
-      "developer-url": "https://mate-desktop.org",
-      "urls": {
-        "info": "https://www.samba.org/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": null,
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "caja-share",
-          "install-packages": [
-            "caja-share",
-            "samba"
-          ],
-          "remove-packages": [
-            "caja-share",
-            "samba"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": "Windows&reg; Simple File Sharing",
-      "listed": true
-    },
     "emby": {
       "name": "Emby",
       "summary": "A media centre server for streaming to other local devices on the network.",
@@ -7215,51 +7169,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "psensor": {
-      "name": "Psensor",
-      "summary": "Views graphs of components attached to the system.",
-      "description": "Views and graphs the current temperature of components attached to the system. Including: Motherboard, CPU, GPU and hard disks. ",
-      "icon": "assets/psensor.png",
-      "screenshots": [
-        "assets/psensor-1.jpg"
-      ],
-      "developer-name": "Various Contributors",
-      "developer-url": "http://git.wpitchoune.net/gitweb/?p=psensor.git;a=blob_plain;f=AUTHORS;hb=HEAD",
-      "urls": {
-        "info": "http://wpitchoune.net/blog/psensor/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "psensor",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "psensor",
-          "install-packages": [
-            "psensor"
-          ],
-          "remove-packages": [
-            "psensor",
-            "psensor-common"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "terminator": {
       "name": "Terminator",
       "summary": "Display multiple terminals on the screen efficiently.",
@@ -7400,13 +7309,55 @@
       "proprietary": false,
       "alternate-to": "VMware Workstation",
       "listed": true
+    },
+    "psensor": {
+      "name": "Psensor",
+      "summary": "Views graphs of components attached to the system.",
+      "description": "Views and graphs the current temperature of components attached to the system. Including: Motherboard, CPU, GPU and hard disks.",
+      "icon": "assets/psensor.png",
+      "screenshots": [
+        "assets/psensor-1.jpg"
+      ],
+      "developer-name": "Various Contributors",
+      "developer-url": "http://git.wpitchoune.net/gitweb/?p=psensor.git;a=blob_plain;f=AUTHORS;hb=HEAD",
+      "urls": {
+        "info": "https://gitlab.com/jeanfi/psensor",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "psensor",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "psensor",
+          "install-packages": [
+            "psensor"
+          ],
+          "remove-packages": [
+            "psensor",
+            "psensor-common"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
     }
   },
   "stats": {
     "version": 7,
-    "revision": 91,
-    "compiled": 1790274136,
-    "apps": 167,
+    "revision": 94,
+    "compiled": 1790281740,
+    "apps": 166,
     "categories": 12
   },
   "distro": {

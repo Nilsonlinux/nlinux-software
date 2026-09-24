@@ -53,4 +53,4 @@ Terminal=false
 Categories=Network;Utility;
 StartupNotify=false
 EOF
-echo "Instalado: NLinux Software v91 (/usr/local/bin/nlinux-software)"
+echo "Instalado: NLinux Software v94 (/usr/local/bin/nlinux-software)"
