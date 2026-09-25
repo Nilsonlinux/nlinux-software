@@ -59,6 +59,10 @@ def run_webview() -> None:
             background_color="#070722",
             js_api=Api(),
         )
+        try:
+            window.set_wmclass("nlinux-software-admin", "nlinux-software-admin")
+        except Exception:
+            pass
         window.events.loaded += lambda: print("WEBVIEW_PAGELOADED", flush=True)
         window.events.shown += lambda: print("WEBVIEW_SHOWN", flush=True)
 

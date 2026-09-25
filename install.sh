@@ -49,14 +49,26 @@ EOF
 chmod +x /usr/local/bin/nlinux-software
 # --- ícone + atalho no menu de aplicativos --------------------------
 cat > "$DEST/icon.svg" <<'SVG'
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-<rect width="128" height="128" rx="24" fill="#0077cc"/>
-<text x="50%" y="54%" font-family="DejaVu Sans, sans-serif"
-      font-size="72" font-weight="bold" fill="#ffffff"
-      text-anchor="middle" dominant-baseline="middle">N</text>
-<circle cx="92" cy="96" r="14" fill="#22cc88"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1f6feb"/>
+      <stop offset="1" stop-color="#0d3b8f"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="120" height="120" rx="26" fill="url(#g)"/>
+  <rect x="4" y="4" width="120" height="120" rx="26" fill="none" stroke="#12233f" stroke-width="4"/>
+  <path d="M32 86 L58 40 L74 72 L84 54 L98 86" stroke="#ffffff" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="58" cy="94" r="9" fill="#3fb950"/>
+  <g transform="translate(90,90)">
+    <path d="M-18 -8 L-18 18 Q-18 24 -12 24 L12 24 Q18 24 18 18 L18 -8 Z" fill="#3fb950" stroke="#12233f" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M-9 -8 L-9 -14 Q-9 -20 0 -20 Q9 -20 9 -14 L9 -8" fill="none" stroke="#12233f" stroke-width="3" stroke-linecap="round"/>
+  </g>
 </svg>
 SVG
+mkdir -p /usr/share/icons/hicolor/scalable/apps
+cp "$DEST/icon.svg" /usr/share/icons/hicolor/scalable/apps/nlinux-software.svg
+(command -v gtk-update-icon-cache >/dev/null 2>&1 && gtk-update-icon-cache -f -t /usr/share/icons/hicolor) || true
 cat > /usr/share/applications/nlinux-software.desktop <<'EOF'
 [Desktop Entry]
 Type=Application
@@ -64,9 +76,10 @@ Name=NLinux Software
 GenericName=Loja de aplicativos
 Comment=Loja de aplicativos do NLinux (distribuição)
 Exec=/usr/local/bin/nlinux-software
-Icon=/opt/nlinux-software/icon.svg
+Icon=nlinux-software
 Terminal=false
 Categories=Network;Utility;
-StartupNotify=false
+StartupNotify=true
+StartupWMClass=nlinux-software
 EOF
 echo "Instalado: NLinux Software v94 (/usr/local/bin/nlinux-software)"

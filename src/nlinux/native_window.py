@@ -13,7 +13,7 @@ import gi
 
 gi.require_version("Gtk", "3.0")
 gi.require_version("WebKit2", "4.1")
-from gi.repository import GLib, Gtk, WebKit2
+from gi.repository import GLib, Gio, Gtk, WebKit2
 
 from nlinux.web_server import BoutiqueHandler, build_payload
 
@@ -99,7 +99,16 @@ def run_window() -> None:
     print("Feche a janela para encerrar.", flush=True)
 
     try:
+        from nlinux.web_server import ADMIN_ENABLED
+        wm_class = "nlinuxsoftware" if ADMIN_ENABLED else "nlinux-software"
+        GLib.set_prgname(wm_class)
+        try:
+            from gi.repository import Gdk
+            Gdk.set_program_class(wm_class)
+        except Exception:
+            pass
         window = Gtk.Window(title="Loja de Software NLinux")
+        window.set_wmclass(wm_class, wm_class)
         window.set_default_size(1180, 820)
         window.set_position(Gtk.WindowPosition.CENTER)
         window.set_border_width(0)

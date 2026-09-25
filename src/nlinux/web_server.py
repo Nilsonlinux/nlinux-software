@@ -810,14 +810,26 @@ def admin_build():
                     "chmod +x /usr/local/bin/nlinux-software\n"
                     "# --- ícone + atalho no menu de aplicativos --------------------------\n"
                     "cat > \"$DEST/icon.svg\" <<'SVG'\n"
-                    "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 128 128\">\n"
-                    "<rect width=\"128\" height=\"128\" rx=\"24\" fill=\"#0077cc\"/>\n"
-                    "<text x=\"50%\" y=\"54%\" font-family=\"DejaVu Sans, sans-serif\"\n"
-                    "      font-size=\"72\" font-weight=\"bold\" fill=\"#ffffff\"\n"
-                    "      text-anchor=\"middle\" dominant-baseline=\"middle\">N</text>\n"
-                    "<circle cx=\"92\" cy=\"96\" r=\"14\" fill=\"#22cc88\"/>\n"
+                    "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\" viewBox=\"0 0 128 128\">\n"
+                    "  <defs>\n"
+                    "    <linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n"
+                    "      <stop offset=\"0\" stop-color=\"#1f6feb\"/>\n"
+                    "      <stop offset=\"1\" stop-color=\"#0d3b8f\"/>\n"
+                    "    </linearGradient>\n"
+                    "  </defs>\n"
+                    "  <rect x=\"4\" y=\"4\" width=\"120\" height=\"120\" rx=\"26\" fill=\"url(#g)\"/>\n"
+                    "  <rect x=\"4\" y=\"4\" width=\"120\" height=\"120\" rx=\"26\" fill=\"none\" stroke=\"#12233f\" stroke-width=\"4\"/>\n"
+                    "  <path d=\"M32 86 L58 40 L74 72 L84 54 L98 86\" stroke=\"#ffffff\" stroke-width=\"10\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n"
+                    "  <circle cx=\"58\" cy=\"94\" r=\"9\" fill=\"#3fb950\"/>\n"
+                    "  <g transform=\"translate(90,90)\">\n"
+                    "    <path d=\"M-18 -8 L-18 18 Q-18 24 -12 24 L12 24 Q18 24 18 18 L18 -8 Z\" fill=\"#3fb950\" stroke=\"#12233f\" stroke-width=\"3\" stroke-linejoin=\"round\"/>\n"
+                    "    <path d=\"M-9 -8 L-9 -14 Q-9 -20 0 -20 Q9 -20 9 -14 L9 -8\" fill=\"none\" stroke=\"#12233f\" stroke-width=\"3\" stroke-linecap=\"round\"/>\n"
+                    "  </g>\n"
                     "</svg>\n"
                     "SVG\n"
+                    "mkdir -p /usr/share/icons/hicolor/scalable/apps\n"
+                    "cp \"$DEST/icon.svg\" /usr/share/icons/hicolor/scalable/apps/nlinux-software.svg\n"
+                    "(command -v gtk-update-icon-cache >/dev/null 2>&1 && gtk-update-icon-cache -f -t /usr/share/icons/hicolor) || true\n"
                     "cat > /usr/share/applications/nlinux-software.desktop <<'EOF'\n"
                     "[Desktop Entry]\n"
                     "Type=Application\n"
@@ -825,10 +837,11 @@ def admin_build():
                     "GenericName=Loja de aplicativos\n"
                     "Comment=Loja de aplicativos do NLinux (distribuição)\n"
                     "Exec=/usr/local/bin/nlinux-software\n"
-                    "Icon=/opt/nlinux-software/icon.svg\n"
+                    "Icon=nlinux-software\n"
                     "Terminal=false\n"
-        "Categories=Network;Utility;\n"
-                    "StartupNotify=false\n"
+                    "Categories=Network;Utility;\n"
+                    "StartupNotify=true\n"
+                    "StartupWMClass=nlinux-software\n"
                     "EOF\n"
                     f"echo \"Instalado: NLinux Software v{rev} (/usr/local/bin/nlinux-software)\"\n"
                 )
@@ -1078,12 +1091,26 @@ def ensure_admin_shortcut() -> None:
         return
 
     project_root = os.path.dirname(os.path.dirname(os.path.dirname(
-        os.path.dirname(os.path.abspath(__file__)))))
+        os.path.abspath(__file__))))
     launcher = os.path.join(project_root, "nlinux-software-admin")
-    if not os.path.exists(launcher):
+    if not os.path.isfile(launcher):
         return
 
-    icon = os.path.join(os.path.dirname(os.path.abspath(__file__)), "icon.svg")
+    icon_src = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "icon-admin.svg")
+    if not os.path.exists(icon_src):
+        icon_src = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "icon.svg")
+    icon_name = "nlinux-software-admin"
+    icons_dir = os.path.join(
+        os.path.expanduser("~"), ".local", "share", "icons", "hicolor",
+        "scalable", "apps")
+    try:
+        os.makedirs(icons_dir, exist_ok=True)
+        shutil.copy2(icon_src, os.path.join(icons_dir, icon_name + ".svg"))
+    except OSError:
+        icon_name = icon_src
+
     entry = (
         "[Desktop Entry]\n"
         "Type=Application\n"
@@ -1091,12 +1118,20 @@ def ensure_admin_shortcut() -> None:
         "GenericName=Curadoria da loja\n"
         "Comment=Administração da NLinux Software (com curadoria)\n"
         f"Exec={launcher}\n"
-        f"Icon={icon}\n"
+        f"Icon={icon_name}\n"
         "Terminal=false\n"
         "Categories=Utility;\n"
-        "StartupNotify=false\n"
+        "StartupNotify=true\n"
+        "StartupWMClass=nlinuxsoftware\n"
     )
-    path = os.path.join(desktop_dir, "nlinux-software-admin.desktop")
+    apps_dir = desktop_dir
+    path = os.path.join(apps_dir, "nlinuxsoftware.desktop")
+    stale = os.path.join(apps_dir, "nlinux-software-admin.desktop")
+    try:
+        if os.path.exists(stale):
+            os.remove(stale)
+    except OSError:
+        pass
     try:
         with open(path, "w") as fh:
             fh.write(entry)
