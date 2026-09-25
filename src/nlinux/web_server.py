@@ -39,6 +39,7 @@ PACKAGE_DEPS = [
     "gtk3",
     "webkit2gtk-4.1",
     "polkit",
+    "gnupg",
 ]
 PACKAGE_DEPS_OPTIONAL = ("paru", "yay", "curl")
 
@@ -782,19 +783,21 @@ def admin_build():
                     "command -v curl >/dev/null 2>&1 || echo \"Aviso: 'curl' não encontrado.\"\n"
                     "# --- autentica o pacote com GPG (assinatura da curadoria) ------------\n"
                     "SRC=\"$(cd \"$(dirname \"$0\")\" && pwd)\"\n"
-                    "if command -v gpg >/dev/null 2>&1; then\n"
-                    "  TARBALL=\"$(ls \"$SRC\"/nlinux-software-v*.tar.gz \"$SRC\"/../nlinux-software-v*.tar.gz 2>/dev/null | head -n1)\"\n"
-                    "  if [ -n \"$TARBALL\" ] && [ -f \"$TARBALL.asc\" ]; then\n"
-                    "    gpg --batch --import \"$SRC/nlinux-software_pub.asc\" >/dev/null 2>&1\n"
-                    "    if ! gpg --batch --verify \"$TARBALL.asc\" \"$TARBALL\" >/dev/null 2>&1; then\n"
-                    "      echo \"ERRO: assinatura GPG do pacote INVÁLIDA. Instalação abortada.\" >&2\n"
-                    "      echo \"O arquivo (ou o repositório) pode ter sido adulterado. Baixe de novo.\" >&2\n"
-                    "      exit 1\n"
-                    "    fi\n"
-                    "    echo \"Verificação GPG: OK (pacote autêntico da curadoria).\"\n"
-                    "  else\n"
-                    "    echo \"Aviso: assinatura (.asc) não encontrada junto do pacote; sem validação.\"\n"
+                    "if ! command -v gpg >/dev/null 2>&1; then\n"
+                    "  echo \"ERRO: gpg ausente; não é possível validar a assinatura.\" >&2\n"
+                    "  exit 1\n"
+                    "fi\n"
+                    "TARBALL=\"$(ls \"$SRC\"/nlinux-software-v*.tar.gz \"$SRC\"/../nlinux-software-v*.tar.gz 2>/dev/null | head -n1)\"\n"
+                    "if [ -n \"$TARBALL\" ] && [ -f \"$TARBALL.asc\" ]; then\n"
+                    "  gpg --batch --import \"$SRC/nlinux-software_pub.asc\" >/dev/null 2>&1\n"
+                    "  if ! gpg --batch --verify \"$TARBALL.asc\" \"$TARBALL\" >/dev/null 2>&1; then\n"
+                    "    echo \"ERRO: assinatura GPG do pacote INVÁLIDA. Instalação abortada.\" >&2\n"
+                    "    echo \"O arquivo (ou o repositório) pode ter sido adulterado. Baixe de novo.\" >&2\n"
+                    "    exit 1\n"
                     "  fi\n"
+                    "  echo \"Verificação GPG: OK (pacote autêntico da curadoria).\"\n"
+                    "else\n"
+                    "  echo \"Aviso: assinatura (.asc) não encontrada junto do pacote; sem validação.\"\n"
                     "fi\n"
                     "# --- instala a loja ----------------------------------------------------\n"
                     f"DEST=\"/opt/nlinux-software\"\n"
@@ -846,6 +849,7 @@ def admin_build():
                     "StartupWMClass=nlinuxstore\n"
                     "X-GNOME-UsesNotifications=false\n"
                     "EOF\n"
+                    "(command -v update-desktop-database >/dev/null 2>&1 && update-desktop-database /usr/share/applications) || true\n"
                     f"echo \"Instalado: NLinux Software v{rev} (/usr/local/bin/nlinux-software)\"\n"
                 )
             os.chmod(os.path.join(pkg_root, "install.sh"), 0o755)

@@ -7,7 +7,7 @@ fi
 require() { pacman -Q "$1" >/dev/null 2>&1; }
 # --- dependências de execução ----------------------------------------
 MISSING=""
-for p in python python-gobject gtk3 webkit2gtk-4.1 polkit; do
+for p in python python-gobject gtk3 webkit2gtk-4.1 polkit gnupg; do
   require "$p" || MISSING="$MISSING $p"
 done
 if [ -n "$MISSING" ]; then
@@ -21,19 +21,21 @@ fi
 command -v curl >/dev/null 2>&1 || echo "Aviso: 'curl' não encontrado."
 # --- autentica o pacote com GPG (assinatura da curadoria) ------------
 SRC="$(cd "$(dirname "$0")" && pwd)"
-if command -v gpg >/dev/null 2>&1; then
-  TARBALL="$(ls "$SRC"/nlinux-software-v*.tar.gz "$SRC"/../nlinux-software-v*.tar.gz 2>/dev/null | head -n1)"
-  if [ -n "$TARBALL" ] && [ -f "$TARBALL.asc" ]; then
-    gpg --batch --import "$SRC/nlinux-software_pub.asc" >/dev/null 2>&1
-    if ! gpg --batch --verify "$TARBALL.asc" "$TARBALL" >/dev/null 2>&1; then
-      echo "ERRO: assinatura GPG do pacote INVÁLIDA. Instalação abortada." >&2
-      echo "O arquivo (ou o repositório) pode ter sido adulterado. Baixe de novo." >&2
-      exit 1
-    fi
-    echo "Verificação GPG: OK (pacote autêntico da curadoria)."
-  else
-    echo "Aviso: assinatura (.asc) não encontrada junto do pacote; sem validação."
+if ! command -v gpg >/dev/null 2>&1; then
+  echo "ERRO: gpg ausente; não é possível validar a assinatura." >&2
+  exit 1
+fi
+TARBALL="$(ls "$SRC"/nlinux-software-v*.tar.gz "$SRC"/../nlinux-software-v*.tar.gz 2>/dev/null | head -n1)"
+if [ -n "$TARBALL" ] && [ -f "$TARBALL.asc" ]; then
+  gpg --batch --import "$SRC/nlinux-software_pub.asc" >/dev/null 2>&1
+  if ! gpg --batch --verify "$TARBALL.asc" "$TARBALL" >/dev/null 2>&1; then
+    echo "ERRO: assinatura GPG do pacote INVÁLIDA. Instalação abortada." >&2
+    echo "O arquivo (ou o repositório) pode ter sido adulterado. Baixe de novo." >&2
+    exit 1
   fi
+  echo "Verificação GPG: OK (pacote autêntico da curadoria)."
+else
+  echo "Aviso: assinatura (.asc) não encontrada junto do pacote; sem validação."
 fi
 # --- instala a loja ----------------------------------------------------
 DEST="/opt/nlinux-software"
@@ -85,4 +87,5 @@ StartupNotify=true
 StartupWMClass=nlinuxstore
 X-GNOME-UsesNotifications=false
 EOF
+(command -v update-desktop-database >/dev/null 2>&1 && update-desktop-database /usr/share/applications) || true
 echo "Instalado: NLinux Software v94 (/usr/local/bin/nlinux-software)"
