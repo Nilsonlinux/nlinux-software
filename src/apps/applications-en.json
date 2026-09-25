@@ -4867,6 +4867,45 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
+    },
+    "whatsapp-desktop": {
+      "name": "Whatsapp Desktop",
+      "summary": "An unofficial WhatsApp Linux Desktop application",
+      "description": "An unofficial WhatsApp Linux Desktop application",
+      "icon": "assets/whatsapp-desktop.png",
+      "screenshots": [],
+      "developer-name": "sayedulsayem",
+      "developer-url": "",
+      "urls": {
+        "info": "https://github.com/sayedulsayem/whatsapp-linux-desktop",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "whatsapp-linux-desktop-bin",
+          "install-packages": [
+            "whatsapp-linux-desktop-bin"
+          ],
+          "remove-packages": [
+            "whatsapp-linux-desktop-bin"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
     }
   },
   "more-software": {
@@ -7355,9 +7394,9 @@
   },
   "stats": {
     "version": 7,
-    "revision": 94,
-    "compiled": 1790281740,
-    "apps": 166,
+    "revision": 95,
+    "compiled": 1790349284,
+    "apps": 167,
     "categories": 12
   },
   "distro": {
