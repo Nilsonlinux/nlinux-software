@@ -221,7 +221,7 @@ function visibleProducts() {
   });
 }
 
-function installActionHtml(p) {
+function primaryActionHtml(p) {
   if (p.source === "aur") {
     const url = `https://aur.archlinux.org/packages/${encodeURIComponent(p.packages[0] || "")}`;
     return `<a class="btn btn-ghost tip" data-tip="Página no AUR" href="${esc(url)}" target="_blank" rel="noopener"><i class="ti ti-package"></i> AUR</a>` +
@@ -233,6 +233,15 @@ function installActionHtml(p) {
   }
   const label = p.installed ? "Reinstalar" : "Instalar";
   return `<button class="btn btn-primary btn-install tip" data-action="install" data-key="${esc(p.key)}" data-tip="Pacote: ${esc(p.packages.join(", "))}" ${state.busy ? "disabled" : ""}><i class="ti ti-download"></i> ${label}</button>`;
+}
+
+function removeActionHtml(p) {
+  if (!p.installed || !p.packages.length) return "";
+  return `<button class="btn btn-ghost btn-remove tip" data-action="remove" data-key="${esc(p.key)}" data-tip="Remover: ${esc(p.packages.join(", "))}" ${state.busy ? "disabled" : ""}><i class="ti ti-trash"></i> Desinstalar</button>`;
+}
+
+function installActionHtml(p) {
+  return primaryActionHtml(p) + removeActionHtml(p);
 }
 
 function chipFor(p) {
@@ -325,12 +334,14 @@ function modalActionsHtml(p) {
     if (p.source === "aur") {
       const url = `https://aur.archlinux.org/packages/${encodeURIComponent(p.packages[0] || "")}`;
       return `<a class="btn btn-ghost tip" data-tip="Página do AUR" href="${esc(url)}" target="_blank" rel="noopener"><i class="ti ti-package"></i> AUR</a>` +
-        `<button class="btn btn-primary btn-install" data-action="install" data-key="${esc(p.key)}" ${state.busy ? "disabled" : ""}><i class="ti ti-download"></i> ${p.installed ? "Reinstalar" : "Instalar"}</button>`;
+        `<button class="btn btn-primary btn-install" data-action="install" data-key="${esc(p.key)}" ${state.busy ? "disabled" : ""}><i class="ti ti-download"></i> ${p.installed ? "Reinstalar" : "Instalar"}</button>` +
+        removeActionHtml(p);
     }
     if (p.website) return `<a class="btn btn-primary" href="${esc(p.website)}" target="_blank" rel="noopener"><i class="ti ti-external-link"></i> Site oficial</a>`;
     return `<button class="btn btn-primary" disabled><i class="ti ti-alert-triangle"></i> Sem pacote</button>`;
   }
-  return `<button class="btn btn-primary btn-install" data-action="install" data-key="${esc(p.key)}" ${state.busy ? "disabled" : ""}><i class="ti ti-download"></i> ${p.installed ? "Reinstalar" : "Instalar"}</button>`;
+  return `<button class="btn btn-primary btn-install" data-action="install" data-key="${esc(p.key)}" ${state.busy ? "disabled" : ""}><i class="ti ti-download"></i> ${p.installed ? "Reinstalar" : "Instalar"}</button>` +
+    removeActionHtml(p);
 }
 
 function fromKey(key) {
@@ -365,67 +376,88 @@ function statusCard(title, line, mode) {
 
 function setBusy(busy) {
   state.busy = busy;
-  $$("#grid [data-action=install]").forEach((b) => (b.disabled = busy));
+  $$("#grid [data-action=install], #grid [data-action=remove]").forEach((b) => (b.disabled = busy));
 }
 
-async function startInstall(product, btn) {
+function startRemove(product, btn) {
+  if (state.busy) { toast("Aguarde a operação atual terminar.", "info"); return; }
+  if (!product.packages.length) { toast("Este aplicativo não tem pacotes definidos.", "err"); return; }
+  const modal = $("#modal");
+  $("#modal-content").innerHTML = `
+    <h2>Desinstalar ${esc(product.name)}?</h2>
+    <p class="m-desc">O pacote <strong>${esc(product.packages.join(", "))}</strong> será removido do sistema, junto com as dependências que ficarem sem uso. Os arquivos de configuração são preservados.</p>
+    <div class="actions">
+      <button class="btn btn-ghost" data-close>Cancelar</button>
+      <button class="btn btn-primary btn-remove" id="confirm-remove"><i class="ti ti-trash"></i> Desinstalar</button>
+    </div>`;
+  modal.hidden = false;
+  const confirmBtn = $("#confirm-remove");
+  if (confirmBtn) confirmBtn.addEventListener("click", () => {
+    modal.hidden = true;
+    startInstall(product, btn, "remove");
+  });
+}
+
+async function startInstall(product, btn, mode = "install") {
   if (state.busy) { toast("Aguarde a instalação atual terminar.", "info"); return; }
   if (!product.packages.length) { toast("Este aplicativo não tem pacotes definidos.", "err"); return; }
 
+  const removing = mode === "remove";
+  const gerund = removing ? "Desinstalando" : "Instalando";
   state.busy = true;
   setBusy(true);
   const card = btn.closest(".card");
   if (card) card.classList.add("installing-card");
   btn.classList.add("is-running");
 
-  statusCard(`Instalando ${product.name}…`, "Aguardando autorização do sistema…", "");
+  statusCard(`${gerund} ${product.name}…`, "Aguardando autorização do sistema…", "");
 
   let job;
   try {
     job = await api("/api/install", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ packages: product.packages, source: product.source }),
+      body: JSON.stringify({ packages: product.packages, source: product.source, action: mode }),
     });
   } catch (e) {
-    finishInstall(false, product, btn, card);
-    toast("Não foi possível iniciar a instalação.", "err");
+    finishInstall(false, product, btn, card, mode);
+    toast(`Não foi possível iniciar ${removing ? "a desinstalação" : "a instalação"}.`, "err");
     return;
   }
 
   (async function poll() {
     const st = await api("/api/status?id=" + job.id).catch(() => null);
-    if (!st) { statusCard(`Instalando ${product.name}…`, "Verificando…", ""); }
+    if (!st) { statusCard(`${gerund} ${product.name}…`, "Verificando…", ""); }
     else if (st.state === "pending") {
       const waiting = st.lines.length <= 1;
       const last = waiting
         ? "Aguardando autorização do sistema…"
         : st.lines[st.lines.length - 1];
-      statusCard(`Instalando ${product.name}…`, last, "");
+      statusCard(`${gerund} ${product.name}…`, last, "");
       setTimeout(poll, 1400);
     } else {
       const ok = st.done && st.success;
-      finishInstall(ok, product, btn, card);
+      finishInstall(ok, product, btn, card, mode);
       if (ok) {
         const last = st.lines[st.lines.length - 1] || "";
-        statusCard(`${product.name} instalado`, last, "done");
-        toast(`${product.name} foi instalado com sucesso.`, "succ");
+        statusCard(`${product.name} ${removing ? "desinstalado" : "instalado"}`, last, "done");
+        toast(`${product.name} foi ${removing ? "desinstalado" : "instalado com sucesso"}.`, "succ");
       } else {
         const last = st.lines[st.lines.length - 1] || "";
-        statusCard(`Falha ao instalar ${product.name}`, last, "error");
-        toast(`Falha ao instalar ${product.name}.`, "err");
+        statusCard(`Falha ao ${removing ? "desinstalar" : "instalar"} ${product.name}`, last, "error");
+        toast(`Falha ao ${removing ? "desinstalar" : "instalar"} ${product.name}.`, "err");
       }
       setTimeout(() => { $("#install-status").hidden = true; }, 4200);
     }
   })();
 }
 
-function finishInstall(ok, product, btn, card) {
+function finishInstall(ok, product, btn, card, mode = "install") {
   btn.classList.remove("is-running");
   if (card) card.classList.remove("installing-card");
   if (ok) {
     const p = fromKey(product.key);
-    if (p) p.installed = true;
+    if (p) p.installed = mode !== "remove";
   }
   state.busy = false;
   setBusy(false);
@@ -440,6 +472,7 @@ function bindDelegates() {
     const product = fromKey(btn.dataset.key);
     if (!product) return;
     if (btn.dataset.action === "install") startInstall(product, btn);
+    else if (btn.dataset.action === "remove") startRemove(product, btn);
     else if (btn.dataset.action === "details") openModal(product);
   });
 
@@ -457,6 +490,11 @@ function bindModalActions() {
     btn.addEventListener("click", () => {
       const product = fromKey(btn.dataset.key);
       if (product) startInstall(product, btn);
+    }));
+  content.querySelectorAll("[data-action=remove]").forEach((btn) =>
+    btn.addEventListener("click", () => {
+      const product = fromKey(btn.dataset.key);
+      if (product) startRemove(product, btn);
     }));
 }
 

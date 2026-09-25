@@ -279,6 +279,15 @@ mark { background: none; color: var(--accent-strong); font-weight: 700; }
 
 .btn-installed { background: var(--accent-soft); color: var(--accent-strong); border-color: var(--accent-strong); }
 
+.btn-remove { color: var(--danger, #e5534b); border-color: var(--danger-soft, rgba(229, 83, 75, .45)); }
+.btn-remove:hover:not([disabled]) {
+  background: var(--danger-soft, rgba(229, 83, 75, .12));
+  border-color: var(--danger, #e5534b);
+  color: var(--danger, #e5534b);
+}
+.btn-primary.btn-remove { background: var(--danger, #e5534b); color: #fff; border-color: transparent; }
+.btn-primary.btn-remove:hover:not([disabled]) { background: var(--danger, #e5534b); color: #fff; }
+
 .btn-install.is-running::after {
   content: ""; width: 14px; height: 14px; border-radius: 50%;
   border: 2px solid var(--on-accent); border-top-color: transparent;

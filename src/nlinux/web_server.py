@@ -97,10 +97,12 @@ def pacman_installed() -> set:
 
 
 class InstallJob:
-    def __init__(self, job_id: str, packages: list, source: str = "arch") -> None:
+    def __init__(self, job_id: str, packages: list, source: str = "arch",
+                 mode: str = "install") -> None:
         self.id = job_id
         self.packages = packages
         self.source = source
+        self.mode = mode
         self.state = "pending"
         self.lines = []
         self.done = False
@@ -138,11 +140,15 @@ class InstallJob:
     def start(self) -> None:
         def work() -> None:
             names = ", ".join(self.packages)
+            removing = self.mode == "remove"
             self.lines.append(
-                f"Instalando ({self.source}): {names}")
+                f"{'Desinstalando' if removing else 'Instalando'} "
+                f"({self.source}): {names}")
             artifacts = []
             try:
-                if self.source == "aur":
+                if removing:
+                    cmd = ["pkexec", "pacman", "-Rns", "--noconfirm"] + self.packages
+                elif self.source == "aur":
                     script_path, _, inner_path = self._aur_script()
                     artifacts = [script_path, inner_path]
                     cmd = ["pkexec", "bash", script_path]
@@ -168,9 +174,10 @@ class InstallJob:
                         pass
             self.state = "success" if self.success else "failed"
             if self.success:
-                self.lines.append(f"Instalado: {names}")
+                self.lines.append(f"{'Removido' if removing else 'Instalado'}: {names}")
             else:
-                self.lines.append(f"Falha na instalação: {names}")
+                self.lines.append(
+                    f"Falha ao {'desinstalar' if removing else 'instalar'}: {names}")
             self.done = True
 
         threading.Thread(target=work, daemon=True).start()
@@ -179,6 +186,7 @@ class InstallJob:
         return {
             "id": self.id,
             "packages": self.packages,
+            "mode": self.mode,
             "state": self.state,
             "done": self.done,
             "success": self.success,
@@ -353,8 +361,12 @@ class BoutiqueHandler(BaseHTTPRequestHandler):
             return
 
         source = body.get("source", "arch")
+        mode = body.get("action", "install")
+        if mode not in ("install", "remove"):
+            self._send_json({"error": "invalid action"}, 400)
+            return
         job_id = uuid4().hex[:12]
-        job = InstallJob(job_id, packages, source)
+        job = InstallJob(job_id, packages, source, mode)
         with self.jobs_lock:
             self.jobs[job_id] = job
         job.start()
