@@ -1074,10 +1074,23 @@ def fetch_remote_catalog(conditional: bool = False):
         raise
 
 
+def _catalog_fingerprint(raw: dict) -> str:
+    return hashlib.sha1(
+        json.dumps(raw, sort_keys=True, ensure_ascii=False).encode("utf-8")
+    ).hexdigest()
+
+
 def apply_remote_catalog(force: bool = False) -> bool:
     """Confere o catálogo remoto e, se houver diferenças, grava localmente e
     reconstrói o payload. A loja detecta a mudança e recarrega sozinha.
     Retorna True quando o catálogo foi atualizado."""
+    if not force and _REMOTE_ETAG["value"]:
+        try:
+            local_fp = _catalog_fingerprint(_load_raw())
+        except Exception:
+            local_fp = None
+        if local_fp is not None and local_fp != _REMOTE_ETAG.get("applied"):
+            force = True  # arquivo local divergiu: rebaixa para consertar
     try:
         remote, unchanged = fetch_remote_catalog(conditional=not force)
     except Exception as exc:
@@ -1094,6 +1107,7 @@ def apply_remote_catalog(force: bool = False) -> bool:
         same = json.dumps(remote, sort_keys=True, ensure_ascii=False) == \
             json.dumps(current, sort_keys=True, ensure_ascii=False)
         if same:
+            _REMOTE_ETAG["applied"] = _catalog_fingerprint(remote)
             return False
         new_stats = remote.get("stats")
         if not (isinstance(new_stats, dict)
@@ -1106,6 +1120,7 @@ def apply_remote_catalog(force: bool = False) -> bool:
             return False
         rebuild_payload()
         revision = remote.get("stats", {}).get("revision")
+        _REMOTE_ETAG["applied"] = _catalog_fingerprint(remote)
     print(f"[nlinux] catálogo atualizado do repositório remoto (revision {revision})",
           flush=True)
     return True
