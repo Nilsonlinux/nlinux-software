@@ -41,6 +41,7 @@ PACKAGE_DEPS = [
     "webkit2gtk-4.1",
     "polkit",
     "gnupg",
+    "git",
 ]
 PACKAGE_DEPS_OPTIONAL = ("paru", "yay", "curl")
 
@@ -1063,6 +1064,15 @@ def git_publish(build_dir: str, tar_path: str, rev: int) -> dict:
 
 # ===================== Catálogo remoto (GitHub) ==============================
 
+# O CDN do raw.githubusercontent serve versões velhas por vários minutos (inclusive
+# 304 obsoletos), então a loja não confia nele para saber se houve mudança. A
+# detecção usa `git ls-remote`, que responde ao vivo em menos de 1s, e o catálogo
+# é lido de uma URL travada no commit — imutável, portanto sempre correta.
+REMOTE_REPO_RAW = os.environ.get("NLINUX_CATALOG_RAW_BASE") or \
+    "https://raw.githubusercontent.com/nilsonlinux/nlinux-software"
+REMOTE_FALLBACK_SECONDS = 300
+
+
 def _cache_busted(url: str) -> str:
     sep = "&" if "?" in url else "?"
     return f"{url}{sep}cb={int(time.time())}"
@@ -1080,14 +1090,27 @@ def _remote_get(url: str, timeout: int = 20):
         return json.loads(resp.read().decode("utf-8"))
 
 
-def fetch_remote_catalog() -> dict:
-    """Baixa o json do catálogo do repositório remoto (raw GitHub)."""
-    return _remote_get(REMOTE_CATALOG_URL)
+def remote_head_sha() -> str | None:
+    """Commit atual da branch main no GitHub (via git, sem cache de CDN)."""
+    try:
+        out = subprocess.run(
+            ["git", "ls-remote", GIT_PUSH_URL, GIT_PUSH_BRANCH],
+            capture_output=True, text=True, timeout=30,
+        )
+    except Exception:
+        return None
+    if out.returncode != 0 or not out.stdout.split():
+        return None
+    return out.stdout.split()[0]
 
 
-def fetch_remote_marker() -> dict:
-    """Lê o arquivo-marcador (~100 bytes) que diz se o catálogo mudou."""
-    return _remote_get(REMOTE_MARKER_URL, timeout=15)
+def catalog_url_at(sha: str) -> str:
+    return f"{REMOTE_REPO_RAW}/{sha}/src/apps/{_catalog_name()}"
+
+
+def fetch_remote_catalog(sha: str | None = None) -> dict:
+    """Baixa o catálogo. Com sha, lê a URL travada no commit (sempre atual)."""
+    return _remote_get(catalog_url_at(sha) if sha else REMOTE_CATALOG_URL)
 
 
 def _catalog_fingerprint(raw: dict) -> str:
@@ -1096,11 +1119,7 @@ def _catalog_fingerprint(raw: dict) -> str:
     ).hexdigest()
 
 
-_REMOTE_SYNC = {"applied": None, "marker_ok": None, "last_full": 0.0}
-
-# Se o marcador não estiver publicado (repo antigo), rebaixa o catálogo inteiro
-# no máximo a cada 5 minutos em vez de Download de 236 KB a cada 15 s.
-REMOTE_FALLBACK_SECONDS = 300
+_REMOTE_SYNC = {"applied": None, "sha": None, "last_full": 0.0}
 
 
 def _local_matches_marker(local: dict, marker: dict) -> bool:
@@ -1127,27 +1146,27 @@ def apply_remote_catalog(force: bool = False) -> bool:
             and local and _catalog_fingerprint(local) != _REMOTE_SYNC["applied"]:
         force = True  # arquivo local divergiu do que foi aplicado: rebaixa
 
+    sha = remote_head_sha()
     if not force:
-        try:
-            marker = fetch_remote_marker()
-            _REMOTE_SYNC["marker_ok"] = True
-        except Exception as exc:
-            if _REMOTE_SYNC["marker_ok"] is None:
-                print(f"[nlinux] marcador remoto indisponível "
-                      f"({exc}); usando verificação completa a cada "
-                      f"{REMOTE_FALLBACK_SECONDS}s")
-            _REMOTE_SYNC["marker_ok"] = False
-            marker = None
-        if marker is not None:
-            if _local_matches_marker(local, marker):
-                return False
-        else:
-            if time.time() - _REMOTE_SYNC["last_full"] < REMOTE_FALLBACK_SECONDS:
-                return False
-            _REMOTE_SYNC["last_full"] = time.time()
+        if sha is None:
+            # Sem git disponível: usa o marcador minúsculo; se nem ele responder,
+            # rebaixa o catálogo inteiro no máximo a cada 5 minutos.
+            try:
+                marker = _remote_get(REMOTE_MARKER_URL, timeout=15)
+                _REMOTE_SYNC["last_full"] = time.time()
+                if _local_matches_marker(local, marker):
+                    return False
+            except Exception:
+                if time.time() - _REMOTE_SYNC["last_full"] < REMOTE_FALLBACK_SECONDS:
+                    return False
+                _REMOTE_SYNC["last_full"] = time.time()
+        elif sha == _REMOTE_SYNC["sha"]:
+            return False  # nada novo publicado no repositório
+    else:
+        _REMOTE_SYNC["last_full"] = time.time()
 
     try:
-        remote = fetch_remote_catalog()
+        remote = fetch_remote_catalog(sha)
     except Exception as exc:
         print(f"[nlinux] catálogo remoto indisponível: {exc}")
         return False
@@ -1174,17 +1193,20 @@ def apply_remote_catalog(force: bool = False) -> bool:
         rebuild_payload()
         revision = remote.get("stats", {}).get("revision")
         _REMOTE_SYNC["applied"] = _catalog_fingerprint(remote)
-    print(f"[nlinux] catálogo atualizado do repositório remoto (revision {revision})",
-          flush=True)
+        if sha:
+            _REMOTE_SYNC["sha"] = sha
+    print(f"[nlinux] catálogo atualizado do repositório remoto "
+          f"(revision {revision}, commit {sha[:8] if sha else 'local'})", flush=True)
     return True
 
 
 def remote_refresh_loop() -> None:
     """Ciclo de checagem do catálogo remoto.
 
-    A cada REMOTE_CHECK_SECONDS lê o marcador de ~100 bytes; quando a impressão
-    digital muda, baixa o catálogo e reconstrói o payload. A loja, que pergunta o
-    payload a cada poucos segundos, recarrega sozinha.
+    A cada REMOTE_CHECK_SECONDS pergunta ao GitHub qual é o commit da main
+    (`git ls-remote`, ~0,6 s). Só quando o commit muda é que o catálogo é
+    baixado, pela URL travada nesse commit. A loja, que consulta o payload a cada
+    poucos segundos, recarrega sozinha.
     """
     while True:
         time.sleep(REMOTE_CHECK_SECONDS)

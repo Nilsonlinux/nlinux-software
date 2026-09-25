@@ -7,7 +7,7 @@ fi
 require() { pacman -Q "$1" >/dev/null 2>&1; }
 # --- dependências de execução ----------------------------------------
 MISSING=""
-for p in python python-gobject gtk3 webkit2gtk-4.1 polkit gnupg; do
+for p in python python-gobject gtk3 webkit2gtk-4.1 polkit gnupg git; do
   require "$p" || MISSING="$MISSING $p"
 done
 if [ -n "$MISSING" ]; then

@@ -8,6 +8,7 @@ Obrigatorias (instaladas automaticamente pelo install.sh):
   - webkit2gtk-4.1
   - polkit
   - gnupg
+  - git
 
 Opcionais:
   - paru  (instalacao de pacotes AUR pela loja)

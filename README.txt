@@ -8,6 +8,7 @@ Dependencias (veja DEPENDENCIES.txt):
   - webkit2gtk-4.1
   - polkit
   - gnupg
+  - git
 
 Instalar (o instalador verifica e instala as dependencias faltantes):
   sudo ./install.sh
