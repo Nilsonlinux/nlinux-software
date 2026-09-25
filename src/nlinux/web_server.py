@@ -18,7 +18,22 @@ from nlinux.system_state import SystemState
 SRC_ROOT = resources.SRC_ROOT
 APPS_DIR = os.path.join(SRC_ROOT, "apps")
 WEB_DIR = os.path.join(SRC_ROOT, "assets", "web")
-DIST_DIR = os.path.join(os.path.dirname(SRC_ROOT), "dist")
+
+
+def _resolve_dist_dir() -> str:
+    """Pasta dos pacotes gerados.
+
+    No projeto (ou via pkexec, rodando como root) fica em `<projeto>/dist`.
+    Se a curadoria estiver instalada em /opt e o processo for o usuário comum,
+    usa `~/NLinux-Software/dist` — /opt não é gravável por ele.
+    """
+    padrao = os.path.join(os.path.dirname(SRC_ROOT), "dist")
+    if os.access(os.path.dirname(SRC_ROOT), os.W_OK):
+        return padrao
+    return os.path.join(os.path.expanduser("~"), "NLinux-Software", "dist")
+
+
+DIST_DIR = _resolve_dist_dir()
 
 # Desativada na versão de distribuição (gerada pela página de administração).
 ADMIN_ENABLED = False
@@ -205,6 +220,100 @@ class InstallJob:
         }
 
 
+class BuildJob:
+    """Gera o pacote de distribuição pedindo autorização ao polkit.
+
+    Roda `pkexec` com `build_helper.py`, ou seja, o usuário vê a mesma caixa de
+    autenticação de instalar/remover um programa. O processo filho escreve uma
+    linha por etapa e, no fim, `@@RESULT@@<json>` com o retorno do build.
+    Sem `pkexec` disponível, o build roda direto no processo atual.
+    """
+
+    def __init__(self, job_id: str) -> None:
+        self.id = job_id
+        self.state = "pending"
+        self.lines: list = []
+        self.done = False
+        self.success = False
+        self.result: dict = {}
+
+    def log(self, msg: str) -> None:
+        self.lines.append(msg)
+
+    def status(self) -> dict:
+        return {
+            "id": self.id,
+            "kind": "build",
+            "state": self.state,
+            "done": self.done,
+            "success": self.success,
+            "lines": self.lines[-20:],
+            "result": self.result,
+        }
+
+    def _run_direct(self) -> None:
+        def progress(msg: str) -> None:
+            self.log(f"… {msg}")
+
+        self.state = "running"
+        result, _ = admin_build(progress=progress)
+        self.result = result
+        self.success = not bool(result.get("error"))
+        self.done = True
+        self.state = "done" if self.success else "error"
+
+    def start(self) -> None:
+        threading.Thread(target=self._run, daemon=True).start()
+
+    def _run(self) -> None:
+        helper = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                              "build_helper.py")
+        pkexec = shutil.which("pkexec")
+        if not pkexec or not os.path.exists(helper):
+            self.log("pkexec indisponível; gerando sem elevação de privilégio")
+            try:
+                self._run_direct()
+            except Exception as exc:
+                self.result = {"error": str(exc)}
+                self.success = False
+                self.done = True
+                self.state = "error"
+            return
+
+        self.state = "running"
+        self.log("aguardando autorização…")
+        env = os.environ.copy()
+        env["PKEXEC_UID"] = str(os.getuid())
+        proc = subprocess.Popen(
+            [pkexec, "/usr/bin/python3", helper],
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+            text=True, bufsize=1, env=env,
+        )
+        for line in proc.stdout:
+            line = line.rstrip()
+            if not line:
+                continue
+            if line.startswith("@@RESULT@@"):
+                try:
+                    self.result = json.loads(line[len("@@RESULT@@"):])
+                except json.JSONDecodeError:
+                    self.result = {"error": "resposta do build ilegível"}
+            else:
+                self.log(line)
+        proc.wait()
+        if not self.result:
+            code = proc.returncode
+            if code in (126, 127):
+                self.result = {"error": "autorização cancelada ou negada"}
+            else:
+                self.result = {"error": f"build falhou (código {code})"}
+        self.success = not bool(self.result.get("error"))
+        self.done = True
+        self.state = "done" if self.success else "error"
+        if not self.success:
+            self.log(f"erro: {self.result.get('error')}")
+
+
 class BoutiqueHandler(BaseHTTPRequestHandler):
     payload = None
     payload_lock = threading.Lock()
@@ -351,8 +460,12 @@ class BoutiqueHandler(BaseHTTPRequestHandler):
             if not ADMIN_ENABLED:
                 self._send_json({"error": "not found"}, 404)
                 return
-            data, code = admin_build()
-            self._send_json(data, code)
+            job_id = uuid4().hex[:12]
+            job = BuildJob(job_id)
+            with self.jobs_lock:
+                self.jobs[job_id] = job
+            job.start()
+            self._send_json({"id": job_id, "state": "pending"})
             return
 
         if path != "/api/install":
@@ -755,10 +868,18 @@ def admin_delete(handler):
     return {"ok": True}, 200
 
 
-def admin_build():
-    """Gera o pacote de distribuição da loja (sem a opção de administração)."""
+def admin_build(progress=None):
+    """Gera o pacote de distribuição da loja (sem a opção de administração).
+
+    `progress` recebe uma função de log usada pela execução via polkit, para
+    mostrar cada etapa na interface enquanto o processo roda.
+    """
     import shutil
     import tarfile
+
+    def _step(msg):
+        if progress:
+            progress(msg)
 
     with _ADMIN_LOCK:
         raw = _load_raw()
@@ -770,6 +891,7 @@ def admin_build():
             shutil.rmtree(pkg_root)
 
         try:
+            _step(f"preparando {pkg_root}")
             os.makedirs(pkg_root, exist_ok=True)
 
             def ignore(d, files):
@@ -917,6 +1039,7 @@ def admin_build():
                     "  nlinux-software\n"
                 )
 
+            _step(f"empacotando {os.path.basename(tar_path)}")
             with tarfile.open(tar_path, "w:gz") as tar:
                 tar.add(pkg_root, arcname=f"{name}/nlinux-software")
             size = os.path.getsize(tar_path)
@@ -935,6 +1058,7 @@ def admin_build():
                 json.dump(marker, fh, ensure_ascii=False, indent=2)
 
             # Assinatura GPG real (detached, armadura ASCII) pela curadoria.
+            _step("assinando com GPG")
             enc = os.environ.copy()
             enc["GNUPGHOME"] = os.path.expanduser("~/.gnupg")
             asc_path = tar_path + ".asc"
@@ -949,7 +1073,10 @@ def admin_build():
             if os.path.exists(pub_asc):
                 shutil.copy2(pub_asc, os.path.join(pkg_root, "nlinux-software_pub.asc"))
 
+            _step("publicando no GitHub")
             publish = git_publish(pkg_root, tar_path, rev)
+            _step("publicação concluída" if publish.get("pushed")
+                  else f"publicação falhou: {publish.get('reason', '?')}")
         except OSError as e:
             return {"error": f"falha ao gerar o pacote: {e}"}, 500
 
