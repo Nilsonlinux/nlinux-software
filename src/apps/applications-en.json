@@ -1397,48 +1397,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "ubuntu-make": {
-      "name": "Ubuntu Make",
-      "summary": "Tool for downloading latest versions of popular development tools.",
-      "description": "A command line tool which allows you to download the latest version of popular developer tools and provides functionality to setup, maintain and personalize your developer environment easily. It will handle all dependencies, even those which aren&#8217;t in Ubuntu itself, and will install the latest versions of the recommended tools. ",
-      "icon": "assets/ubuntu-make.png",
-      "screenshots": [],
-      "developer-name": "Various Contributors",
-      "developer-url": "https://www.canonical.com/",
-      "urls": {
-        "info": "https://github.com/ubuntu/ubuntu-make",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": null,
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "aur",
-          "main-package": "ubuntu-make",
-          "install-packages": [
-            "ubuntu-make"
-          ],
-          "remove-packages": [
-            "ubuntu-make"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "vscode": {
       "name": "Visual Studio Code",
       "summary": "Cross-platform source code editor from Microsoft.",
@@ -7394,9 +7352,9 @@
   },
   "stats": {
     "version": 7,
-    "revision": 105,
-    "compiled": 1790359067,
-    "apps": 167,
+    "revision": 106,
+    "compiled": 1790361825,
+    "apps": 166,
     "categories": 12
   },
   "distro": {

@@ -1,4 +1,4 @@
-NLinux Software v105 - loja de aplicativos (distribuicao)
+NLinux Software v106 - loja de aplicativos (distribuicao)
 Sem opcao de administracao.
 
 Dependencias (veja DEPENDENCIES.txt):

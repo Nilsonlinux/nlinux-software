@@ -305,6 +305,8 @@ class BuildJob:
             code = proc.returncode
             if code in (126, 127):
                 self.result = {"error": "autorização cancelada ou negada"}
+            elif code in (-2, -15, 143):
+                self.result = {"error": "geração interrompida"}
             else:
                 self.result = {"error": f"build falhou (código {code})"}
         self.success = not bool(self.result.get("error"))
