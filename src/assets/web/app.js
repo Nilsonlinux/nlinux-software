@@ -563,14 +563,18 @@ function setupTips() {
 /* ============================== Boot ===================================== */
 function watchRevision() {
   let last = state.data && state.data.stats && state.data.stats.revision;
+  let lastHash = state.data && state.data.stats && state.data.stats.catalog_hash;
   setInterval(async () => {
     if (state.busy) return;
     try {
       const meta = await fetch("/api/index", { cache: "no-store" });
       const fresh = await meta.json();
       const rev = fresh.stats && fresh.stats.revision;
+      const hash = fresh.stats && fresh.stats.catalog_hash;
+      if (hash && hash !== lastHash) { location.reload(); return; }
       if (typeof rev === "number" && typeof last === "number" && rev !== last) location.reload();
       else if (typeof rev === "number") last = rev;
+      if (hash) lastHash = hash;
     } catch (e) { /* offline momentâneo */ }
   }, 4000);
 }

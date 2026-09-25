@@ -1,4 +1,5 @@
 import base64
+import hashlib
 import json
 import os
 import re
@@ -413,6 +414,11 @@ def build_payload() -> dict:
                 }
             )
 
+    stats = dict(raw.get("stats", {}))
+    stats["catalog_hash"] = hashlib.sha1(
+        json.dumps(raw, sort_keys=True, ensure_ascii=False).encode("utf-8")
+    ).hexdigest()[:12]
+
     return {
         "system": {
             "name": state.name,
@@ -420,7 +426,7 @@ def build_payload() -> dict:
             "arch": state.arch,
             "version": state.os_version,
         },
-        "stats": raw.get("stats", {}),
+        "stats": stats,
         "categories": categories,
         "products": products,
         "total": len(products),
@@ -585,7 +591,10 @@ def admin_catalog() -> dict:
                     "app": app,
                 }
             )
-    return {"categories": cats, "apps": apps, "stats": raw.get("stats", {})}
+    return {"categories": cats, "apps": apps, "stats": dict(raw.get("stats", {}),
+            catalog_hash=hashlib.sha1(
+                json.dumps(raw, sort_keys=True,
+                           ensure_ascii=False).encode("utf-8")).hexdigest()[:12])}
 
 
 def admin_save(handler):

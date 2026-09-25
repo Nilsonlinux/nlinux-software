@@ -99,12 +99,15 @@ def run_window() -> None:
     print("Feche a janela para encerrar.", flush=True)
 
     try:
-        from nlinux.web_server import ADMIN_ENABLED, ensure_admin_shortcut
+        from nlinux.web_server import (ADMIN_ENABLED, ensure_admin_shortcut,
+                                        start_remote_refresh)
         if ADMIN_ENABLED:
             try:
                 ensure_admin_shortcut()
             except Exception:
                 pass
+        else:
+            start_remote_refresh()
         if ADMIN_ENABLED:
             app_id = "io.github.nilsonlinux.NLinuxCuradoria"
             wm_class = "nlinuxcuradoria"
