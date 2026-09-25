@@ -179,6 +179,56 @@ function renderHeader(info) {
     `Nlinux-Software · ${info.total} aplicativos`;
   const al = $("#admin-link");
   if (al) al.style.display = info.admin ? "" : "none";
+  renderStoreMeta(info);
+}
+
+function formatStamp(epoch) {
+  if (!epoch) return "—";
+  const d = new Date(epoch * 1000);
+  if (isNaN(d.getTime())) return "—";
+  return d.toLocaleDateString("pt-BR") + " " +
+    d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+}
+
+function renderStoreMeta(info) {
+  const st = (info && info.store) || {};
+  const upd = $("#update-badge");
+  if (upd) {
+    upd.textContent = "Atualizado: " + formatStamp(st.updated);
+    upd.title = "Última atualização do catálogo";
+  }
+}
+
+function renderNet() {
+  const el = $("#net-badge");
+  if (!el) return;
+  const on = navigator.onLine !== false;
+  el.classList.toggle("is-offline", !on);
+  el.innerHTML = `<i class="ti ${on ? "ti-wifi" : "ti-wifi-off"}"></i> ${on ? "Online" : "Offline"}`;
+  el.dataset.tip = on ? "Conectado à internet" : "Sem internet — usando o catálogo local";
+}
+
+function openStoreInfo() {
+  const info = state.data || {};
+  const st = info.store || {};
+  const rows = [
+    ["Versão", st.revision ? `v${st.revision}` : "—",
+      st.version ? `catálogo formato ${st.version}` : ""],
+    ["Autor", st.author || "—", ""],
+    ["Última atualização", formatStamp(st.updated), ""],
+    ["Aplicativos", String(info.total != null ? info.total : "—"), ""],
+  ].map(([k, v, hint]) =>
+    `<div><dt>${k}</dt><dd>${esc(v)}${hint ? `<span class="m-hint">${esc(hint)}</span>` : ""}</dd></div>`
+  ).join("");
+  $("#modal-content").innerHTML = `
+    <h2>Loja de Software NLinux</h2>
+    <p class="m-desc">${info.total != null ? `${info.total} aplicativos no catálogo.` : ""} Curadoria mantida por ${esc(st.author || "NLinux")}.</p>
+    <div class="meta">${rows}</div>
+    <div class="actions">
+      <a class="btn btn-ghost" href="${esc(st.repo || "#")}" target="_blank" rel="noopener"><i class="ti ti-brand-github"></i> Repositório</a>
+      <button class="btn btn-primary" data-close><i class="ti ti-check"></i> Fechar</button>
+    </div>`;
+  $("#modal").hidden = false;
 }
 
 /* ============================== Categorias =============================== */
@@ -244,6 +294,18 @@ function installActionHtml(p) {
   return primaryActionHtml(p) + removeActionHtml(p);
 }
 
+function cardActionHtml(p) {
+  const dis = state.busy ? "disabled" : "";
+  if (p.installed) {
+    return `<button class="btn btn-ghost btn-remove tip" data-action="remove" data-key="${esc(p.key)}" data-tip="Remover: ${esc(p.packages.join(", "))}" ${dis}><i class="ti ti-trash"></i> Remover</button>`;
+  }
+  if (p.source === "manual") {
+    if (p.website) return `<a class="btn btn-ghost" href="${esc(p.website)}" target="_blank" rel="noopener"><i class="ti ti-external-link"></i> Site oficial</a>`;
+    return `<button class="btn btn-ghost" disabled><i class="ti ti-tools"></i> Manual</button>`;
+  }
+  return `<button class="btn btn-primary btn-install tip" data-action="install" data-key="${esc(p.key)}" data-tip="Pacote: ${esc(p.packages.join(", "))}" ${dis}><i class="ti ti-download"></i> Instalar</button>`;
+}
+
 function chipFor(p) {
   if (p.source !== "arch") return `<span class="chip">${SOURCE_LABELS[p.source] || p.source}</span>`;
   if (p.proprietary) return `<span class="chip">Proprietário</span>`;
@@ -270,7 +332,7 @@ function cardHtml(p, i) {
     ${chip ? `<div class="chip-row">${chip}</div>` : ""}
     <div class="actions">
       <button class="btn btn-ghost" data-action="details" data-key="${esc(p.key)}"><i class="ti ti-info-circle"></i> Detalhes</button>
-      ${installActionHtml(p)}
+      ${cardActionHtml(p)}
     </div>
   </article>`;
 }
@@ -499,6 +561,11 @@ function bindModalActions() {
 }
 
 function bindGlobal() {
+  $("#store-info").addEventListener("click", openStoreInfo);
+  window.addEventListener("online", renderNet);
+  window.addEventListener("offline", renderNet);
+  renderNet();
+
   $("#search").addEventListener("input", (ev) => {
     const esc2 = ev.target.value;
     clearTimeout(state._dt);

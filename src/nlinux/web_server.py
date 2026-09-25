@@ -54,6 +54,10 @@ try:
 except ValueError:
     REMOTE_REFRESH_SECONDS = 3600
 
+STORE_AUTHOR = "Nilsonlinux"
+STORE_REPO_URL = "https://github.com/Nilsonlinux/nlinux-software"
+STORE_REPO_NAME = "Nilsonlinux/nlinux-software"
+
 MIME = {
     "html": "text/html; charset=utf-8",
     "css": "text/css; charset=utf-8",
@@ -439,6 +443,14 @@ def build_payload() -> dict:
             "version": state.os_version,
         },
         "stats": stats,
+        "store": {
+            "author": STORE_AUTHOR,
+            "repo": STORE_REPO_URL,
+            "repo_name": STORE_REPO_NAME,
+            "version": raw.get("stats", {}).get("version"),
+            "revision": raw.get("stats", {}).get("revision"),
+            "updated": raw.get("stats", {}).get("compiled"),
+        },
         "categories": categories,
         "products": products,
         "total": len(products),
