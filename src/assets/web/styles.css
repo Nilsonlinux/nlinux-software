@@ -124,7 +124,7 @@ img { display: block; }
 
 .head-meta { display: flex; align-items: center; gap: 10px; }
 .badge-update { color: var(--text-dim, var(--text)); background: transparent; }
-.badge-net { display: inline-flex; align-items: center; gap: 6px; }
+.badge-net { display: inline-flex; align-items: center; gap: 6px; color: var(--success); background: var(--success-soft); border-color: transparent; }
 .badge-net.is-offline { color: var(--danger, #e5534b); background: var(--danger-soft, rgba(229, 83, 75, .12)); border-color: var(--danger-soft, rgba(229, 83, 75, .45)); }
 .m-hint { display: block; font-size: 11px; opacity: .6; }
 .badge {
