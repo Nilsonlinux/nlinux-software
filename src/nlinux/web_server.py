@@ -1105,7 +1105,7 @@ def remote_head_sha() -> str | None:
 
 
 def catalog_url_at(sha: str) -> str:
-    return f"{REMOTE_REPO_RAW}/{sha}/src/apps/{_catalog_name()}"
+    return f"{REMOTE_REPO_RAW}/{sha}/src/apps/{pick_index_file()}"
 
 
 def fetch_remote_catalog(sha: str | None = None) -> dict:
