@@ -355,13 +355,16 @@ function render(animate = true) {
 function openModal(product) {
   $("#modal").hidden = false;
   const desc = sanitize(product.description);
+  const srcChip = product.source === "arch"
+    ? `<span class="chip chip-official">Repositório Oficial</span>`
+    : `<span class="chip">${esc(SOURCE_LABELS[product.source] || product.source)}</span>`;
   const meta = `
     <div class="meta">
       <div><dt>Licença</dt><dd>${product.proprietary ? "Proprietária" : "Open Source"}</dd></div>
       <div><dt>Plataforma</dt><dd>${product.arches.map((a) =>
         `<span class="${a === state.data.system.arch ? "arch-cur" : "arch-oth"}">${a}</span>`).join("")}</dd></div>
       <div><dt>Pacote${product.packages.length > 1 ? "s" : ""}</dt><dd class="m-pkgs">${esc(product.packages.join(", "))}</dd></div>
-      <div><dt>Fonte</dt><dd class="m-src">${SOURCE_LABELS[product.source] || product.source}${product.source === "arch" && !product.proprietary ? `<span class="chip chip-official">Oficial</span>` : ""}</dd></div>
+      <div><dt>Fonte</dt><dd class="m-src">${srcChip}</dd></div>
       <div><dt>Desenvolvedor</dt><dd>${esc(product.developer || "—")}</dd></div>
     </div>`;
   const gallery = product.screenshots.length
