@@ -14,12 +14,28 @@ if [ -n "$MISSING" ]; then
   echo "Instalando dependências:${MISSING}"
   pacman -S --noconfirm --needed $MISSING
 fi
-# paru/yay (AUR) e curl são opcionais; apenas avisa se não estiverem aqui
-for opt in paru yay curl; do
-  command -v "$opt" >/dev/null 2>&1 || echo "Aviso: '$opt' não encontrado."
-done
-# --- instala a loja ----------------------------------------------------
+# paru ou yay (AUR) e curl são opcionais; avisa só o que faltar
+if ! command -v paru >/dev/null 2>&1 && ! command -v yay >/dev/null 2>&1; then
+  echo "Aviso: nenhum auxiliar AUR encontrado (paru ou yay)."
+fi
+command -v curl >/dev/null 2>&1 || echo "Aviso: 'curl' não encontrado."
+# --- autentica o pacote com GPG (assinatura da curadoria) ------------
 SRC="$(cd "$(dirname "$0")" && pwd)"
+if command -v gpg >/dev/null 2>&1; then
+  TARBALL="$(ls "$SRC"/nlinux-software-v*.tar.gz "$SRC"/../nlinux-software-v*.tar.gz 2>/dev/null | head -n1)"
+  if [ -n "$TARBALL" ] && [ -f "$TARBALL.asc" ]; then
+    gpg --batch --import "$SRC/nlinux-software_pub.asc" >/dev/null 2>&1
+    if ! gpg --batch --verify "$TARBALL.asc" "$TARBALL" >/dev/null 2>&1; then
+      echo "ERRO: assinatura GPG do pacote INVÁLIDA. Instalação abortada." >&2
+      echo "O arquivo (ou o repositório) pode ter sido adulterado. Baixe de novo." >&2
+      exit 1
+    fi
+    echo "Verificação GPG: OK (pacote autêntico da curadoria)."
+  else
+    echo "Aviso: assinatura (.asc) não encontrada junto do pacote; sem validação."
+  fi
+fi
+# --- instala a loja ----------------------------------------------------
 DEST="/opt/nlinux-software"
 rm -rf "$DEST"
 mkdir -p "$DEST"
@@ -53,4 +69,4 @@ Terminal=false
 Categories=Network;Utility;
 StartupNotify=false
 EOF
-echo "Instalado: NLinux Software v92 (/usr/local/bin/nlinux-software)"
+echo "Instalado: NLinux Software v94 (/usr/local/bin/nlinux-software)"

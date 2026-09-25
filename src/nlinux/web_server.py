@@ -27,12 +27,12 @@ ADMIN_ENABLED = False
 # na primeira vez (pede a senha do GitHub uma única vez).
 GIT_PUSH_ENABLED = os.environ.get("NLINUX_GIT_PUSH", "1") not in ("0", "false", "no")
 GIT_PUSH_URL = os.environ.get("NLINUX_GIT_URL") or \
-    "https://github.com/nilsonlinux/nlinux-software.git"
+    "https://github.com/Nilsonlinux/nlinux-software.git"
 GIT_PUSH_BRANCH = os.environ.get("NLINUX_GIT_BRANCH") or "main"
 GIT_PUSH_DIR = os.environ.get("NLINUX_GIT_DIR") or \
     os.path.join(os.path.expanduser("~"), "nlinux-repo")
-GIT_PUSH_USER = os.environ.get("NLINUX_GIT_USER") or "NLinux Software"
-GIT_PUSH_EMAIL = os.environ.get("NLINUX_GIT_EMAIL") or "nlinux@users.noreply.github.com"
+GIT_PUSH_USER = os.environ.get("NLINUX_GIT_USER") or "Nilsonlinux"
+GIT_PUSH_EMAIL = os.environ.get("NLINUX_GIT_EMAIL") or "nilsonlinux@users.noreply.github.com"
 PACKAGE_DEPS = [
     "python",
     "python-gobject",
@@ -775,12 +775,28 @@ def admin_build():
                     "  echo \"Instalando dependências:${MISSING}\"\n"
                     "  pacman -S --noconfirm --needed $MISSING\n"
                     "fi\n"
-                    "# paru/yay (AUR) e curl são opcionais; apenas avisa se não estiverem aqui\n"
-                    "for opt in paru yay curl; do\n"
-                    "  command -v \"$opt\" >/dev/null 2>&1 || echo \"Aviso: '$opt' não encontrado.\"\n"
-                    "done\n"
-                    "# --- instala a loja ----------------------------------------------------\n"
+                    "# paru ou yay (AUR) e curl são opcionais; avisa só o que faltar\n"
+                    "if ! command -v paru >/dev/null 2>&1 && ! command -v yay >/dev/null 2>&1; then\n"
+                    "  echo \"Aviso: nenhum auxiliar AUR encontrado (paru ou yay).\"\n"
+                    "fi\n"
+                    "command -v curl >/dev/null 2>&1 || echo \"Aviso: 'curl' não encontrado.\"\n"
+                    "# --- autentica o pacote com GPG (assinatura da curadoria) ------------\n"
                     "SRC=\"$(cd \"$(dirname \"$0\")\" && pwd)\"\n"
+                    "if command -v gpg >/dev/null 2>&1; then\n"
+                    "  TARBALL=\"$(ls \"$SRC\"/nlinux-software-v*.tar.gz \"$SRC\"/../nlinux-software-v*.tar.gz 2>/dev/null | head -n1)\"\n"
+                    "  if [ -n \"$TARBALL\" ] && [ -f \"$TARBALL.asc\" ]; then\n"
+                    "    gpg --batch --import \"$SRC/nlinux-software_pub.asc\" >/dev/null 2>&1\n"
+                    "    if ! gpg --batch --verify \"$TARBALL.asc\" \"$TARBALL\" >/dev/null 2>&1; then\n"
+                    "      echo \"ERRO: assinatura GPG do pacote INVÁLIDA. Instalação abortada.\" >&2\n"
+                    "      echo \"O arquivo (ou o repositório) pode ter sido adulterado. Baixe de novo.\" >&2\n"
+                    "      exit 1\n"
+                    "    fi\n"
+                    "    echo \"Verificação GPG: OK (pacote autêntico da curadoria).\"\n"
+                    "  else\n"
+                    "    echo \"Aviso: assinatura (.asc) não encontrada junto do pacote; sem validação.\"\n"
+                    "  fi\n"
+                    "fi\n"
+                    "# --- instala a loja ----------------------------------------------------\n"
                     f"DEST=\"/opt/nlinux-software\"\n"
                     "rm -rf \"$DEST\"\n"
                     "mkdir -p \"$DEST\"\n"
@@ -811,7 +827,7 @@ def admin_build():
                     "Exec=/usr/local/bin/nlinux-software\n"
                     "Icon=/opt/nlinux-software/icon.svg\n"
                     "Terminal=false\n"
-                    "Categories=Network;Utility;\n"
+        "Categories=Network;Utility;\n"
                     "StartupNotify=false\n"
                     "EOF\n"
                     f"echo \"Instalado: NLinux Software v{rev} (/usr/local/bin/nlinux-software)\"\n"
@@ -844,6 +860,21 @@ def admin_build():
             with tarfile.open(tar_path, "w:gz") as tar:
                 tar.add(pkg_root, arcname=f"{name}/nlinux-software")
             size = os.path.getsize(tar_path)
+
+            # Assinatura GPG real (detached, armadura ASCII) pela curadoria.
+            enc = os.environ.copy()
+            enc["GNUPGHOME"] = os.path.expanduser("~/.gnupg")
+            asc_path = tar_path + ".asc"
+            sign = subprocess.run(
+                ["gpg", "--batch", "--yes", "--armor", "--detach-sign",
+                 "--digest-algo", "SHA256", "--output", asc_path, tar_path],
+                capture_output=True, text=True, env=enc)
+            if sign.returncode != 0 or not os.path.exists(asc_path):
+                raise OSError("falha ao assinar o pacote com GPG: "
+                              + (sign.stderr.strip() or "código desconhecido"))
+            pub_asc = os.path.expanduser("~/nlinux-software_pub.asc")
+            if os.path.exists(pub_asc):
+                shutil.copy2(pub_asc, os.path.join(pkg_root, "nlinux-software_pub.asc"))
 
             publish = git_publish(pkg_root, tar_path, rev)
         except OSError as e:
@@ -904,6 +935,9 @@ def git_publish(build_dir: str, tar_path: str, rev: int) -> dict:
                 shutil.copy2(src, dst)
 
         shutil.copy2(tar_path, os.path.join(clone_dir, os.path.basename(tar_path)))
+        asc = tar_path + ".asc"
+        if os.path.exists(asc):
+            shutil.copy2(asc, os.path.join(clone_dir, os.path.basename(asc)))
 
         # .gitignore do próprio repositório, para não subir lixo.
         gi = os.path.join(clone_dir, ".gitignore")
@@ -1030,8 +1064,52 @@ def start_remote_refresh() -> None:
     threading.Thread(target=_boot, daemon=True).start()
 
 
+def ensure_admin_shortcut() -> None:
+    """Cria o atalho 'NLinux Software Admin' apontando para o projeto real.
+
+    Só roda na curadoria (ADMIN_ENABLED). Usa o caminho do próprio projeto,
+    detectado via __file__, para não fixar o home do usuário no repositório.
+    """
+    desktop_dir = os.path.join(
+        os.path.expanduser("~"), ".local", "share", "applications")
+    try:
+        os.makedirs(desktop_dir, exist_ok=True)
+    except OSError:
+        return
+
+    project_root = os.path.dirname(os.path.dirname(os.path.dirname(
+        os.path.dirname(os.path.abspath(__file__)))))
+    launcher = os.path.join(project_root, "nlinux-software-admin")
+    if not os.path.exists(launcher):
+        return
+
+    icon = os.path.join(os.path.dirname(os.path.abspath(__file__)), "icon.svg")
+    entry = (
+        "[Desktop Entry]\n"
+        "Type=Application\n"
+        "Name=NLinux Software Admin\n"
+        "GenericName=Curadoria da loja\n"
+        "Comment=Administração da NLinux Software (com curadoria)\n"
+        f"Exec={launcher}\n"
+        f"Icon={icon}\n"
+        "Terminal=false\n"
+        "Categories=Utility;\n"
+        "StartupNotify=false\n"
+    )
+    path = os.path.join(desktop_dir, "nlinux-software-admin.desktop")
+    try:
+        with open(path, "w") as fh:
+            fh.write(entry)
+        os.chmod(path, 0o755)
+    except OSError:
+        pass
+
+
 def run(open_browser: bool = True) -> None:
     import webbrowser
+
+    if ADMIN_ENABLED:
+        ensure_admin_shortcut()
 
     with BoutiqueHandler.payload_lock:
         BoutiqueHandler.payload = build_payload()
