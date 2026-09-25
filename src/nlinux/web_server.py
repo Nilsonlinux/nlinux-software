@@ -925,7 +925,7 @@ def admin_build():
             marker = {
                 "revision": rev,
                 "compiled": raw.get("stats", {}).get("compiled"),
-                "apps": len(raw.get("apps", [])),
+                "apps": sum(len(v) for v in raw.values() if isinstance(v, list)),
                 "sha1": _catalog_fingerprint(raw),
                 "published": int(time.time()),
             }
