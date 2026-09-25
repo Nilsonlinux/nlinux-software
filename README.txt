@@ -1,4 +1,4 @@
-NLinux Software v95 - loja de aplicativos (distribuicao)
+NLinux Software v98 - loja de aplicativos (distribuicao)
 Sem opcao de administracao.
 
 Dependencias (veja DEPENDENCIES.txt):

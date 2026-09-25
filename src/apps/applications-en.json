@@ -3626,50 +3626,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "firefox": {
-      "name": "Firefox",
-      "summary": "Safe and easy web browsing",
-      "description": "Firefox delivers safe, easy web browsing. A familiar user interface, enhanced security features including protection from online identity theft, and integrated search let you get the most out of the web.  If you are a <b>Netflix</b> subscriber then Firefox fully supports Netflix. ",
-      "icon": "assets/firefox.png",
-      "screenshots": [
-        "assets/firefox-1.jpg"
-      ],
-      "developer-name": "Mozilla",
-      "developer-url": "https://www.mozilla.org",
-      "urls": {
-        "info": "https://www.mozilla.org/firefox",
-        "android-app": "https://play.google.com/store/apps/details?id=org.mozilla.firefox",
-        "ios-app": "https://itunes.apple.com/us/app/firefox-web-browser/id989804926"
-      },
-      "launch-cmd": "firefox",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "firefox",
-          "install-packages": [
-            "firefox"
-          ],
-          "remove-packages": [
-            "firefox"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "gajim": {
       "name": "Gajim",
       "summary": "Jabber client",
@@ -4900,6 +4856,50 @@
           ],
           "remove-packages": [
             "whatsapp-linux-desktop-bin"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "firefox": {
+      "name": "Firefox",
+      "summary": "Safe and easy web browsing",
+      "description": "Firefox delivers safe, easy web browsing. A familiar user interface, enhanced security features including protection from online identity theft, and integrated search let you get the most out of the web.  If you are a <b>Netflix</b> subscriber then Firefox fully supports Netflix.",
+      "icon": "assets/firefox.png",
+      "screenshots": [
+        "assets/firefox-1.jpg"
+      ],
+      "developer-name": "Mozilla",
+      "developer-url": "https://www.mozilla.org",
+      "urls": {
+        "info": "https://www.mozilla.org/firefox",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "firefox",
+      "arch": [
+        "x86_64",
+        "i686",
+        "aarch64",
+        "armv7h"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "firefox",
+          "install-packages": [
+            "firefox"
+          ],
+          "remove-packages": [
+            "firefox"
           ]
         }
       },
@@ -7394,8 +7394,8 @@
   },
   "stats": {
     "version": 7,
-    "revision": 95,
-    "compiled": 1790349284,
+    "revision": 98,
+    "compiled": 1790357902,
     "apps": 167,
     "categories": 12
   },
