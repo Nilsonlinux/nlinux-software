@@ -69,7 +69,9 @@ SVG
 mkdir -p /usr/share/icons/hicolor/scalable/apps
 cp "$DEST/icon.svg" /usr/share/icons/hicolor/scalable/apps/nlinux-software.svg
 (command -v gtk-update-icon-cache >/dev/null 2>&1 && gtk-update-icon-cache -f -t /usr/share/icons/hicolor) || true
-cat > /usr/share/applications/nlinux-software.desktop <<'EOF'
+rm -f /usr/share/applications/nlinux-software.desktop
+rm -f /usr/share/applications/nlinuxsoftware.desktop
+cat > /usr/share/applications/nlinuxstore.desktop <<'EOF'
 [Desktop Entry]
 Type=Application
 Name=NLinux Software
@@ -80,6 +82,7 @@ Icon=nlinux-software
 Terminal=false
 Categories=Network;Utility;
 StartupNotify=true
-StartupWMClass=nlinux-software
+StartupWMClass=nlinuxstore
+X-GNOME-UsesNotifications=false
 EOF
 echo "Instalado: NLinux Software v94 (/usr/local/bin/nlinux-software)"

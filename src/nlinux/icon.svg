@@ -7,6 +7,20 @@
   </defs>
   <rect x="4" y="4" width="120" height="120" rx="26" fill="url(#g)"/>
   <rect x="4" y="4" width="120" height="120" rx="26" fill="none" stroke="#12233f" stroke-width="4"/>
-  <path d="M34 90 L64 36 L94 90" stroke="#ffffff" stroke-width="11" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="64" cy="97" r="10" fill="#3fb950"/>
+  <path d="M32 86 L58 40 L74 72 L84 54 L98 86" stroke="#ffffff" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="58" cy="94" r="9" fill="#3fb950"/>
+  <g transform="translate(88,88)">
+    <circle cx="0" cy="0" r="21" fill="#f0b429" stroke="#12233f" stroke-width="3"/>
+    <g fill="#12233f">
+      <rect x="-3" y="-15" width="6" height="6" rx="1"/>
+      <rect x="-3" y="9" width="6" height="6" rx="1"/>
+      <rect x="-15" y="-3" width="6" height="6" rx="1"/>
+      <rect x="9" y="-3" width="6" height="6" rx="1"/>
+      <rect x="-11" y="-11" width="6" height="6" rx="1" transform="rotate(45)"/>
+      <rect x="5" y="-11" width="6" height="6" rx="1" transform="rotate(45)"/>
+      <rect x="-11" y="5" width="6" height="6" rx="1" transform="rotate(45)"/>
+      <rect x="5" y="5" width="6" height="6" rx="1" transform="rotate(45)"/>
+    </g>
+    <circle cx="0" cy="0" r="7" fill="#12233f"/>
+  </g>
 </svg>

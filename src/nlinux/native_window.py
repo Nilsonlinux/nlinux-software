@@ -100,15 +100,34 @@ def run_window() -> None:
 
     try:
         from nlinux.web_server import ADMIN_ENABLED
-        wm_class = "nlinuxsoftware" if ADMIN_ENABLED else "nlinux-software"
+        if ADMIN_ENABLED:
+            app_id = "io.github.nilsonlinux.NLinuxCuradoria"
+            wm_class = "nlinuxcuradoria"
+            icon_file = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)), "icon-admin.svg")
+        else:
+            app_id = "io.github.nilsonlinux.NLinuxStore"
+            wm_class = "nlinuxstore"
+            icon_file = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)), "icon-dist.svg")
         GLib.set_prgname(wm_class)
         try:
             from gi.repository import Gdk
             Gdk.set_program_class(wm_class)
         except Exception:
             pass
-        window = Gtk.Window(title="Loja de Software NLinux")
+        app = Gtk.Application(
+            application_id=app_id, flags=Gio.ApplicationFlags.NON_UNIQUE)
+        app.register(None)
+        window = Gtk.ApplicationWindow(
+            application=app, title="Loja de Software NLinux")
         window.set_wmclass(wm_class, wm_class)
+        try:
+            from gi.repository import GdkPixbuf
+            window.set_icon(GdkPixbuf.Pixbuf.new_from_file_at_scale(
+                icon_file, 128, 128, True))
+        except Exception:
+            pass
         window.set_default_size(1180, 820)
         window.set_position(Gtk.WindowPosition.CENTER)
         window.set_border_width(0)
@@ -205,7 +224,8 @@ def run_window() -> None:
 
         view.connect("decide-policy", on_decide_policy)
 
-        window.connect("destroy", lambda *_: Gtk.main_quit())
+        window.connect("destroy", lambda *_: app.quit())
+        app.connect("activate", lambda *_: window.present())
 
         window.add(view)
         view.load_uri(url)
@@ -220,7 +240,7 @@ def run_window() -> None:
 
         GLib.timeout_add(500, _raise)
 
-        Gtk.main()
+        app.run([])
     except Exception as e:  # window failed to open: report, do NOT spawn a browser
         print(f"Não foi possível abrir a janela nativa: {e}", flush=True)
         server.shutdown()

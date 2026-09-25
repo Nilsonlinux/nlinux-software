@@ -830,7 +830,9 @@ def admin_build():
                     "mkdir -p /usr/share/icons/hicolor/scalable/apps\n"
                     "cp \"$DEST/icon.svg\" /usr/share/icons/hicolor/scalable/apps/nlinux-software.svg\n"
                     "(command -v gtk-update-icon-cache >/dev/null 2>&1 && gtk-update-icon-cache -f -t /usr/share/icons/hicolor) || true\n"
-                    "cat > /usr/share/applications/nlinux-software.desktop <<'EOF'\n"
+                    "rm -f /usr/share/applications/nlinux-software.desktop\n"
+                    "rm -f /usr/share/applications/nlinuxsoftware.desktop\n"
+                    "cat > /usr/share/applications/nlinuxstore.desktop <<'EOF'\n"
                     "[Desktop Entry]\n"
                     "Type=Application\n"
                     "Name=NLinux Software\n"
@@ -841,7 +843,8 @@ def admin_build():
                     "Terminal=false\n"
                     "Categories=Network;Utility;\n"
                     "StartupNotify=true\n"
-                    "StartupWMClass=nlinux-software\n"
+                    "StartupWMClass=nlinuxstore\n"
+                    "X-GNOME-UsesNotifications=false\n"
                     "EOF\n"
                     f"echo \"Instalado: NLinux Software v{rev} (/usr/local/bin/nlinux-software)\"\n"
                 )
@@ -1122,16 +1125,17 @@ def ensure_admin_shortcut() -> None:
         "Terminal=false\n"
         "Categories=Utility;\n"
         "StartupNotify=true\n"
-        "StartupWMClass=nlinuxsoftware\n"
+        "StartupWMClass=nlinuxcuradoria\n"
     )
     apps_dir = desktop_dir
-    path = os.path.join(apps_dir, "nlinuxsoftware.desktop")
-    stale = os.path.join(apps_dir, "nlinux-software-admin.desktop")
-    try:
-        if os.path.exists(stale):
-            os.remove(stale)
-    except OSError:
-        pass
+    path = os.path.join(apps_dir, "nlinuxcuradoria.desktop")
+    for old_name in ("nlinuxsoftware.desktop", "nlinux-software-admin.desktop"):
+        try:
+            old_path = os.path.join(apps_dir, old_name)
+            if os.path.exists(old_path):
+                os.remove(old_path)
+        except OSError:
+            pass
     try:
         with open(path, "w") as fh:
             fh.write(entry)
