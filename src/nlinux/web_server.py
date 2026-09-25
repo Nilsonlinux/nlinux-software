@@ -50,9 +50,9 @@ PACKAGE_DEPS_OPTIONAL = ("paru", "yay", "curl")
 REMOTE_CATALOG_URL = os.environ.get("NLINUX_CATALOG_URL") or \
     "https://raw.githubusercontent.com/nilsonlinux/nlinux-software/main/src/apps/applications-en.json"
 try:
-    REMOTE_REFRESH_SECONDS = max(60, int(os.environ.get("NLINUX_CATALOG_REFRESH", "3600")))
+    REMOTE_CHECK_SECONDS = max(5, int(os.environ.get("NLINUX_CATALOG_CHECK", "15")))
 except ValueError:
-    REMOTE_REFRESH_SECONDS = 3600
+    REMOTE_CHECK_SECONDS = 15
 
 STORE_AUTHOR = "Nilsonlinux"
 STORE_REPO_URL = "https://github.com/Nilsonlinux/nlinux-software"
@@ -1044,25 +1044,46 @@ def git_publish(build_dir: str, tar_path: str, rev: int) -> dict:
 
 # ===================== Catálogo remoto (GitHub) ==============================
 
-def fetch_remote_catalog() -> dict:
-    """Baixa o json do catálogo do repositório remoto (raw GitHub)."""
+_REMOTE_ETAG = {"value": None}
+
+
+def fetch_remote_catalog(conditional: bool = False):
+    """Lê o json do catálogo no repositório remoto (raw GitHub).
+
+    Com conditional=True envia If-None-Match e devolve (None, True) quando o
+    servidor responde 304 — ou seja, sem baixar nada porque nada mudou.
+    """
+    import urllib.error
     import urllib.request
 
     sep = "&" if "?" in REMOTE_CATALOG_URL else "?"
     url = f"{REMOTE_CATALOG_URL}{sep}cb={int(time.time())}"
     req = urllib.request.Request(url, headers={"User-Agent": "nlinux-software"})
-    with urllib.request.urlopen(req, timeout=20) as resp:
-        return json.loads(resp.read().decode("utf-8"))
+    if conditional and _REMOTE_ETAG["value"]:
+        req.add_header("If-None-Match", _REMOTE_ETAG["value"])
+    try:
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            etag = resp.headers.get("ETag")
+            if etag:
+                _REMOTE_ETAG["value"] = etag
+            return data, False
+    except urllib.error.HTTPError as exc:
+        if exc.code == 304:
+            return None, True
+        raise
 
 
-def apply_remote_catalog() -> bool:
-    """Baixa o catálogo remoto e, se houver diferenças, grava localmente e
-    reconstrói o payload. A loja detecta o revision novo e recarrega sozinha.
+def apply_remote_catalog(force: bool = False) -> bool:
+    """Confere o catálogo remoto e, se houver diferenças, grava localmente e
+    reconstrói o payload. A loja detecta a mudança e recarrega sozinha.
     Retorna True quando o catálogo foi atualizado."""
     try:
-        remote = fetch_remote_catalog()
+        remote, unchanged = fetch_remote_catalog(conditional=not force)
     except Exception as exc:
         print(f"[nlinux] catálogo remoto indisponível: {exc}")
+        return False
+    if unchanged:
         return False
     if not isinstance(remote, dict) or not remote:
         print("[nlinux] catálogo remoto vazio ou inválido; mantido o atual")
@@ -1085,14 +1106,20 @@ def apply_remote_catalog() -> bool:
             return False
         rebuild_payload()
         revision = remote.get("stats", {}).get("revision")
-    print(f"[nlinux] catálogo atualizado do repositório remoto (revision {revision})")
+    print(f"[nlinux] catálogo atualizado do repositório remoto (revision {revision})",
+          flush=True)
     return True
 
 
 def remote_refresh_loop() -> None:
-    """Ciclo de atualização periódica (padrão: 1 hora)."""
+    """Ciclo de checagem do catálogo remoto.
+
+    Consulta o GitHub a cada REMOTE_CHECK_SECONDS usando If-None-Match: quando
+    não há mudança o servidor responde 304 e quase nada trafega. Ao abrir, a loja
+    detecta o catálogo novo e recarrega sozinha.
+    """
     while True:
-        time.sleep(REMOTE_REFRESH_SECONDS)
+        time.sleep(REMOTE_CHECK_SECONDS)
         try:
             apply_remote_catalog()
         except Exception as exc:
