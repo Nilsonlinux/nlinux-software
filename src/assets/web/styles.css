@@ -124,8 +124,8 @@ img { display: block; }
 
 .head-meta { display: flex; align-items: center; gap: 10px; }
 .badge-update { color: var(--text-dim, var(--text)); background: transparent; }
-.badge-net { display: inline-flex; align-items: center; gap: 6px; color: var(--success); background: var(--success-soft); border-color: transparent; }
-.badge-net.is-offline { color: var(--danger, #e5534b); background: var(--danger-soft, rgba(229, 83, 75, .12)); border-color: var(--danger-soft, rgba(229, 83, 75, .45)); }
+.badge.badge-net { display: inline-flex; align-items: center; gap: 6px; color: var(--success); background: var(--success-soft); border-color: transparent; }
+.badge.badge-net.is-offline { color: var(--danger, #e5534b); background: var(--danger-soft, rgba(229, 83, 75, .12)); border-color: var(--danger-soft, rgba(229, 83, 75, .45)); }
 .m-hint { display: block; font-size: 11px; opacity: .6; }
 .badge {
   font-size: 12px; font-weight: 600; color: var(--accent-strong);
@@ -429,6 +429,18 @@ a.m-link:hover { border-bottom-style: solid; }
 .no-gallery { color: var(--faint); font-size: 13px; }
 
 /* ============================== Lightbox ================================== */
+.to-top {
+  position: fixed; right: 22px; bottom: 22px; z-index: 60;
+  width: 42px; height: 42px; border-radius: 50%;
+  display: grid; place-items: center; cursor: pointer;
+  background: var(--accent); color: var(--on-accent);
+  border: 1px solid transparent; box-shadow: 0 8px 22px var(--glow);
+  opacity: 0; pointer-events: none; transform: translateY(10px);
+  transition: opacity .2s ease, transform .2s ease;
+}
+.to-top.show { opacity: 1; pointer-events: auto; transform: none; }
+.to-top:hover { box-shadow: 0 12px 28px var(--glow); }
+
 .lightbox { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: rgba(5,5,18,.88); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); animation: fadeIn .25s ease both; }
 .lightbox[hidden] { display: none !important; }
 .lightbox img { max-width: min(1000px, 92vw); max-height: 84vh; border-radius: 14px; box-shadow: var(--shadow-lg); animation: pop .3s cubic-bezier(.2,.9,.3,1.1) both; }

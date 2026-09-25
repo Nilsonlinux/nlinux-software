@@ -569,6 +569,24 @@ function bindGlobal() {
   window.addEventListener("offline", renderNet);
   renderNet();
 
+  const toTop = $("#to-top");
+  const topbar = $("#topbar");
+  if (toTop && topbar) {
+    toTop.addEventListener("click", () =>
+      window.scrollTo({ top: 0, behavior: "smooth" }));
+    if (typeof IntersectionObserver === "function") {
+      new IntersectionObserver(
+        ([entry]) => toTop.classList.toggle("show", !entry.isIntersecting),
+        { threshold: 0 }
+      ).observe(topbar);
+    } else {
+      const onScroll = () =>
+        toTop.classList.toggle("show", window.scrollY > 140);
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+    }
+  }
+
   $("#search").addEventListener("input", (ev) => {
     const esc2 = ev.target.value;
     clearTimeout(state._dt);
