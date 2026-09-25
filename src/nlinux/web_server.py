@@ -1095,8 +1095,13 @@ def ensure_admin_shortcut() -> None:
 
     project_root = os.path.dirname(os.path.dirname(os.path.dirname(
         os.path.abspath(__file__))))
-    launcher = os.path.join(project_root, "nlinux-software-admin")
-    if not os.path.isfile(launcher):
+    installed_launcher = "/usr/local/bin/nlinux-software-admin"
+    source_launcher = os.path.join(project_root, "nlinux-software-admin")
+    if os.path.isfile(installed_launcher):
+        launcher = installed_launcher
+    elif os.path.isfile(source_launcher):
+        launcher = source_launcher
+    else:
         return
 
     icon_src = os.path.join(
