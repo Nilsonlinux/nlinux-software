@@ -49,6 +49,12 @@ PACKAGE_DEPS_OPTIONAL = ("paru", "yay", "curl")
 # Ajuste a URL para o seu repositório após publicar o catálogo no GitHub.
 REMOTE_CATALOG_URL = os.environ.get("NLINUX_CATALOG_URL") or \
     "https://raw.githubusercontent.com/nilsonlinux/nlinux-software/main/src/apps/applications-en.json"
+# Arquivo-marcador minúsculo publicado junto com o catálogo. A loja lê só ele a
+# cada REMOTE_CHECK_SECONDS e só baixa o catálogo inteiro (236 KB) quando a
+# impressão digital muda. O CDN do raw.githubusercontent responde 304 obsoleto
+# para requisições condicionais, então não dá para usar If-None-Match aqui.
+REMOTE_MARKER_URL = os.environ.get("NLINUX_CATALOG_MARKER_URL") or \
+    "https://raw.githubusercontent.com/nilsonlinux/nlinux-software/main/catalog-head.json"
 try:
     REMOTE_CHECK_SECONDS = max(5, int(os.environ.get("NLINUX_CATALOG_CHECK", "15")))
 except ValueError:
@@ -914,6 +920,19 @@ def admin_build():
                 tar.add(pkg_root, arcname=f"{name}/nlinux-software")
             size = os.path.getsize(tar_path)
 
+            # Marcador de versão do catálogo: a loja lê só este arquivo (~100
+            # bytes) a cada 15 s para saber se precisa baixar o catálogo inteiro.
+            marker = {
+                "revision": rev,
+                "compiled": raw.get("stats", {}).get("compiled"),
+                "apps": len(raw.get("apps", [])),
+                "sha1": _catalog_fingerprint(raw),
+                "published": int(time.time()),
+            }
+            with open(os.path.join(pkg_root, "catalog-head.json"), "w",
+                      encoding="utf-8") as fh:
+                json.dump(marker, fh, ensure_ascii=False, indent=2)
+
             # Assinatura GPG real (detached, armadura ASCII) pela curadoria.
             enc = os.environ.copy()
             enc["GNUPGHOME"] = os.path.expanduser("~/.gnupg")
@@ -1044,34 +1063,31 @@ def git_publish(build_dir: str, tar_path: str, rev: int) -> dict:
 
 # ===================== Catálogo remoto (GitHub) ==============================
 
-_REMOTE_ETAG = {"value": None}
+def _cache_busted(url: str) -> str:
+    sep = "&" if "?" in url else "?"
+    return f"{url}{sep}cb={int(time.time())}"
 
 
-def fetch_remote_catalog(conditional: bool = False):
-    """Lê o json do catálogo no repositório remoto (raw GitHub).
-
-    Com conditional=True envia If-None-Match e devolve (None, True) quando o
-    servidor responde 304 — ou seja, sem baixar nada porque nada mudou.
-    """
-    import urllib.error
+def _remote_get(url: str, timeout: int = 20):
+    """GET sem cache: o parâmetro cb= força o CDN a buscar no servidor."""
     import urllib.request
 
-    sep = "&" if "?" in REMOTE_CATALOG_URL else "?"
-    url = f"{REMOTE_CATALOG_URL}{sep}cb={int(time.time())}"
-    req = urllib.request.Request(url, headers={"User-Agent": "nlinux-software"})
-    if conditional and _REMOTE_ETAG["value"]:
-        req.add_header("If-None-Match", _REMOTE_ETAG["value"])
-    try:
-        with urllib.request.urlopen(req, timeout=20) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
-            etag = resp.headers.get("ETag")
-            if etag:
-                _REMOTE_ETAG["value"] = etag
-            return data, False
-    except urllib.error.HTTPError as exc:
-        if exc.code == 304:
-            return None, True
-        raise
+    req = urllib.request.Request(
+        _cache_busted(url),
+        headers={"User-Agent": "nlinux-software", "Cache-Control": "no-cache"},
+    )
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        return json.loads(resp.read().decode("utf-8"))
+
+
+def fetch_remote_catalog() -> dict:
+    """Baixa o json do catálogo do repositório remoto (raw GitHub)."""
+    return _remote_get(REMOTE_CATALOG_URL)
+
+
+def fetch_remote_marker() -> dict:
+    """Lê o arquivo-marcador (~100 bytes) que diz se o catálogo mudou."""
+    return _remote_get(REMOTE_MARKER_URL, timeout=15)
 
 
 def _catalog_fingerprint(raw: dict) -> str:
@@ -1080,23 +1096,60 @@ def _catalog_fingerprint(raw: dict) -> str:
     ).hexdigest()
 
 
+_REMOTE_SYNC = {"applied": None, "marker_ok": None, "last_full": 0.0}
+
+# Se o marcador não estiver publicado (repo antigo), rebaixa o catálogo inteiro
+# no máximo a cada 5 minutos em vez de Download de 236 KB a cada 15 s.
+REMOTE_FALLBACK_SECONDS = 300
+
+
+def _local_matches_marker(local: dict, marker: dict) -> bool:
+    """O catálogo local já é o que o marcador descreve?"""
+    if _catalog_fingerprint(local) == marker.get("sha1"):
+        return True
+    stats = local.get("stats")
+    if not isinstance(stats, dict):
+        return False
+    return (stats.get("revision") == marker.get("revision")
+            and stats.get("compiled") == marker.get("compiled"))
+
+
 def apply_remote_catalog(force: bool = False) -> bool:
     """Confere o catálogo remoto e, se houver diferenças, grava localmente e
     reconstrói o payload. A loja detecta a mudança e recarrega sozinha.
     Retorna True quando o catálogo foi atualizado."""
-    if not force and _REMOTE_ETAG["value"]:
-        try:
-            local_fp = _catalog_fingerprint(_load_raw())
-        except Exception:
-            local_fp = None
-        if local_fp is not None and local_fp != _REMOTE_ETAG.get("applied"):
-            force = True  # arquivo local divergiu: rebaixa para consertar
     try:
-        remote, unchanged = fetch_remote_catalog(conditional=not force)
+        local = _load_raw()
+    except Exception:
+        local = {}
+
+    if not force and _REMOTE_SYNC["applied"] is not None \
+            and local and _catalog_fingerprint(local) != _REMOTE_SYNC["applied"]:
+        force = True  # arquivo local divergiu do que foi aplicado: rebaixa
+
+    if not force:
+        try:
+            marker = fetch_remote_marker()
+            _REMOTE_SYNC["marker_ok"] = True
+        except Exception as exc:
+            if _REMOTE_SYNC["marker_ok"] is None:
+                print(f"[nlinux] marcador remoto indisponível "
+                      f"({exc}); usando verificação completa a cada "
+                      f"{REMOTE_FALLBACK_SECONDS}s")
+            _REMOTE_SYNC["marker_ok"] = False
+            marker = None
+        if marker is not None:
+            if _local_matches_marker(local, marker):
+                return False
+        else:
+            if time.time() - _REMOTE_SYNC["last_full"] < REMOTE_FALLBACK_SECONDS:
+                return False
+            _REMOTE_SYNC["last_full"] = time.time()
+
+    try:
+        remote = fetch_remote_catalog()
     except Exception as exc:
         print(f"[nlinux] catálogo remoto indisponível: {exc}")
-        return False
-    if unchanged:
         return False
     if not isinstance(remote, dict) or not remote:
         print("[nlinux] catálogo remoto vazio ou inválido; mantido o atual")
@@ -1107,7 +1160,7 @@ def apply_remote_catalog(force: bool = False) -> bool:
         same = json.dumps(remote, sort_keys=True, ensure_ascii=False) == \
             json.dumps(current, sort_keys=True, ensure_ascii=False)
         if same:
-            _REMOTE_ETAG["applied"] = _catalog_fingerprint(remote)
+            _REMOTE_SYNC["applied"] = _catalog_fingerprint(remote)
             return False
         new_stats = remote.get("stats")
         if not (isinstance(new_stats, dict)
@@ -1120,7 +1173,7 @@ def apply_remote_catalog(force: bool = False) -> bool:
             return False
         rebuild_payload()
         revision = remote.get("stats", {}).get("revision")
-        _REMOTE_ETAG["applied"] = _catalog_fingerprint(remote)
+        _REMOTE_SYNC["applied"] = _catalog_fingerprint(remote)
     print(f"[nlinux] catálogo atualizado do repositório remoto (revision {revision})",
           flush=True)
     return True
@@ -1129,9 +1182,9 @@ def apply_remote_catalog(force: bool = False) -> bool:
 def remote_refresh_loop() -> None:
     """Ciclo de checagem do catálogo remoto.
 
-    Consulta o GitHub a cada REMOTE_CHECK_SECONDS usando If-None-Match: quando
-    não há mudança o servidor responde 304 e quase nada trafega. Ao abrir, a loja
-    detecta o catálogo novo e recarrega sozinha.
+    A cada REMOTE_CHECK_SECONDS lê o marcador de ~100 bytes; quando a impressão
+    digital muda, baixa o catálogo e reconstrói o payload. A loja, que pergunta o
+    payload a cada poucos segundos, recarrega sozinha.
     """
     while True:
         time.sleep(REMOTE_CHECK_SECONDS)
