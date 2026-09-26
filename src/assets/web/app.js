@@ -5,6 +5,33 @@ const state = { data: null, cat: "all", q: "", busy: false };
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => [...document.querySelectorAll(sel)];
 
+/* ============================== i18n ==================================== */
+const UI_CODE = (document.documentElement.lang || "pt").split(/[-_]/)[0].toLowerCase();
+const UI = (typeof STORE_I18N !== "undefined" && STORE_I18N[UI_CODE]) ||
+  (typeof STORE_I18N !== "undefined" && STORE_I18N.pt) || {};
+const DATE_LOCALE = UI.dateLocale || "pt-BR";
+
+function tr(key, ...args) {
+  let s = UI[key];
+  if (s == null) s = key;
+  if (args.length) args.forEach((a, i) => { s = s.replace("{" + i + "}", String(a)); });
+  return s;
+}
+
+// Converte no primeiro boot as strings estáticas do HTML (data-i18n).
+function applyStatic() {
+  $$("[data-i18n]").forEach((el) => { el.textContent = tr(el.dataset.i18n); });
+  $$("[data-i18n-html]").forEach((el) => { el.innerHTML = tr(el.dataset.i18nHtml); });
+  $$("[data-i18n-attr]").forEach((el) => {
+    el.dataset.i18nAttr.split(",").forEach((pair) => {
+      const i = pair.indexOf(":");
+      if (i < 0) return;
+      el.setAttribute(pair.slice(0, i).trim(), tr(pair.slice(i + 1).trim()));
+    });
+  });
+  document.title = tr("ui.title");
+}
+
 // localStorage can be unavailable inside embedded WebKitGTK windows
 // (enable-local-storage off by default). Fall back to in-memory storage.
 const store = (() => {
@@ -38,28 +65,6 @@ window.addEventListener("error", (ev) =>
 window.addEventListener("unhandledrejection", (ev) =>
   reportErr(`unhandledrejection: ${(ev.reason && ev.reason.message) || ev.reason || "?"}`));
 
-const CATEGORY_LABELS = {
-  all: "Todos",
-  accessibility: "Acessibilidade",
-  accessories: "Utilitários",
-  development: "Desenvolvimento",
-  education: "Educação",
-  games: "Jogos",
-  graphics: "Gráficos",
-  internet: "Internet",
-  "more-software": "Mais software",
-  multimedia: "Multimídia",
-  office: "Escritório",
-  server: "Servidor",
-  system: "Sistema",
-};
-
-const SOURCE_LABELS = {
-  arch: "Repositório oficial",
-  aur: "AUR",
-  manual: "Site oficial",
-};
-
 const CAT_ICONS = {
   all: '<path d="M12 3l2.1 5.6L20 10.5l-5.9 1.9L12 18l-2.1-5.6L4 10.5l5.9-1.9L12 3z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15z"/>',
   accessibility: '<circle cx="12" cy="5" r="2.2"/><path d="M4 8.6h16M12 8.6v5.8m0 0l-3.4 5.6M12 14.4l3.4 5.6"/>',
@@ -75,8 +80,6 @@ const CAT_ICONS = {
   server: '<rect x="3" y="4" width="18" height="6.5" rx="2"/><rect x="3" y="13.5" width="18" height="6.5" rx="2"/><path d="M7 7.2h.01M7 16.7h.01"/>',
   system: '<rect x="3" y="4" width="18" height="11.5" rx="2.5"/><path d="M8.5 20h7M12 15.5V20"/>',
 };
-
-const THEME_LABELS = { dark: "Tema: escuro", light: "Tema: claro" };
 
 /* ============================== Utilidades ============================== */
 function esc(s) {
@@ -158,7 +161,7 @@ function renderThemeGlyph() {
   const ic = $("#theme-ic");
   if (ic) ic.className = dark ? "ti ti-sun" : "ti ti-moon";
   const btn = $("#theme-toggle");
-  if (btn) btn.dataset.tip = THEME_LABELS[dark ? "dark" : "light"];
+  if (btn) btn.dataset.tip = tr(dark ? "theme.dark" : "theme.light");
 }
 
 function themeInit() {
@@ -175,8 +178,7 @@ function themeInit() {
 function renderHeader(info) {
   $("#arch-badge").textContent = info.system.arch;
   $("#brand-name").textContent = "NLinux";
-  $("#foot-info").textContent =
-    `Nlinux-Software · ${info.total} aplicativos`;
+  $("#foot-info").textContent = tr("foot.apps", info.total);
   const al = $("#admin-link");
   if (al) al.style.display = info.admin ? "" : "none";
   renderStoreMeta(info);
@@ -186,16 +188,16 @@ function formatStamp(epoch) {
   if (!epoch) return "—";
   const d = new Date(epoch * 1000);
   if (isNaN(d.getTime())) return "—";
-  return d.toLocaleDateString("pt-BR") + " " +
-    d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+  return d.toLocaleDateString(DATE_LOCALE) + " " +
+    d.toLocaleTimeString(DATE_LOCALE, { hour: "2-digit", minute: "2-digit" });
 }
 
 function renderStoreMeta(info) {
   const st = (info && info.store) || {};
   const upd = $("#update-badge");
   if (upd) {
-    upd.textContent = "Atualizado: " + formatStamp(st.updated);
-    upd.title = "Última atualização do catálogo";
+    upd.textContent = tr("upd.badge", formatStamp(st.updated));
+    upd.title = tr("update.tip");
   }
 }
 
@@ -204,29 +206,29 @@ function renderNet() {
   if (!el) return;
   const on = navigator.onLine !== false;
   el.classList.toggle("is-offline", !on);
-  el.innerHTML = `<i class="ti ${on ? "ti-wifi" : "ti-wifi-off"}"></i> ${on ? "Online" : "Offline"}`;
-  el.dataset.tip = on ? "Conectado à internet" : "Sem internet — usando o catálogo local";
+  el.innerHTML = `<i class="ti ${on ? "ti-wifi" : "ti-wifi-off"}"></i> ${on ? tr("net.online") : tr("net.offline")}`;
+  el.dataset.tip = on ? tr("net.tipOnline") : tr("net.tipOffline");
 }
 
 function openStoreInfo() {
   const info = state.data || {};
   const st = info.store || {};
   const rows = [
-    ["Versão", st.revision ? `v${st.revision}` : "—",
-      st.version ? `catálogo formato ${st.version}` : ""],
-    ["Autor", st.author || "—", ""],
-    ["Última atualização", formatStamp(st.updated), ""],
-    ["Aplicativos", String(info.total != null ? info.total : "—"), ""],
+    [tr("storeinfo.version"), st.revision ? `v${st.revision}` : "—",
+      st.version ? tr("storeinfo.catalogFormat", st.version) : ""],
+    [tr("storeinfo.author"), st.author || "—", ""],
+    [tr("storeinfo.lastUpdate"), formatStamp(st.updated), ""],
+    [tr("storeinfo.apps"), String(info.total != null ? info.total : "—"), ""],
   ].map(([k, v, hint]) =>
     `<div><dt>${k}</dt><dd>${esc(v)}${hint ? `<span class="m-hint">${esc(hint)}</span>` : ""}</dd></div>`
   ).join("");
   $("#modal-content").innerHTML = `
-    <h2>Loja de Software NLinux</h2>
-    <p class="m-desc">${info.total != null ? `${info.total} aplicativos no catálogo.` : ""} Curadoria mantida por ${esc(st.author || "NLinux")}.</p>
+    <h2>${tr("storeinfo.title")}</h2>
+    <p class="m-desc">${info.total != null ? tr("storeinfo.appsCount", info.total) : ""} ${tr("storeinfo.curation", esc(st.author || "NLinux"))}</p>
     <div class="meta">${rows}</div>
     <div class="actions">
-      <a class="btn btn-ghost" href="${esc(st.repo || "#")}" target="_blank" rel="noopener"><i class="ti ti-brand-github"></i> Repositório</a>
-      <button class="btn btn-primary" data-close><i class="ti ti-check"></i> Fechar</button>
+      <a class="btn btn-ghost" href="${esc(st.repo || "#")}" target="_blank" rel="noopener"><i class="ti ti-brand-github"></i> ${tr("storeinfo.repo")}</a>
+      <button class="btn btn-primary" data-close><i class="ti ti-check"></i> ${tr("ui.close")}</button>
     </div>`;
   $("#modal").hidden = false;
 }
@@ -236,7 +238,7 @@ function renderCats(cats) {
   const nav = $("#cats");
   const list = [{ id: "all", count: state.data.total }, ...cats];
   nav.innerHTML = list.map((c, i) => {
-    const label = CATEGORY_LABELS[c.id] || c.id;
+    const label = UI["cat." + c.id] || c.id;
     return `<button class="cat tip ${c.id === "all" ? "active" : ""}" data-cat="${c.id}" data-tip="${esc(
       label.toLowerCase()
     )}" style="animation:fadeUp .4s ${i * 25}ms both">
@@ -274,20 +276,20 @@ function visibleProducts() {
 function primaryActionHtml(p) {
   if (p.source === "aur") {
     const url = `https://aur.archlinux.org/packages/${encodeURIComponent(p.packages[0] || "")}`;
-    return `<a class="btn btn-ghost tip" data-tip="Página no AUR" href="${esc(url)}" target="_blank" rel="noopener"><i class="ti ti-package"></i> AUR</a>` +
-      `<button class="btn btn-primary btn-install tip" data-action="install" data-key="${esc(p.key)}" data-tip="AUR: ${esc(p.packages.join(", "))}" ${state.busy ? "disabled" : ""}><i class="ti ti-download"></i> ${p.installed ? "Reinstalar" : "Instalar"}</button>`;
+    return `<a class="btn btn-ghost tip" data-tip="${tr("tip.aurPage")}" href="${esc(url)}" target="_blank" rel="noopener"><i class="ti ti-package"></i> AUR</a>` +
+      `<button class="btn btn-primary btn-install tip" data-action="install" data-key="${esc(p.key)}" data-tip="${tr("tip.aurPkgs", esc(p.packages.join(", ")))}" ${state.busy ? "disabled" : ""}><i class="ti ti-download"></i> ${p.installed ? tr("ui.reinstall") : tr("ui.install")}</button>`;
   }
   if (p.source === "manual") {
-    if (p.website) return `<a class="btn btn-ghost tip" data-tip="Baixar no site oficial" href="${esc(p.website)}" target="_blank" rel="noopener"><i class="ti ti-external-link"></i> Site oficial</a>`;
-    return `<button class="btn btn-ghost" disabled><i class="ti ti-tools"></i> Manual</button>`;
+    if (p.website) return `<a class="btn btn-ghost tip" data-tip="${tr("tip.dlOfficial")}" href="${esc(p.website)}" target="_blank" rel="noopener"><i class="ti ti-external-link"></i> ${tr("src.manual")}</a>`;
+    return `<button class="btn btn-ghost" disabled><i class="ti ti-tools"></i> ${tr("ui.manual")}</button>`;
   }
-  const label = p.installed ? "Reinstalar" : "Instalar";
-  return `<button class="btn btn-primary btn-install tip" data-action="install" data-key="${esc(p.key)}" data-tip="Pacote: ${esc(p.packages.join(", "))}" ${state.busy ? "disabled" : ""}><i class="ti ti-download"></i> ${label}</button>`;
+  const label = p.installed ? tr("ui.reinstall") : tr("ui.install");
+  return `<button class="btn btn-primary btn-install tip" data-action="install" data-key="${esc(p.key)}" data-tip="${tr("tip.package", esc(p.packages.join(", ")))}" ${state.busy ? "disabled" : ""}><i class="ti ti-download"></i> ${label}</button>`;
 }
 
 function removeActionHtml(p) {
   if (!p.installed || !p.packages.length) return "";
-  return `<button class="btn btn-ghost btn-remove tip" data-action="remove" data-key="${esc(p.key)}" data-tip="Remover: ${esc(p.packages.join(", "))}" ${state.busy ? "disabled" : ""}><i class="ti ti-trash"></i> Desinstalar</button>`;
+  return `<button class="btn btn-ghost btn-remove tip" data-action="remove" data-key="${esc(p.key)}" data-tip="${tr("tip.remove", esc(p.packages.join(", ")))}" ${state.busy ? "disabled" : ""}><i class="ti ti-trash"></i> ${tr("ui.uninstall")}</button>`;
 }
 
 function installActionHtml(p) {
@@ -297,30 +299,30 @@ function installActionHtml(p) {
 function cardActionHtml(p) {
   const dis = state.busy ? "disabled" : "";
   if (p.installed) {
-    return `<button class="btn btn-ghost btn-remove tip" data-action="remove" data-key="${esc(p.key)}" data-tip="Remover: ${esc(p.packages.join(", "))}" ${dis}><i class="ti ti-trash"></i> Remover</button>`;
+    return `<button class="btn btn-ghost btn-remove tip" data-action="remove" data-key="${esc(p.key)}" data-tip="${tr("tip.remove", esc(p.packages.join(", ")))}" ${dis}><i class="ti ti-trash"></i> ${tr("ui.remove")}</button>`;
   }
   if (p.source === "manual") {
-    if (p.website) return `<a class="btn btn-ghost" href="${esc(p.website)}" target="_blank" rel="noopener"><i class="ti ti-external-link"></i> Site oficial</a>`;
-    return `<button class="btn btn-ghost" disabled><i class="ti ti-tools"></i> Manual</button>`;
+    if (p.website) return `<a class="btn btn-ghost" href="${esc(p.website)}" target="_blank" rel="noopener"><i class="ti ti-external-link"></i> ${tr("src.manual")}</a>`;
+    return `<button class="btn btn-ghost" disabled><i class="ti ti-tools"></i> ${tr("ui.manual")}</button>`;
   }
-  return `<button class="btn btn-primary btn-install tip" data-action="install" data-key="${esc(p.key)}" data-tip="Pacote: ${esc(p.packages.join(", "))}" ${dis}><i class="ti ti-download"></i> Instalar</button>`;
+  return `<button class="btn btn-primary btn-install tip" data-action="install" data-key="${esc(p.key)}" data-tip="${tr("tip.package", esc(p.packages.join(", ")))}" ${dis}><i class="ti ti-download"></i> ${tr("ui.install")}</button>`;
 }
 
 function chipFor(p) {
-  if (p.source !== "arch") return `<span class="chip">${SOURCE_LABELS[p.source] || p.source}</span>`;
-  if (p.proprietary) return `<span class="chip">Proprietário</span>`;
-  return `<span class="chip chip-official">Oficial</span>`;
+  if (p.source !== "arch") return `<span class="chip">${UI["src." + p.source] || p.source}</span>`;
+  if (p.proprietary) return `<span class="chip">${tr("chip.proprietary")}</span>`;
+  return `<span class="chip chip-official">${tr("chip.official")}</span>`;
 }
 
 function cardHtml(p, i) {
   const installedChip = p.installed
-    ? '<span class="installed-chip">✓ instalado</span>' : "";
+    ? `<span class="installed-chip">${tr("installed.chip")}</span>` : "";
   const chip = chipFor(p);
   return `
   <article class="card" data-key="${esc(p.key)}" style="--i:${Math.min(i, 18)}">
     ${installedChip}
     <div class="card-top">
-      <div class="icon-wrap tip" data-tip="${esc(p.name)} — ver detalhes">
+      <div class="icon-wrap tip" data-tip="${esc(tr("icon.tip", p.name))}">
         <img src="${esc(p.icon)}" alt="" loading="lazy" data-fb="${esc(p.name)}">
       </div>
       <div>
@@ -331,7 +333,7 @@ function cardHtml(p, i) {
     <div class="desc">${highlight(stripTags(p.description), state.q)}</div>
     ${chip ? `<div class="chip-row">${chip}</div>` : ""}
     <div class="actions">
-      <button class="btn btn-ghost" data-action="details" data-key="${esc(p.key)}"><i class="ti ti-info-circle"></i> Detalhes</button>
+      <button class="btn btn-ghost" data-action="details" data-key="${esc(p.key)}"><i class="ti ti-info-circle"></i> ${tr("ui.details")}</button>
       ${cardActionHtml(p)}
     </div>
   </article>`;
@@ -340,8 +342,7 @@ function cardHtml(p, i) {
 function render(animate = true) {
   const grid = $("#grid");
   const products = visibleProducts();
-  $("#results-count").textContent =
-    `Mostrando ${products.length} de ${state.data.total} aplicativos`;
+  $("#results-count").textContent = tr("results.count", products.length, state.data.total);
   $("#empty").hidden = products.length > 0;
 
   grid.innerHTML = products.map(cardHtml).join("");
@@ -356,21 +357,21 @@ function openModal(product) {
   $("#modal").hidden = false;
   const desc = sanitize(product.description);
   const srcChip = product.source === "arch"
-    ? `<span class="chip chip-official">Repositório Oficial</span>`
-    : `<span class="chip">${esc(SOURCE_LABELS[product.source] || product.source)}</span>`;
+    ? `<span class="chip chip-official">${tr("chip.repoOfficial")}</span>`
+    : `<span class="chip">${esc(UI["src." + product.source] || product.source)}</span>`;
   const meta = `
     <div class="meta">
-      <div><dt>Licença</dt><dd>${product.proprietary ? "Proprietária" : "Open Source"}</dd></div>
-      <div><dt>Plataforma</dt><dd>${product.arches.map((a) =>
+      <div><dt>${tr("modal.license")}</dt><dd>${product.proprietary ? tr("modal.proprietaryLicense") : tr("modal.openSource")}</dd></div>
+      <div><dt>${tr("modal.platform")}</dt><dd>${product.arches.map((a) =>
         `<span class="${a === state.data.system.arch ? "arch-cur" : "arch-oth"}">${a}</span>`).join("")}</dd></div>
-      <div><dt>Pacote${product.packages.length > 1 ? "s" : ""}</dt><dd class="m-pkgs">${esc(product.packages.join(", "))}</dd></div>
-      <div><dt>Fonte</dt><dd class="m-src">${srcChip}</dd></div>
-      <div><dt>Desenvolvedor</dt><dd>${esc(product.developer || "—")}</dd></div>
+      <div><dt>${tr(product.packages.length > 1 ? "modal.packages" : "modal.package")}</dt><dd class="m-pkgs">${esc(product.packages.join(", "))}</dd></div>
+      <div><dt>${tr("modal.source")}</dt><dd class="m-src">${srcChip}</dd></div>
+      <div><dt>${tr("modal.developer")}</dt><dd>${esc(product.developer || "—")}</dd></div>
     </div>`;
   const gallery = product.screenshots.length
-    ? `<div class="gallery"><h4>Capturas de tela</h4><div class="gallery-strip">${product.screenshots.map((s, i) =>
-        `<img src="${esc(s)}" alt="Captura ${i + 1}" loading="lazy" data-gallery="${esc(product.key)}" data-i="${i}">`).join("")}</div></div>`
-    : '<p class="no-gallery">Sem capturas de tela.</p>';
+    ? `<div class="gallery"><h4>${tr("modal.screenshots")}</h4><div class="gallery-strip">${product.screenshots.map((s, i) =>
+        `<img src="${esc(s)}" alt="${tr("modal.capture", i + 1)}" loading="lazy" data-gallery="${esc(product.key)}" data-i="${i}">`).join("")}</div></div>`
+    : `<p class="no-gallery">${tr("modal.noScreenshots")}</p>`;
 
   $("#modal-content").innerHTML = `
     <div class="m-head">
@@ -398,14 +399,14 @@ function modalActionsHtml(p) {
   if (p.source !== "arch") {
     if (p.source === "aur") {
       const url = `https://aur.archlinux.org/packages/${encodeURIComponent(p.packages[0] || "")}`;
-      return `<a class="btn btn-ghost tip" data-tip="Página do AUR" href="${esc(url)}" target="_blank" rel="noopener"><i class="ti ti-package"></i> AUR</a>` +
-        `<button class="btn btn-primary btn-install" data-action="install" data-key="${esc(p.key)}" ${state.busy ? "disabled" : ""}><i class="ti ti-download"></i> ${p.installed ? "Reinstalar" : "Instalar"}</button>` +
+      return `<a class="btn btn-ghost tip" data-tip="${tr("tip.aurModal")}" href="${esc(url)}" target="_blank" rel="noopener"><i class="ti ti-package"></i> AUR</a>` +
+        `<button class="btn btn-primary btn-install" data-action="install" data-key="${esc(p.key)}" ${state.busy ? "disabled" : ""}><i class="ti ti-download"></i> ${p.installed ? tr("ui.reinstall") : tr("ui.install")}</button>` +
         removeActionHtml(p);
     }
-    if (p.website) return `<a class="btn btn-primary" href="${esc(p.website)}" target="_blank" rel="noopener"><i class="ti ti-external-link"></i> Site oficial</a>`;
-    return `<button class="btn btn-primary" disabled><i class="ti ti-alert-triangle"></i> Sem pacote</button>`;
+    if (p.website) return `<a class="btn btn-primary" href="${esc(p.website)}" target="_blank" rel="noopener"><i class="ti ti-external-link"></i> ${tr("src.manual")}</a>`;
+    return `<button class="btn btn-primary" disabled><i class="ti ti-alert-triangle"></i> ${tr("ui.noPackage")}</button>`;
   }
-  return `<button class="btn btn-primary btn-install" data-action="install" data-key="${esc(p.key)}" ${state.busy ? "disabled" : ""}><i class="ti ti-download"></i> ${p.installed ? "Reinstalar" : "Instalar"}</button>` +
+  return `<button class="btn btn-primary btn-install" data-action="install" data-key="${esc(p.key)}" ${state.busy ? "disabled" : ""}><i class="ti ti-download"></i> ${p.installed ? tr("ui.reinstall") : tr("ui.install")}</button>` +
     removeActionHtml(p);
 }
 
@@ -445,15 +446,15 @@ function setBusy(busy) {
 }
 
 function startRemove(product, btn) {
-  if (state.busy) { toast("Aguarde a operação atual terminar.", "info"); return; }
-  if (!product.packages.length) { toast("Este aplicativo não tem pacotes definidos.", "err"); return; }
+  if (state.busy) { toast(tr("toast.busy"), "info"); return; }
+  if (!product.packages.length) { toast(tr("toast.noPackages"), "err"); return; }
   const modal = $("#modal");
   $("#modal-content").innerHTML = `
-    <h2>Desinstalar ${esc(product.name)}?</h2>
-    <p class="m-desc">O pacote <strong>${esc(product.packages.join(", "))}</strong> será removido do sistema, junto com as dependências que ficarem sem uso. Os arquivos de configuração são preservados.</p>
+    <h2>${tr("confirm.title", esc(product.name))}</h2>
+    <p class="m-desc">${tr("confirm.desc", esc(product.packages.join(", ")))}</p>
     <div class="actions">
-      <button class="btn btn-ghost" data-close>Cancelar</button>
-      <button class="btn btn-primary btn-remove" id="confirm-remove"><i class="ti ti-trash"></i> Desinstalar</button>
+      <button class="btn btn-ghost" data-close>${tr("ui.cancel")}</button>
+      <button class="btn btn-primary btn-remove" id="confirm-remove"><i class="ti ti-trash"></i> ${tr("ui.uninstall")}</button>
     </div>`;
   modal.hidden = false;
   const confirmBtn = $("#confirm-remove");
@@ -464,18 +465,18 @@ function startRemove(product, btn) {
 }
 
 async function startInstall(product, btn, mode = "install") {
-  if (state.busy) { toast("Aguarde a instalação atual terminar.", "info"); return; }
-  if (!product.packages.length) { toast("Este aplicativo não tem pacotes definidos.", "err"); return; }
+  if (state.busy) { toast(tr("toast.busyInstall"), "info"); return; }
+  if (!product.packages.length) { toast(tr("toast.noPackages"), "err"); return; }
 
   const removing = mode === "remove";
-  const gerund = removing ? "Desinstalando" : "Instalando";
+  const gerund = removing ? tr("status.uninstalling").replace(/…$/, "") : tr("status.installing").replace(/…$/, "");
   state.busy = true;
   setBusy(true);
   const card = btn.closest(".card");
   if (card) card.classList.add("installing-card");
   btn.classList.add("is-running");
 
-  statusCard(`${gerund} ${product.name}…`, "Aguardando autorização do sistema…", "");
+  statusCard(`${gerund} ${product.name}…`, tr("status.waiting"), "");
 
   let job;
   try {
@@ -486,17 +487,17 @@ async function startInstall(product, btn, mode = "install") {
     });
   } catch (e) {
     finishInstall(false, product, btn, card, mode);
-    toast(`Não foi possível iniciar ${removing ? "a desinstalação" : "a instalação"}.`, "err");
+    toast(removing ? tr("toast.startFailUninstall") : tr("toast.startFailInstall"), "err");
     return;
   }
 
   (async function poll() {
     const st = await api("/api/status?id=" + job.id).catch(() => null);
-    if (!st) { statusCard(`${gerund} ${product.name}…`, "Verificando…", ""); }
+    if (!st) { statusCard(`${gerund} ${product.name}…`, tr("status.checking"), ""); }
     else if (st.state === "pending") {
       const waiting = st.lines.length <= 1;
       const last = waiting
-        ? "Aguardando autorização do sistema…"
+        ? tr("status.waiting")
         : st.lines[st.lines.length - 1];
       statusCard(`${gerund} ${product.name}…`, last, "");
       setTimeout(poll, 1400);
@@ -505,12 +506,20 @@ async function startInstall(product, btn, mode = "install") {
       finishInstall(ok, product, btn, card, mode);
       if (ok) {
         const last = st.lines[st.lines.length - 1] || "";
-        statusCard(`${product.name} ${removing ? "desinstalado" : "instalado"}`, last, "done");
-        toast(`${product.name} foi ${removing ? "desinstalado" : "instalado com sucesso"}.`, "succ");
+        statusCard(removing
+          ? tr("status.uninstalled", product.name)
+          : tr("status.installed", product.name), last, "done");
+        toast(removing
+          ? tr("toast.successUninstall", product.name)
+          : tr("toast.successInstall", product.name), "succ");
       } else {
         const last = st.lines[st.lines.length - 1] || "";
-        statusCard(`Falha ao ${removing ? "desinstalar" : "instalar"} ${product.name}`, last, "error");
-        toast(`Falha ao ${removing ? "desinstalar" : "instalar"} ${product.name}.`, "err");
+        statusCard(removing
+          ? tr("status.failUninstall", product.name)
+          : tr("status.failInstall", product.name), last, "error");
+        toast(removing
+          ? tr("toast.failUninstall", product.name)
+          : tr("toast.failInstall", product.name), "err");
       }
       setTimeout(() => { $("#install-status").hidden = true; }, 4200);
     }
@@ -707,6 +716,7 @@ function watchRevision() {
 
 async function boot() {
   try {
+    applyStatic();
     themeInit();
     skeletonCards();
     const data = await api("/api/index");
@@ -723,9 +733,9 @@ async function boot() {
     console.error(e);
     $("#grid").innerHTML = "";
     $("#empty").hidden = false;
-    $("#empty h2").textContent = "Erro ao carregar a loja";
-    $("#empty p").textContent = "Verifique se o servidor local está rodando.";
-    toast("Não foi possível carregar a loja.", "err");
+    $("#empty h2").textContent = tr("err.load");
+    $("#empty p").textContent = tr("err.checkServer");
+    toast(tr("toast.loadFail"), "err");
   }
 }
 

@@ -24,7 +24,7 @@
     <a class="brand" href="/" aria-label="Início">
       <img class="logo" src="/media/nlinux-logo.png" alt="NLinux" width="34" height="34">
       <span class="brand-text">
-        <strong>Loja de Software</strong>
+        <strong data-i18n="brand.sub">Loja de Software</strong>
         <i id="brand-name">NLinux</i>
       </span>
     </a>
@@ -34,22 +34,22 @@
       <kbd class="kbd">/</kbd>
     </div>
     <div class="head-meta">
-      <span class="badge badge-update" id="update-badge" title="Última atualização do catálogo"></span>
-      <span class="badge badge-net" id="net-badge" data-tip="Status da conexão"></span>
-      <span class="badge" id="arch-badge" title="Arquitetura"></span>
-      <button class="icon-btn tip" id="store-info" data-tip="Detalhes da loja" aria-label="Detalhes da loja">
+      <span class="badge badge-update" id="update-badge" title="Última atualização do catálogo" data-i18n-attr="title:update.tip"></span>
+      <span class="badge badge-net" id="net-badge" data-tip="Status da conexão" data-i18n-attr="data-tip:net.tip"></span>
+      <span class="badge" id="arch-badge" title="Arquitetura" data-i18n-attr="title:arch.tip"></span>
+      <button class="icon-btn tip" id="store-info" data-tip="Detalhes da loja" aria-label="Detalhes da loja" data-i18n-attr="data-tip:store.infoTip,aria-label:store.infoTip">
         <i class="ti ti-info-circle"></i>
       </button>
-      <a class="icon-btn tip" href="/admin" id="admin-link" data-tip="Gerenciar loja" aria-label="Gerenciar loja">
+      <a class="icon-btn tip" href="/admin" id="admin-link" data-tip="Gerenciar loja" aria-label="Gerenciar loja" data-i18n-attr="data-tip:admin.tip,aria-label:admin.tip">
         <i class="ti ti-settings"></i>
       </a>
-      <button id="theme-toggle" class="icon-btn tip" data-tip="Tema: escuro" aria-label="Alternar tema">
+      <button id="theme-toggle" class="icon-btn tip" data-tip="Tema: escuro" aria-label="Alternar tema" data-i18n-attr="aria-label:theme.aria">
         <i id="theme-ic" class="ti ti-sun"></i>
       </button>
     </div>
   </header>
 
-  <nav class="cats" id="cats" aria-label="Categorias"></nav>
+  <nav class="cats" id="cats" aria-label="Categorias" data-i18n-attr="aria-label:cats.aria"></nav>
 
   <main class="main">
     <div class="results-meta">
@@ -61,25 +61,25 @@
 
     <div id="empty" class="empty hidden" hidden>
       <div class="empty-art" aria-hidden="true"></div>
-      <h2>Nada por aqui</h2>
-      <p>Tente outra busca ou outra categoria.</p>
+      <h2 data-i18n="empty.title">Nada por aqui</h2>
+      <p data-i18n="empty.desc">Tente outra busca ou outra categoria.</p>
     </div>
   </main>
 
   <footer class="foot">
     <span id="foot-info"></span>
-    <span class="foot-heart">Feito com <b>·</b> para NLinux</span>
+    <span class="foot-heart" data-i18n-html="foot.line">Feito com <b>·</b> para NLinux</span>
   </footer>
 
   <div class="install-status hidden" id="install-status" hidden>
     <div class="status-card">
       <div class="spinner" aria-hidden="true"></div>
       <div class="status-body">
-        <strong id="status-title">Instalando…</strong>
+        <strong id="status-title" data-i18n="status.installing">Instalando…</strong>
         <div class="progress"><i id="status-bar"></i></div>
         <code id="status-line"></code>
       </div>
-      <button class="icon-btn" id="status-close" aria-label="Ocultar"><i class="ti ti-x"></i></button>
+      <button class="icon-btn" id="status-close" aria-label="Ocultar" data-i18n-attr="aria-label:status.close"><i class="ti ti-x"></i></button>
     </div>
   </div>
 
@@ -88,22 +88,23 @@
   <div class="modal" id="modal" hidden>
     <div class="modal-backdrop" data-close></div>
     <div class="modal-card" role="dialog" aria-modal="true">
-      <button class="modal-close icon-btn" data-close aria-label="Fechar"><i class="ti ti-x"></i></button>
+      <button class="modal-close icon-btn" data-close aria-label="Fechar" data-i18n-attr="aria-label:modal.close"><i class="ti ti-x"></i></button>
       <div class="modal-content" id="modal-content"></div>
     </div>
   </div>
 
   <div class="lightbox" id="lightbox" hidden>
-    <button class="lightbox-close icon-btn" data-close aria-label="Fechar"><i class="ti ti-x"></i></button>
-    <button class="lightbox-nav prev" id="lb-prev" aria-label="Anterior"><i class="ti ti-chevron-left"></i></button>
+    <button class="lightbox-close icon-btn" data-close aria-label="Fechar" data-i18n-attr="aria-label:modal.close"><i class="ti ti-x"></i></button>
+    <button class="lightbox-nav prev" id="lb-prev" aria-label="Anterior" data-i18n-attr="aria-label:lb.prev"><i class="ti ti-chevron-left"></i></button>
     <img id="lightbox-img" alt="">
-    <button class="lightbox-nav next" id="lb-next" aria-label="Próxima"><i class="ti ti-chevron-right"></i></button>
+    <button class="lightbox-nav next" id="lb-next" aria-label="Próxima" data-i18n-attr="aria-label:lb.next"><i class="ti ti-chevron-right"></i></button>
   </div>
 
-  <button id="to-top" class="to-top" aria-label="Voltar ao topo" title="Voltar ao topo">
+  <button id="to-top" class="to-top" aria-label="Voltar ao topo" title="Voltar ao topo" data-i18n-attr="aria-label:totop.tip,title:totop.tip">
     <i class="ti ti-arrow-up"></i>
   </button>
 
+  <script src="/static/i18n.js"></script>
   <script src="/static/app.js"></script>
 </body>
 </html>

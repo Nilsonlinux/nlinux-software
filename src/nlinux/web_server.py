@@ -1,6 +1,7 @@
 import base64
 import hashlib
 import json
+import locale as l18n
 import os
 import re
 import shlex
@@ -18,6 +19,48 @@ from nlinux.system_state import SystemState
 SRC_ROOT = resources.SRC_ROOT
 APPS_DIR = os.path.join(SRC_ROOT, "apps")
 WEB_DIR = os.path.join(SRC_ROOT, "assets", "web")
+
+# Idiomas suportados pela loja (mesmos do instalador web) com sua região.
+_STORE_LANG_REGIONS = {
+    "pt": "pt-BR",
+    "en": "en-US",
+    "es": "es-ES",
+    "fr": "fr-FR",
+    "de": "de-DE",
+    "it": "it-IT",
+    "ja": "ja-JP",
+}
+
+
+def _read_installed_lang() -> str:
+    """Lê o idioma escolhido no instalador web (autoritativo)."""
+    try:
+        with open("/etc/locale.conf", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith("LANG="):
+                    val = line.split("=", 1)[1].strip()
+                    return val.strip('"').strip("'")
+    except OSError:
+        pass
+    return ""
+
+
+def resolve_store_lang() -> tuple:
+    """Retorna (código, região) do idioma da loja."""
+    raw = _read_installed_lang()
+    if not raw:
+        try:
+            raw = l18n.getlocale()[0] or ""
+        except Exception:
+            raw = ""
+    code = raw.split(".")[0]
+    if "_" in code:
+        code = code.split("_")[0]
+    code = code.lower()
+    if code not in _STORE_LANG_REGIONS:
+        code = "en"
+    return code, _STORE_LANG_REGIONS[code]
 
 
 def _resolve_dist_dir() -> str:
@@ -97,15 +140,21 @@ MIME = {
 
 
 def pick_index_file() -> str:
+    code, _ = resolve_store_lang()
+    candidates = [code, "en"]
     try:
         locale = l18n.getlocale()[0]
     except Exception:
-        locale = "en_US"
-    candidates = [locale]
-    if "_" in locale:
-        candidates.append(locale.split("_")[0])
-    candidates.append("en")
+        locale = ""
+    if locale:
+        candidates.append(locale)
+        if "_" in locale:
+            candidates.append(locale.split("_")[0])
+    seen = set()
     for candidate in candidates:
+        if candidate in seen:
+            continue
+        seen.add(candidate)
         path = os.path.join(APPS_DIR, f"applications-{candidate}.json")
         if os.path.exists(path):
             return f"applications-{candidate}.json"
@@ -340,7 +389,7 @@ class BoutiqueHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
-    def _serve_file(self, path: str, ctype: str = None) -> None:
+    def _serve_file(self, path: str, ctype: str = None, html_lang: str = None) -> None:
         if not os.path.isfile(path):
             self._send_json({"error": "not found"}, 404)
             return
@@ -349,6 +398,12 @@ class BoutiqueHandler(BaseHTTPRequestHandler):
             ctype = MIME.get(ext, "application/octet-stream")
         with open(path, "rb") as f:
             body = f.read()
+        if html_lang:
+            text = body.decode("utf-8", "replace")
+            text, _ = re.subn(
+                r'<html lang="[^"]*"', f'<html lang="{html_lang}"', text
+            )
+            body = text.encode("utf-8")
         self.send_response(200)
         self.send_header("Content-Type", ctype)
         self.send_header("Content-Length", str(len(body)))
@@ -369,7 +424,8 @@ class BoutiqueHandler(BaseHTTPRequestHandler):
         path = urlparse(self.path).path
 
         if path in ("/", "/index.html"):
-            self._serve_file(os.path.join(WEB_DIR, "index.html"))
+            _, region = resolve_store_lang()
+            self._serve_file(os.path.join(WEB_DIR, "index.html"), html_lang=region)
             return
 
         if path == "/admin":
@@ -1051,7 +1107,7 @@ def admin_build(progress=None):
             marker = {
                 "revision": rev,
                 "compiled": raw.get("stats", {}).get("compiled"),
-                "apps": sum(len(v) for v in raw.values() if isinstance(v, list)),
+                "apps": raw.get("stats", {}).get("apps"),
                 "sha1": _catalog_fingerprint(raw),
                 "published": int(time.time()),
             }
