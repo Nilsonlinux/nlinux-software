@@ -5003,48 +5003,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "audio-recorder": {
-      "name": "Audio Recorder",
-      "summary": "Record from a microphone or the system&#8217;s sound card",
-      "description": "Allows you to record your favourite music or audio to a file. It can record audio from your system soundcard, microphones, browsers and webcams. Put simply; if it plays out of your loudspeakers you can record it. This program has a timer that can start, stop or pause recording on certain conditions such as audio level, file size and clock time. This recorder can automatically record your Skype calls. It supports several audio (output) formats such as OGG audio, Flac, MP3 and WAV. ",
-      "icon": "assets/audio-recorder.png",
-      "screenshots": [
-        "assets/audio-recorder-1.jpg"
-      ],
-      "developer-name": "Audio-recorder Team",
-      "developer-url": "https://launchpad.net/~audio-recorder/+members#active",
-      "urls": {
-        "info": "https://launchpad.net/~audio-recorder",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "audio-recorder",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "aur",
-          "main-package": "audio-recorder",
-          "install-packages": [
-            "audio-recorder"
-          ],
-          "remove-packages": [
-            "audio-recorder"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "cheese": {
       "name": "Cheese",
       "summary": "Take pictures or record video with your webcam",
@@ -7304,9 +7262,9 @@
   },
   "stats": {
     "version": 7,
-    "revision": 115,
-    "compiled": 1790620708,
-    "apps": 165,
+    "revision": 116,
+    "compiled": 1790622282,
+    "apps": 164,
     "categories": 12
   },
   "distro": {
