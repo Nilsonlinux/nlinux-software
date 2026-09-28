@@ -1423,6 +1423,49 @@ def git_publish(build_dir: str, tar_path: str, rev: int) -> dict:
         return {"pushed": False, "reason": f"clone: {exc}"}
 
     try:
+        # Atualiza a referência de origem ANTES de mexer no clone. O
+        # --force-with-lease do push compara o remoto com
+        # refs/remotes/origin/<branch>: se ela estiver velha (o remoto andou
+        # de outra máquina, ou por web), o push é recusado com "stale info".
+        fetch = subprocess.run(
+            ["git", "-C", clone_dir, "fetch", "--quiet", "origin",
+             f"+refs/heads/{GIT_PUSH_BRANCH}"
+             f":refs/remotes/origin/{GIT_PUSH_BRANCH}"],
+            capture_output=True, text=True,
+        )
+        if fetch.returncode != 0:
+            return {"pushed": False,
+                    "reason": fetch.stderr.strip() or "git fetch falhou"}
+
+        # Trava anti-retrocesso. A revisão sai do catálogo local, e o mesmo
+        # repositório pode ser publicado por mais de uma máquina: se o remoto
+        # já estiver à frente, o push de aqui sobrescreveria um catálogo mais
+        # novo com um mais velho. Melhor recusar e pedir a sincronização.
+        if not os.environ.get("NLINUX_PUBLISH_FORCE"):
+            head = subprocess.run(
+                ["git", "-C", clone_dir, "show",
+                 f"refs/remotes/origin/{GIT_PUSH_BRANCH}:catalog-head.json"],
+                capture_output=True, text=True,
+            )
+            if head.returncode == 0 and head.stdout.strip():
+                try:
+                    remoto_rev = int(
+                        json.loads(head.stdout).get("revision", 0))
+                except (ValueError, TypeError):
+                    remoto_rev = None
+                if remoto_rev is not None and remoto_rev > rev:
+                    return {"pushed": False, "reason": (
+                        f"o GitHub está na revisão {remoto_rev} e o catálogo "
+                        f"local está na {rev}. Publicar agora sobrescreveria "
+                        f"um catálogo mais novo com um mais antigo — "
+                        f"sincronize o catálogo com o GitHub e gere de novo. "
+                        f"Para publicar mesmo assim, gere com "
+                        f"NLINUX_PUBLISH_FORCE=1.")}
+
+    except Exception as exc:
+        return {"pushed": False, "reason": str(exc)}
+
+    try:
         # Substitui o conteúdo do repositório (mantém apenas .git e .gitignore).
         keep = {".git", ".gitignore"}
         for entry in os.listdir(clone_dir):
@@ -1471,17 +1514,18 @@ def git_publish(build_dir: str, tar_path: str, rev: int) -> dict:
             return {"pushed": False, "reason": add.stderr.strip() or "git add falhou"}
 
         status = _git("status", "--porcelain")
-        if not status.stdout.strip():
-            return {"pushed": True, "clean": True}
-
-        commit = _git(
-            "commit", "-q",
-            "-m", f"NLinux Software v{rev}: catálogo atualizado",
-            env=author_env,
-        )
-        if commit.returncode != 0:
-            return {"pushed": False, "reason": commit.stderr.strip() or "git commit falhou"}
-
+        if status.stdout.strip():
+            commit = _git(
+                "commit", "-q",
+                "-m", f"NLinux Software v{rev}: catálogo atualizado",
+                env=author_env,
+            )
+            if commit.returncode != 0:
+                return {"pushed": False,
+                        "reason": commit.stderr.strip() or "git commit falhou"}
+        # O push acontece mesmo sem commit novo: um build anterior pode ter
+        # commitado e falhado só na publicação, e nesse caso a árvore está
+        # limpa mas o remoto continua desatualizado.
         push = subprocess.run(
             ["git", "-C", clone_dir, "push", "origin",
              f"HEAD:{GIT_PUSH_BRANCH}", "--force-with-lease"],
@@ -1583,10 +1627,15 @@ def apply_remote_catalog(force: bool = False) -> bool:
 
     if not force and _REMOTE_SYNC["applied"] is not None \
             and local and _catalog_fingerprint(local) != _REMOTE_SYNC["applied"]:
-        force = True  # arquivo local divergiu do que foi aplicado: rebaixa
+        # o arquivo local mudou por fora (curadoria editando, merge, restauração
+        # de backup): rebaixa. Não conta como pedido explícito do usuário, então
+        # a trava de revisão abaixo ainda vale.
+        rebaixar = True
+    else:
+        rebaixar = force
 
     sha = remote_head_sha()
-    if not force:
+    if not rebaixar:
         if sha is None:
             # Sem git disponível: usa o marcador minúsculo; se nem ele responder,
             # rebaixa o catálogo inteiro no máximo a cada 5 minutos.
@@ -1618,6 +1667,21 @@ def apply_remote_catalog(force: bool = False) -> bool:
         return False
     if not isinstance(remote, dict) or not remote:
         print("[nlinux] catálogo remoto vazio ou inválido; mantido o atual")
+        return False
+
+    # Trava de recuo, espelhando a da publicação. A sincronização só comparava
+    # conteúdo: qualquer edição local que ainda não foi publicada era apagada
+    # assim que o remoto devolvesse um catálogo diferente — inclusive na
+    # partida, quando a referência de commit é desconhecida. Sem isso não há
+    # como curatejar e publicar: o trabalho some antes de chegar ao GitHub.
+    # `force` explícito (pedido do usuário) continua prevalecendo.
+    rev_local = int((local.get("stats") or {}).get("revision") or 0)
+    rev_remoto = int((remote.get("stats") or {}).get("revision") or 0)
+    if not force and rev_remoto and rev_local > rev_remoto:
+        print(f"[nlinux] catálogo local na revisão {rev_local} é mais novo que o "
+              f"remoto ({rev_remoto}); mantido o local", flush=True)
+        _REMOTE_SYNC["applied"] = _catalog_fingerprint(local)
+        _REMOTE_SYNC["sha"] = sha
         return False
 
     assets_synced = _sync_remote_assets(remote, sha)

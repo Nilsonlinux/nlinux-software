@@ -339,48 +339,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "etcher": {
-      "name": "Etcher",
-      "summary": "Tool for writing images to USB drives and SD cards.",
-      "description": "Etcher is a cross-platform tool for writing images to USB drives and SD cards, aiming to be really simple to prevent accidental damage to hard drives while checking every bit of data was written correctly. ",
-      "icon": "assets/etcher.png",
-      "screenshots": [
-        "assets/etcher-1.jpg"
-      ],
-      "developer-name": "resin.io",
-      "developer-url": "https://resin.io",
-      "urls": {
-        "info": "https://etcher.io/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "etcher-electron",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "manual",
-          "main-package": "etcher-electron",
-          "install-packages": [
-            "etcher-electron"
-          ],
-          "remove-packages": [
-            "etcher-electron"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "gip": {
       "name": "Gip",
       "summary": "IP address calculation tool",
@@ -866,6 +824,47 @@
             "libgtkspell0",
             "scrot",
             "zim"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "etcher": {
+      "name": "Etcher",
+      "summary": "Flash OS images to SD cards & USB drives, safely and easily",
+      "description": "Etcher is a cross-platform tool for writing images to USB drives and SD cards, aiming to be really simple to prevent accidental damage to hard drives while checking every bit of data was written correctly.",
+      "icon": "assets/etcher.png",
+      "screenshots": [
+        "assets/etcher-1.jpg"
+      ],
+      "developer-name": "ali.molaei",
+      "developer-url": "https://www.balena.io/etcher/",
+      "urls": {
+        "info": "https://www.balena.io/etcher/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "etcher-bin",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "etcher-bin",
+          "install-packages": [
+            "etcher-bin"
+          ],
+          "remove-packages": [
+            "etcher-bin"
           ]
         }
       },
@@ -4312,48 +4311,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "telegram": {
-      "name": "Telegram",
-      "summary": "Messaging app with focus on speed and security",
-      "description": "A messaging app with a focus on speed and security, it&#8217;s super fast, simple and free. You can use Telegram on all your devices at the same time - your messages sync seamlessly across any of your phones, tablets or computers. With Telegram, you can send messages, photos, videos and files of any type (doc, zip, mp3, etc), as well as create groups for up to 200 people. You can write to your phone contacts and find people by their usernames. As a result, Telegram is like SMS and email combined - and can take care of all your personal or business messaging needs. ",
-      "icon": "assets/telegram.png",
-      "screenshots": [
-        "assets/telegram-1.jpg"
-      ],
-      "developer-name": "Telegram Team",
-      "developer-url": "https://telegram.org/faq#q-who-are-the-people-behind-telegram",
-      "urls": {
-        "info": "https://telegram.org/",
-        "android-app": "https://play.google.com/store/apps/details?id=org.telegram.messenger",
-        "ios-app": "https://itunes.apple.com/gb/app/telegram-messenger/id686449807"
-      },
-      "launch-cmd": "/opt/telegram/Telegram",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "aur",
-          "main-package": "telegram",
-          "install-packages": [
-            "telegram"
-          ],
-          "remove-packages": [
-            "telegram"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": "WhatsApp",
-      "listed": true
-    },
     "thunderbird": {
       "name": "Thunderbird",
       "summary": "Full-featured email, RSS and newsgroup client",
@@ -4822,28 +4779,25 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
-    }
-  },
-  "more-software": {
-    "2-software": {
-      "name": "Software",
-      "summary": "A software center as seen in Ubuntu and many other Linux distributions.",
-      "description": "Software lets you install and update applications and system extensions. It is the same software centre found on other Linux distributions like mainstream Ubuntu.",
-      "icon": "assets/2-software.png",
-      "screenshots": [],
-      "developer-name": "GNOME Team",
-      "developer-url": "https://www.gnome.org/about/",
+    },
+    "telegram": {
+      "name": "Telegram",
+      "summary": "Messaging app with focus on speed and security",
+      "description": "A messaging app with a focus on speed and security, it&#8217;s super fast, simple and free. You can use Telegram on all your devices at the same time - your messages sync seamlessly across any of your phones, tablets or computers. With Telegram, you can send messages, photos, videos and files of any type (doc, zip, mp3, etc), as well as create groups for up to 200 people. You can write to your phone contacts and find people by their usernames. As a result, Telegram is like SMS and email combined - and can take care of all your personal or business messaging needs.",
+      "icon": "assets/telegram.png",
+      "screenshots": [
+        "assets/telegram-1.png"
+      ],
+      "developer-name": "Telegram Team",
+      "developer-url": "https://telegram.org/faq#q-who-are-the-people-behind-telegram",
       "urls": {
-        "info": "https://wiki.gnome.org/Apps/Software",
-        "android-app": null,
-        "ios-app": null
+        "info": "https://telegram.org/",
+        "android-app": "",
+        "ios-app": ""
       },
-      "launch-cmd": "gnome-software",
+      "launch-cmd": "telegram-desktop",
       "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
+        "x86_64"
       ],
       "releases": [
         "rolling"
@@ -4854,12 +4808,12 @@
       "pacman": {
         "default": {
           "source": "arch",
-          "main-package": "gnome-software",
+          "main-package": "telegram-desktop",
           "install-packages": [
-            "gnome-software"
+            "telegram-desktop"
           ],
           "remove-packages": [
-            "gnome-software"
+            "telegram-desktop"
           ]
         }
       },
@@ -4959,27 +4913,25 @@
       "alternate-to": null,
       "listed": true
     },
-    "audacity": {
-      "name": "Audacity",
-      "summary": "Multi-track audio editor",
-      "description": "Audacity is designed for easy recording, playing and editing of digital audio. Audacity features digital effects and spectrum analysis tools. Editing is very fast and provides unlimited undo/redo. ",
-      "icon": "assets/audacity.png",
+    "audio-recorder": {
+      "name": "Audio Recorder",
+      "summary": "Record from a microphone or the system&#8217;s sound card",
+      "description": "Allows you to record your favourite music or audio to a file. It can record audio from your system soundcard, microphones, browsers and webcams. Put simply; if it plays out of your loudspeakers you can record it. This program has a timer that can start, stop or pause recording on certain conditions such as audio level, file size and clock time. This recorder can automatically record your Skype calls. It supports several audio (output) formats such as OGG audio, Flac, MP3 and WAV. ",
+      "icon": "assets/audio-recorder.png",
       "screenshots": [
-        "assets/audacity-1.jpg"
+        "assets/audio-recorder-1.jpg"
       ],
-      "developer-name": "Audacity Team and Contributors",
-      "developer-url": "http://www.audacityteam.org/about/credits/",
+      "developer-name": "Audio-recorder Team",
+      "developer-url": "https://launchpad.net/~audio-recorder/+members#active",
       "urls": {
-        "info": "http://audacityteam.org/",
+        "info": "https://launchpad.net/~audio-recorder",
         "android-app": null,
         "ios-app": null
       },
-      "launch-cmd": "audacity",
+      "launch-cmd": "audio-recorder",
       "arch": [
         "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
+        "x86_64"
       ],
       "releases": [
         "rolling"
@@ -4989,13 +4941,13 @@
       ],
       "pacman": {
         "default": {
-          "source": "arch",
-          "main-package": "audacity",
+          "source": "aur",
+          "main-package": "audio-recorder",
           "install-packages": [
-            "audacity"
+            "audio-recorder"
           ],
           "remove-packages": [
-            "audacity"
+            "audio-recorder"
           ]
         }
       },
@@ -5959,6 +5911,50 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
+    },
+    "audacity": {
+      "name": "Audacity",
+      "summary": "Multi-track audio editor",
+      "description": "Audacity is designed for easy recording, playing and editing of digital audio. Audacity features digital effects and spectrum analysis tools. Editing is very fast and provides unlimited undo/redo.",
+      "icon": "assets/audacity.png",
+      "screenshots": [
+        "assets/audacity-1.jpg"
+      ],
+      "developer-name": "David Runge, Christian Heusel",
+      "developer-url": "http://www.audacityteam.org/about/credits/",
+      "urls": {
+        "info": "http://audacityteam.org/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "audacity",
+      "arch": [
+        "x86_64",
+        "i686",
+        "aarch64",
+        "armv7h"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "audacity",
+          "install-packages": [
+            "audacity"
+          ],
+          "remove-packages": [
+            "audacity"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
     }
   },
   "office": {
@@ -6185,54 +6181,6 @@
       },
       "proprietary": false,
       "alternate-to": "Intuit&reg; Quicken&reg;",
-      "listed": true
-    },
-    "gramps": {
-      "name": "gramps",
-      "summary": "Genealogy program created, developed and governed by genealogists",
-      "description": "Gramps is extremely flexible and strives to produce a genealogy program that is both intuitive for hobbyists and feature-complete for professional genealogists. Gramps has the ability to import GEDCOM files exported from many proprietary genealogy programs and can produce a large number of reports in many popular formats. ",
-      "icon": "assets/gramps.png",
-      "screenshots": [
-        "assets/gramps-1.jpg"
-      ],
-      "developer-name": "Various Contributors",
-      "developer-url": "https://github.com/gramps-project/gramps/blob/master/AUTHORS",
-      "urls": {
-        "info": "https://gramps-project.org/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "gramps",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "gramps",
-          "install-packages": [
-            "gramps",
-            "gir1.2-gtkspell3-3.0",
-            "gir1.2-webkit-3.0",
-            "python3-pil",
-            "rcs"
-          ],
-          "remove-packages": [
-            "gramps"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
       "listed": true
     },
     "libreoffice": {
@@ -6466,6 +6414,54 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
+    },
+    "gramps": {
+      "name": "gramps",
+      "summary": "Genealogy program created, developed and governed by genealogists",
+      "description": "Gramps is extremely flexible and strives to produce a genealogy program that is both intuitive for hobbyists and feature-complete for professional genealogists. Gramps has the ability to import GEDCOM files exported from many proprietary genealogy programs and can produce a large number of reports in many popular formats. ",
+      "icon": "assets/gramps.png",
+      "screenshots": [
+        "assets/gramps-1.jpg"
+      ],
+      "developer-name": "Various Contributors",
+      "developer-url": "https://github.com/gramps-project/gramps/blob/master/AUTHORS",
+      "urls": {
+        "info": "https://gramps-project.org/",
+        "android-app": null,
+        "ios-app": null
+      },
+      "launch-cmd": "gramps",
+      "arch": [
+        "i686",
+        "x86_64",
+        "armv7h",
+        "aarch64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "gramps",
+          "install-packages": [
+            "gramps",
+            "gir1.2-gtkspell3-3.0",
+            "gir1.2-webkit-3.0",
+            "python3-pil",
+            "rcs"
+          ],
+          "remove-packages": [
+            "gramps"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
     }
   },
   "server": {
@@ -6683,49 +6679,6 @@
     }
   },
   "system": {
-    "aptik": {
-      "name": "Aptik",
-      "summary": "Simplifies re-installation of software packages after installations.",
-      "description": "A utility to simplify re-installation of software packages after upgrading/re-installing Ubuntu-based distributions. Provides options to backup and re-install extra applications installed by user; backup and re-add third-party PPAs; backup and restore downloaded packages in APT cache; fixing ownership of files in user&#8217;s home directory. ",
-      "icon": "assets/aptik.png",
-      "screenshots": [
-        "assets/aptik-1.jpg"
-      ],
-      "developer-name": "Tony George",
-      "developer-url": "https://launchpad.net/~teejee2008",
-      "urls": {
-        "info": "http://www.teejeetech.in/search/label/aptik",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "pkexec aptik-gtk",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "aur",
-          "main-package": "aptik",
-          "install-packages": [
-            "aptik"
-          ],
-          "remove-packages": [
-            "aptik"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "bleachbit": {
       "name": "BleachBit",
       "summary": "Clears unnecessary files to save disk space and ensure privacy.",
@@ -6768,6 +6721,269 @@
       },
       "proprietary": false,
       "alternate-to": "Piriform CCleaner",
+      "listed": true
+    },
+    "gns3": {
+      "name": "GNS3",
+      "summary": "Build, design and test a network without needing the hardware.",
+      "description": "What is GNS3? Build, design and test your network in a risk-free virtual environment, and access the largest networking community to help. Whether you are studying for your first networking exam or building out a state-wide telecommunications network, GNS3 offers an easy way to design and build networks of any size without the need for hardware. ",
+      "icon": "assets/gns3.png",
+      "screenshots": [],
+      "developer-name": "Various Contributors",
+      "developer-url": "https://github.com/dlintott/gns3/blob/master/AUTHORS",
+      "urls": {
+        "info": "https://gns3.com",
+        "android-app": null,
+        "ios-app": null
+      },
+      "launch-cmd": "gns3",
+      "arch": [
+        "i686",
+        "x86_64",
+        "armv7h"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "gns3",
+          "install-packages": [
+            "gns3-gui"
+          ],
+          "remove-packages": [
+            "gns3-gui"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": "Cisco: PacketTracer",
+      "listed": true
+    },
+    "hardinfo": {
+      "name": "System Profiler and Benchmark",
+      "summary": "View system information about your hardware and operating system.",
+      "description": "<b>Known as HardInfo</b>. A small application that displays information about your hardware and operating system. Currently it knows about PCI, ISA PnP, USB, IDE, SCSI, Serial and parallel port devices. ",
+      "icon": "assets/hardinfo.png",
+      "screenshots": [
+        "assets/hardinfo-1.jpg"
+      ],
+      "developer-name": "Leandro Pereira and Contributors",
+      "developer-url": "https://github.com/lpereira/hardinfo/blob/master/AUTHORS.md",
+      "urls": {
+        "info": "http://hardinfo.org/",
+        "android-app": null,
+        "ios-app": null
+      },
+      "launch-cmd": "hardinfo",
+      "arch": [
+        "i686",
+        "x86_64",
+        "armv7h",
+        "aarch64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "hardinfo",
+          "install-packages": [
+            "hardinfo"
+          ],
+          "remove-packages": [
+            "hardinfo"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "kdeconnect": {
+      "name": "KDE Connect Indicator",
+      "summary": "Integrate your smart phone to your desktop.",
+      "description": "Connects smartphones to your desktop to integrate with your smartphones and similar devices. At the moment it only supports Android based devices. KDEConnect needs to be installed on your smartphone for this to work.",
+      "icon": "assets/kdeconnect.png",
+      "screenshots": [],
+      "developer-name": "Various Contributors",
+      "developer-url": "https://github.com/Bajoja/indicator-kdeconnect/graphs/contributors",
+      "urls": {
+        "info": "https://github.com/Bajoja/indicator-kdeconnect",
+        "android-app": "https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp",
+        "ios-app": null
+      },
+      "launch-cmd": null,
+      "arch": [
+        "i686",
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "indicator-kdeconnect",
+          "install-packages": [
+            "indicator-kdeconnect"
+          ],
+          "remove-packages": [
+            "indicator-kdeconnect"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "virt-manager": {
+      "name": "Virtual Machine Manager",
+      "summary": "Manages KVM-based virual machines, with support for Xen and LXC.",
+      "description": "A desktop application for managing virtual machines through <code>libvirt</code>. It primarily targets KVM VMs, but also manages Xen and LXC (linux containers). It presents a summary view of running domains, their live performance and resource utilization statistics. Wizards enable the creation of new domains, and configuration and adjustment of a domain&#8217;s resource allocation and virtual hardware. An embedded VNC and SPICE client viewer presents a full graphical console to the guest domain. ",
+      "icon": "assets/virt-manager.png",
+      "screenshots": [
+        "assets/virt-manager-1.jpg"
+      ],
+      "developer-name": "Various Contributors",
+      "developer-url": "https://github.com/virt-manager/virt-manager/graphs/contributors",
+      "urls": {
+        "info": "https://virt-manager.org/",
+        "android-app": null,
+        "ios-app": null
+      },
+      "launch-cmd": "virt-manager",
+      "arch": [
+        "i686",
+        "x86_64",
+        "armv7h",
+        "aarch64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "virt-manager",
+          "install-packages": [
+            "qemu",
+            "qemu-kvm",
+            "qemu-system",
+            "virt-manager",
+            "virt-viewer",
+            "libvirt-bin"
+          ],
+          "remove-packages": [
+            "qemu",
+            "qemu-kvm",
+            "qemu-system",
+            "virt-manager",
+            "virt-viewer",
+            "libvirt-bin"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": "Oracle&reg; VirtualBox",
+      "listed": true
+    },
+    "virtualbox": {
+      "name": "Oracle VirtualBox",
+      "summary": "Virtualize another computer within your computer.",
+      "description": "A powerful PC virtualization solution allowing you to run a wide range of PC operating systems on your Linux system. This includes Windows, Linux, FreeBSD, DOS, OpenBSD and others. VirtualBox comes with a broad feature set and excellent performance, making it the premier virtualization software solution on the market. ",
+      "icon": "assets/virtualbox.png",
+      "screenshots": [
+        "assets/virtualbox-1.jpg",
+        "assets/virtualbox-2.jpg"
+      ],
+      "developer-name": "Oracle Corporation",
+      "developer-url": "https://www.virtualbox.org/wiki/Contributor_information",
+      "urls": {
+        "info": "https://www.virtualbox.org/",
+        "android-app": null,
+        "ios-app": null
+      },
+      "launch-cmd": "virtualbox",
+      "arch": [
+        "i686",
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "manual",
+          "main-package": "virtualbox-5.1",
+          "install-packages": [
+            "virtualbox-5.1"
+          ],
+          "remove-packages": [
+            "virtualbox-5.1"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": "VMware Workstation",
+      "listed": true
+    },
+    "btop": {
+      "name": "btop",
+      "summary": "A monitor of system resources, bpytop ported to C++",
+      "description": "A monitor of system resources, bpytop ported to C++",
+      "icon": "assets/btop.webp",
+      "screenshots": [
+        "assets/btop-1.png"
+      ],
+      "developer-name": "Caleb Maclennan, Jaroslav Lichtblau",
+      "developer-url": "https://github.com/aristocratos/btop",
+      "urls": {
+        "info": "https://github.com/aristocratos/btop",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "btop",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "btop",
+          "install-packages": [
+            "btop"
+          ],
+          "remove-packages": [
+            "btop"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
       "listed": true
     },
     "brasero": {
@@ -6910,131 +7126,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "gns3": {
-      "name": "GNS3",
-      "summary": "Build, design and test a network without needing the hardware.",
-      "description": "What is GNS3? Build, design and test your network in a risk-free virtual environment, and access the largest networking community to help. Whether you are studying for your first networking exam or building out a state-wide telecommunications network, GNS3 offers an easy way to design and build networks of any size without the need for hardware. ",
-      "icon": "assets/gns3.png",
-      "screenshots": [],
-      "developer-name": "Various Contributors",
-      "developer-url": "https://github.com/dlintott/gns3/blob/master/AUTHORS",
-      "urls": {
-        "info": "https://gns3.com",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "gns3",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "aur",
-          "main-package": "gns3",
-          "install-packages": [
-            "gns3-gui"
-          ],
-          "remove-packages": [
-            "gns3-gui"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": "Cisco: PacketTracer",
-      "listed": true
-    },
-    "hardinfo": {
-      "name": "System Profiler and Benchmark",
-      "summary": "View system information about your hardware and operating system.",
-      "description": "<b>Known as HardInfo</b>. A small application that displays information about your hardware and operating system. Currently it knows about PCI, ISA PnP, USB, IDE, SCSI, Serial and parallel port devices. ",
-      "icon": "assets/hardinfo.png",
-      "screenshots": [
-        "assets/hardinfo-1.jpg"
-      ],
-      "developer-name": "Leandro Pereira and Contributors",
-      "developer-url": "https://github.com/lpereira/hardinfo/blob/master/AUTHORS.md",
-      "urls": {
-        "info": "http://hardinfo.org/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "hardinfo",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "hardinfo",
-          "install-packages": [
-            "hardinfo"
-          ],
-          "remove-packages": [
-            "hardinfo"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
-    "kdeconnect": {
-      "name": "KDE Connect Indicator",
-      "summary": "Integrate your smart phone to your desktop.",
-      "description": "Connects smartphones to your desktop to integrate with your smartphones and similar devices. At the moment it only supports Android based devices. KDEConnect needs to be installed on your smartphone for this to work.",
-      "icon": "assets/kdeconnect.png",
-      "screenshots": [],
-      "developer-name": "Various Contributors",
-      "developer-url": "https://github.com/Bajoja/indicator-kdeconnect/graphs/contributors",
-      "urls": {
-        "info": "https://github.com/Bajoja/indicator-kdeconnect",
-        "android-app": "https://play.google.com/store/apps/details?id=org.kde.kdeconnect_tp",
-        "ios-app": null
-      },
-      "launch-cmd": null,
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "aur",
-          "main-package": "indicator-kdeconnect",
-          "install-packages": [
-            "indicator-kdeconnect"
-          ],
-          "remove-packages": [
-            "indicator-kdeconnect"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "terminator": {
       "name": "Terminator",
       "summary": "Display multiple terminals on the screen efficiently.",
@@ -7079,103 +7170,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "virt-manager": {
-      "name": "Virtual Machine Manager",
-      "summary": "Manages KVM-based virual machines, with support for Xen and LXC.",
-      "description": "A desktop application for managing virtual machines through <code>libvirt</code>. It primarily targets KVM VMs, but also manages Xen and LXC (linux containers). It presents a summary view of running domains, their live performance and resource utilization statistics. Wizards enable the creation of new domains, and configuration and adjustment of a domain&#8217;s resource allocation and virtual hardware. An embedded VNC and SPICE client viewer presents a full graphical console to the guest domain. ",
-      "icon": "assets/virt-manager.png",
-      "screenshots": [
-        "assets/virt-manager-1.jpg"
-      ],
-      "developer-name": "Various Contributors",
-      "developer-url": "https://github.com/virt-manager/virt-manager/graphs/contributors",
-      "urls": {
-        "info": "https://virt-manager.org/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "virt-manager",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "virt-manager",
-          "install-packages": [
-            "qemu",
-            "qemu-kvm",
-            "qemu-system",
-            "virt-manager",
-            "virt-viewer",
-            "libvirt-bin"
-          ],
-          "remove-packages": [
-            "qemu",
-            "qemu-kvm",
-            "qemu-system",
-            "virt-manager",
-            "virt-viewer",
-            "libvirt-bin"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": "Oracle&reg; VirtualBox",
-      "listed": true
-    },
-    "virtualbox": {
-      "name": "Oracle VirtualBox",
-      "summary": "Virtualize another computer within your computer.",
-      "description": "A powerful PC virtualization solution allowing you to run a wide range of PC operating systems on your Linux system. This includes Windows, Linux, FreeBSD, DOS, OpenBSD and others. VirtualBox comes with a broad feature set and excellent performance, making it the premier virtualization software solution on the market. ",
-      "icon": "assets/virtualbox.png",
-      "screenshots": [
-        "assets/virtualbox-1.jpg",
-        "assets/virtualbox-2.jpg"
-      ],
-      "developer-name": "Oracle Corporation",
-      "developer-url": "https://www.virtualbox.org/wiki/Contributor_information",
-      "urls": {
-        "info": "https://www.virtualbox.org/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "virtualbox",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "manual",
-          "main-package": "virtualbox-5.1",
-          "install-packages": [
-            "virtualbox-5.1"
-          ],
-          "remove-packages": [
-            "virtualbox-5.1"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": "VMware Workstation",
-      "listed": true
-    },
     "psensor": {
       "name": "Psensor",
       "summary": "Views graphs of components attached to the system.",
@@ -7217,23 +7211,23 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
-    },
-    "btop": {
-      "name": "btop",
-      "summary": "https://github.com/aristocratos/btop",
-      "description": "https://github.com/aristocratos/btop",
-      "icon": "assets/btop.webp",
-      "screenshots": [
-        "assets/btop-1.png"
-      ],
-      "developer-name": "Caleb Maclennan, Jaroslav Lichtblau",
-      "developer-url": "https://github.com/aristocratos/btop",
+    }
+  },
+  "more-software": {
+    "2-software": {
+      "name": "Software",
+      "summary": "A software center as seen in Ubuntu and many other Linux distributions.",
+      "description": "Software lets you install and update applications and system extensions. It is the same software centre found on other Linux distributions like mainstream Ubuntu.",
+      "icon": "assets/2-software.png",
+      "screenshots": [],
+      "developer-name": "GNOME Team",
+      "developer-url": "https://www.gnome.org/about/",
       "urls": {
-        "info": "https://github.com/aristocratos/btop",
+        "info": "https://wiki.gnome.org/Apps/Software",
         "android-app": "",
         "ios-app": ""
       },
-      "launch-cmd": "btop",
+      "launch-cmd": "gnome-software",
       "arch": [
         "x86_64"
       ],
@@ -7246,12 +7240,12 @@
       "pacman": {
         "default": {
           "source": "arch",
-          "main-package": "btop",
+          "main-package": "gnome-software",
           "install-packages": [
-            "btop"
+            "gnome-software"
           ],
           "remove-packages": [
-            "btop"
+            "gnome-software"
           ]
         }
       },
@@ -7262,8 +7256,8 @@
   },
   "stats": {
     "version": 7,
-    "revision": 116,
-    "compiled": 1790622282,
+    "revision": 130,
+    "compiled": 1790622770,
     "apps": 164,
     "categories": 12
   },
