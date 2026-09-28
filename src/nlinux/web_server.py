@@ -77,8 +77,8 @@ def _resolve_dist_dir() -> str:
     """
     padrao = os.path.join(os.path.dirname(SRC_ROOT), "dist")
     if os.access(os.path.dirname(SRC_ROOT), os.W_OK):
-        return padrao
-    return os.path.join(resources.data_home(), "dist")
+        return resources.writable(padrao)
+    return resources.writable(os.path.join(resources.data_home(), "dist"))
 
 
 DIST_DIR = _resolve_dist_dir()
@@ -1284,12 +1284,16 @@ def admin_build(progress=None):
                     "STORE_HOME=\"$(getent passwd \"$STORE_USER\" | cut -d: -f6)\"\n"
                     "if [ -n \"$STORE_HOME\" ] && [ \"$STORE_USER\" != \"root\" ]; then\n"
                     "  STORE_DATA=\"${XDG_DATA_HOME:-$STORE_HOME/.local/share}\"\n"
-                    "  DATA_DIR=\"$STORE_DATA/nlinux/store\"\n"
+                    "  APP_DATA=\"$STORE_DATA/nlinux\"\n"
+                    "  DATA_DIR=\"$APP_DATA/store\"\n"
                     "  mkdir -p \"$DATA_DIR\"\n"
                     "  if [ ! -d \"$DATA_DIR/apps\" ]; then\n"
                     "    cp -a \"$DEST/src/apps\" \"$DATA_DIR/apps\"\n"
                     "  fi\n"
-                    "  chown -R \"$STORE_USER\" \"$DATA_DIR\"\n"
+                    "  # o chown tem de pegtar a arvore inteira: um 'mkdir -p' como root\n"
+                    "  # deixa os diretorios intermediarios do root, e sem dono o usuario\n"
+                    "  # nao consegue criar mais nada dentro deles\n"
+                    "  chown -R \"$STORE_USER\" \"$APP_DATA\"\n"
                     "  echo \"Catalogo e midia: $DATA_DIR/apps\"\n"
                     "fi\n"
                     "# --- ícone + atalho no menu de aplicativos --------------------------\n"

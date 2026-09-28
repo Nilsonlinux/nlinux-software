@@ -1,5 +1,7 @@
+import getpass
 import os
 import shutil
+import sys
 
 # Resolves packaged resources (apps index, assets, translations) relative to
 # the source tree, avoiding a dependency on the deprecated pkg_resources module.
@@ -46,6 +48,28 @@ def data_dir(role: str) -> str:
     return os.path.join(data_home(), role)
 
 
+def writable(path: str) -> str:
+    """Devolve `path` garantindo que dá para escrever nela.
+
+    Sem isso, uma pasta que sobrou do root vira um `Permission denied` no meio
+    do build, sem dizer de onde veio. A pasta pode ainda não existir (o build
+    cria), então confere o ancestral existente mais próximo.
+    """
+    probe = path
+    while probe and not os.path.exists(probe):
+        parent = os.path.dirname(probe)
+        if parent == probe:
+            break
+        probe = parent
+    if not os.access(probe, os.W_OK):
+        user = os.environ.get('SUDO_USER') or getpass.getuser()
+        raise PermissionError(
+            f"sem permissão de escrita em {probe} "
+            f"(criado por outra conta?) — rode: "
+            f"sudo chown -R {user} {os.path.dirname(probe) or probe}")
+    return path
+
+
 def seed_apps_dir(role: str) -> str:
     """Copia o catálogo do pacote para a pasta gravável, uma única vez.
 
@@ -54,7 +78,8 @@ def seed_apps_dir(role: str) -> str:
     """
     target = os.path.join(data_dir(role), 'apps')
     if os.path.isdir(target) or not os.path.isdir(BUNDLED_APPS_DIR):
-        return target
+        return writable(target)
+    writable(os.path.dirname(target))
     os.makedirs(os.path.dirname(target), exist_ok=True)
     tmp = target + '.seed'
     shutil.rmtree(tmp, ignore_errors=True)
@@ -84,5 +109,11 @@ def apps_dir(role: str) -> str:
         return BUNDLED_APPS_DIR
     try:
         return seed_apps_dir(role)
-    except OSError:
+    except OSError as exc:
+        # seguir so com leitura silenciosamente esconde o problema: avisa e
+        # deixa claro que nada pode ser gravado nesta sessao
+        print(f"[nlinux] {exc}", file=sys.stderr, flush=True)
+        print(f"[nlinux] usando o catalogo somente-leitura de "
+              f"{BUNDLED_APPS_DIR} (rode a curadoria com um usuario com "
+              f"permissao de escrita)", file=sys.stderr, flush=True)
         return BUNDLED_APPS_DIR

@@ -57,12 +57,16 @@ STORE_USER="${SUDO_USER:-root}"
 STORE_HOME="$(getent passwd "$STORE_USER" | cut -d: -f6)"
 if [ -n "$STORE_HOME" ] && [ "$STORE_USER" != "root" ]; then
   STORE_DATA="${XDG_DATA_HOME:-$STORE_HOME/.local/share}"
-  DATA_DIR="$STORE_DATA/nlinux/store"
+  APP_DATA="$STORE_DATA/nlinux"
+  DATA_DIR="$APP_DATA/store"
   mkdir -p "$DATA_DIR"
   if [ ! -d "$DATA_DIR/apps" ]; then
     cp -a "$DEST/src/apps" "$DATA_DIR/apps"
   fi
-  chown -R "$STORE_USER" "$DATA_DIR"
+  # o chown tem de pegtar a arvore inteira: um 'mkdir -p' como root
+  # deixa os diretorios intermediarios do root, e sem dono o usuario
+  # nao consegue criar mais nada dentro deles
+  chown -R "$STORE_USER" "$APP_DATA"
   echo "Catalogo e midia: $DATA_DIR/apps"
 fi
 # --- ícone + atalho no menu de aplicativos --------------------------
