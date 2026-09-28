@@ -297,48 +297,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "diodon": {
-      "name": "Diodon",
-      "summary": "Lightweight clipboard manager",
-      "description": "A lightweight clipboard manager which aims to be the best integrated clipboard manager for the Ubuntu desktop. Diodon features include Ubuntu indicator, clipboard sync (primary selection and Ctrl+C / Ctrl+V clipboard) and a zeitgeist integration for an infinite clipboard history.",
-      "icon": "assets/diodon.png",
-      "screenshots": [],
-      "developer-name": "Diodon Team",
-      "developer-url": "https://launchpad.net/~diodon-team",
-      "urls": {
-        "info": "https://wiki.ubuntu.com/Diodon",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "diodon",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "diodon",
-          "install-packages": [
-            "diodon"
-          ],
-          "remove-packages": [
-            "diodon"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "enpass": {
       "name": "Enpass",
       "summary": "A cross-platform, complete password manager.",
@@ -5001,53 +4959,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "asunder": {
-      "name": "Asunder",
-      "summary": "Audio CD ripper and encoder",
-      "description": "Asunder can be used to save tracks from Audio CDs. Supports WAV, MP3, Ogg Vorbis, FLAC, and Wavpack audio files. Uses CDDB to name and tag each track. Can encode to multiple formats in one session. Creates M3U playlists. Allows for each track to be by a different artist. ",
-      "icon": "assets/asunder.png",
-      "screenshots": [
-        "assets/asunder-1.jpg"
-      ],
-      "developer-name": "Various Contributors",
-      "developer-url": "http://littlesvr.ca/asunder/credits.php",
-      "urls": {
-        "info": "http://www.littlesvr.ca/asunder/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "asunder",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "asunder",
-          "install-packages": [
-            "asunder",
-            "lame",
-            "flac",
-            "wavpack"
-          ],
-          "remove-packages": [
-            "asunder"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "audacity": {
       "name": "Audacity",
       "summary": "Multi-track audio editor",
@@ -7348,13 +7259,54 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
+    },
+    "btop": {
+      "name": "btop",
+      "summary": "https://github.com/aristocratos/btop",
+      "description": "https://github.com/aristocratos/btop",
+      "icon": "assets/btop.webp",
+      "screenshots": [
+        "assets/btop-1.png"
+      ],
+      "developer-name": "Caleb Maclennan, Jaroslav Lichtblau",
+      "developer-url": "https://github.com/aristocratos/btop",
+      "urls": {
+        "info": "https://github.com/aristocratos/btop",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "btop",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "btop",
+          "install-packages": [
+            "btop"
+          ],
+          "remove-packages": [
+            "btop"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
     }
   },
   "stats": {
     "version": 7,
-    "revision": 106,
-    "compiled": 1790361825,
-    "apps": 166,
+    "revision": 115,
+    "compiled": 1790620708,
+    "apps": 165,
     "categories": 12
   },
   "distro": {

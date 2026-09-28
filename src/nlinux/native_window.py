@@ -82,9 +82,10 @@ def _make_user_script(src):
 
 def _build_view(inject, port):
     manager = WebKit2.UserContentManager()
+    manager.register_script_message_handler("nlinuxCloseWindow")
     if inject:
         manager.add_script(_make_user_script(inject))
-    return WebKit2.WebView.new_with_user_content_manager(manager)
+    return WebKit2.WebView.new_with_user_content_manager(manager), manager
 
 
 def run_window() -> None:
@@ -111,13 +112,13 @@ def run_window() -> None:
         if ADMIN_ENABLED:
             app_id = "io.github.nilsonlinux.NLinuxCuradoria"
             wm_class = "nlinuxcuradoria"
-            icon_file = os.path.join(
-                os.path.dirname(os.path.abspath(__file__)), "icon-admin.svg")
         else:
             app_id = "io.github.nilsonlinux.NLinuxStore"
             wm_class = "nlinuxstore"
-            icon_file = os.path.join(
-                os.path.dirname(os.path.abspath(__file__)), "icon-dist.svg")
+        # ícone único do projeto: a loja e a curadoria usam o mesmo arquivo
+        icon_file = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "..", "apps", "nlinux-logo.png")
         GLib.set_prgname(wm_class)
         try:
             from gi.repository import Gdk
@@ -140,7 +141,19 @@ def run_window() -> None:
         window.set_position(Gtk.WindowPosition.CENTER)
         window.set_border_width(0)
 
-        view = _build_view(_INJECT % {"port": port}, port)
+        view, content_manager = _build_view(_INJECT % {"port": port}, port)
+
+        def _close_window(_manager, message):
+            try:
+                command = message.get_js_value().to_string()
+            except Exception as exc:
+                print(f"Mensagem de fechamento inválida: {exc}", flush=True)
+                return
+            if command == "close":
+                GLib.idle_add(window.destroy)
+
+        content_manager.connect(
+            "script-message-received::nlinuxCloseWindow", _close_window)
         settings = view.get_settings()
 
         def _set(name, value):

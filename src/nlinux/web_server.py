@@ -1,12 +1,19 @@
 import base64
+import errno
+import fcntl
 import hashlib
 import json
+import locale as l18n
 import os
+import pwd
 import re
+import pty
 import shlex
 import shutil
+import struct
 import subprocess
 import threading
+import termios
 import time
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -16,8 +23,49 @@ from nlinux import resources
 from nlinux.system_state import SystemState
 
 SRC_ROOT = resources.SRC_ROOT
-APPS_DIR = os.path.join(SRC_ROOT, "apps")
 WEB_DIR = os.path.join(SRC_ROOT, "assets", "web")
+
+# Idiomas suportados pela loja (mesmos do instalador web) com sua região.
+_STORE_LANG_REGIONS = {
+    "pt": "pt-BR",
+    "en": "en-US",
+    "es": "es-ES",
+    "fr": "fr-FR",
+    "de": "de-DE",
+    "it": "it-IT",
+    "ja": "ja-JP",
+}
+
+
+def _read_installed_lang() -> str:
+    """Lê o idioma escolhido no instalador web (autoritativo)."""
+    try:
+        with open("/etc/locale.conf", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith("LANG="):
+                    val = line.split("=", 1)[1].strip()
+                    return val.strip('"').strip("'")
+    except OSError:
+        pass
+    return ""
+
+
+def resolve_store_lang() -> tuple:
+    """Retorna (código, região) do idioma da loja."""
+    raw = _read_installed_lang()
+    if not raw:
+        try:
+            raw = l18n.getlocale()[0] or ""
+        except Exception:
+            raw = ""
+    code = raw.split(".")[0]
+    if "_" in code:
+        code = code.split("_")[0]
+    code = code.lower()
+    if code not in _STORE_LANG_REGIONS:
+        code = "en"
+    return code, _STORE_LANG_REGIONS[code]
 
 
 def _resolve_dist_dir() -> str:
@@ -25,18 +73,25 @@ def _resolve_dist_dir() -> str:
 
     No projeto (ou via pkexec, rodando como root) fica em `<projeto>/dist`.
     Se a curadoria estiver instalada em /opt e o processo for o usuário comum,
-    usa `~/NLinux-Software/dist` — /opt não é gravável por ele.
+    usa `~/.local/share/nlinux/dist` — /opt não é gravável por ele.
     """
     padrao = os.path.join(os.path.dirname(SRC_ROOT), "dist")
     if os.access(os.path.dirname(SRC_ROOT), os.W_OK):
         return padrao
-    return os.path.join(os.path.expanduser("~"), "NLinux-Software", "dist")
+    return os.path.join(resources.data_home(), "dist")
 
 
 DIST_DIR = _resolve_dist_dir()
 
 # Desativada na versão de distribuição (gerada pela página de administração).
 ADMIN_ENABLED = False
+
+# Catálogo e mídia: no projeto de desenvolvimento fica em src/apps; instalado
+# em /opt, em ~/.local/share/nlinux/<papel>/apps, gravável sem root.
+# Definido aqui
+# porque depende de ADMIN_ENABLED.
+APPS_DIR = resources.apps_dir("admin" if ADMIN_ENABLED else "store")
+ASSETS_DIR = os.path.join(APPS_DIR, "assets")
 
 # Publicação automática no GitHub quando o build da versão da loja terminar.
 # Desligue com NLINUX_GIT_PUSH=0. O repositório local é clonado no GIT_PUSH_DIR
@@ -97,15 +152,21 @@ MIME = {
 
 
 def pick_index_file() -> str:
+    code, _ = resolve_store_lang()
+    candidates = [code, "en"]
     try:
         locale = l18n.getlocale()[0]
     except Exception:
-        locale = "en_US"
-    candidates = [locale]
-    if "_" in locale:
-        candidates.append(locale.split("_")[0])
-    candidates.append("en")
+        locale = ""
+    if locale:
+        candidates.append(locale)
+        if "_" in locale:
+            candidates.append(locale.split("_")[0])
+    seen = set()
     for candidate in candidates:
+        if candidate in seen:
+            continue
+        seen.add(candidate)
         path = os.path.join(APPS_DIR, f"applications-{candidate}.json")
         if os.path.exists(path):
             return f"applications-{candidate}.json"
@@ -122,6 +183,13 @@ def pacman_installed() -> set:
         return set()
 
 
+PACMAN_PACKAGE_RE = re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9@._+-]*$")
+
+
+def is_pacman_package(value) -> bool:
+    return isinstance(value, str) and bool(PACMAN_PACKAGE_RE.fullmatch(value))
+
+
 class InstallJob:
     def __init__(self, job_id: str, packages: list, source: str = "arch",
                  mode: str = "install") -> None:
@@ -133,11 +201,155 @@ class InstallJob:
         self.lines = []
         self.done = False
         self.success = False
+        self.progress = None
+        self._progress_phase = "starting"
+        self._step_group = 0
+        self._step_current = 0
+        self._step_total = 0
 
-    def _aur_script_by_pkg(packages) -> None:
+    def _record_output(self, raw_line: str) -> None:
+        line = re.sub(r"\x1b\[[0-9;]*[A-Za-z]", "", raw_line).strip()
+        if not line:
+            return
+        self.lines.append(line)
+        self._update_progress(line)
+
+    def _update_progress(self, line: str) -> None:
+        text = line.lower()
+        if "synchronizing package databases" in text:
+            self._progress_phase = "database"
+            self._set_progress(2)
+        elif "resolving dependencies" in text:
+            self._progress_phase = "dependencies"
+            self._set_progress(8)
+        elif "looking for conflicting packages" in text:
+            self._progress_phase = "dependencies"
+            self._set_progress(12)
+        elif "retrieving packages" in text or "downloading" in text:
+            self._progress_phase = "download"
+            self._set_progress(15)
+
+        phases = (
+            ("checking keys in keyring", 55),
+            ("checking package integrity", 61),
+            ("loading package files", 67),
+            ("checking for file conflicts", 73),
+            ("checking available disk space", 79),
+        )
+        for label, start in phases:
+            if label in text:
+                self._progress_phase = "transaction"
+                pct_match = re.search(r"(\d{1,3})%", text)
+                pct = min(int(pct_match.group(1)), 100) if pct_match else 0
+                self._set_progress(start + int(5 * pct / 100))
+                return
+
+        match = re.search(
+            r"\(\s*(\d+)\s*/\s*(\d+)\s*\)\s*(installing|upgrading|reinstalling|removing)\b",
+            text,
+        )
+        if match:
+            self._update_counted_step(match, transaction=True)
+            return
+
+        count_match = re.search(r"\(\s*(\d+)\s*/\s*(\d+)\s*\)", text)
+        if count_match and (
+            ".pkg.tar." in text or re.search(r"\btotal\s*\(", text)
+        ):
+            current, total = int(count_match.group(1)), int(count_match.group(2))
+            if total > 0:
+                pct_match = re.search(r"(\d{1,3})%", text)
+                fraction = (
+                    (current - 1 + min(int(pct_match.group(1)), 100) / 100) / total
+                    if pct_match else current / total
+                )
+                database_download = (
+                    self._progress_phase == "database" and ".pkg.tar." not in text
+                )
+                self._progress_phase = "database" if database_download else "download"
+                start, span = (2, 6) if database_download else (15, 40)
+                self._set_progress(start + int(span * min(fraction, 1)))
+            return
+        if count_match:
+            package_change = re.search(
+                r"\b(instalando|actualizando|reinstalando|removiendo|"
+                r"installiere|aktualisiere|entferne|installazione|"
+                r"aggiornamento|rimozione)\b",
+                text,
+            )
+            self._update_counted_step(count_match, transaction=bool(package_change))
+            return
+
+        aur_stages = (
+            ("making package:", 5),
+            ("retrieving sources", 10),
+            ("validating source files", 18),
+            ("extracting sources", 25),
+            ("starting prepare()", 30),
+            ("starting build()", 35),
+            ("starting check()", 65),
+            ("starting package()", 70),
+            ("finished making:", 75),
+        )
+        for label, estimate in aur_stages:
+            if label in text:
+                self._set_progress(estimate)
+                return
+
+        if ".pkg.tar." in text or self._progress_phase in ("download", "database"):
+            pct_match = re.search(r"(\d{1,3})%", text)
+            if pct_match:
+                pct = min(int(pct_match.group(1)), 100)
+                database_download = (
+                    self._progress_phase == "database" and ".pkg.tar." not in text
+                )
+                if not database_download:
+                    self._progress_phase = "download"
+                if database_download:
+                    estimate = 2 + int(6 * pct / 100)
+                else:
+                    estimate = 15 + int(40 * pct / 100)
+                self._set_progress(estimate)
+
+    def _set_progress(self, progress: int) -> None:
+        self.progress = max(self.progress or 0, min(99, progress))
+
+    def _update_counted_step(self, match, transaction: bool = False) -> None:
+        current, total = int(match.group(1)), int(match.group(2))
+        if total <= 0:
+            return
+        if transaction:
+            self._step_group = max(self._step_group, 5)
+        if current == 1 and (
+            self._step_total == 0 or self._step_current >= self._step_total
+        ):
+            self._step_group += 1
+        self._step_current = current
+        self._step_total = total
+
+        pct_match = re.search(r"(\d{1,3})%", match.string)
+        within_step = (
+            min(int(pct_match.group(1)), 100) / 100
+            if pct_match else current / total
+        )
+        if self._step_group <= 5:
+            self._progress_phase = "transaction-check"
+            estimate = 55 + (self._step_group - 1) * 5 + int(4 * within_step)
+        else:
+            self._progress_phase = "transaction"
+            fraction = min(
+                (current - 1 + within_step) / total if pct_match
+                else within_step,
+                1,
+            )
+            estimate = 80 + int(19 * fraction)
+        self._set_progress(estimate)
+
+    def _aur_script(self) -> tuple[str, str, str]:
         """Instala pacotes AUR via paru OU yay (o que existir) como usuario,
         com NOPASSWD temporario apenas para o passo final de instalacao."""
-        inner_path = f"/tmp/boutique-aur-{self.id}.sh"
+        username = pwd.getpwuid(os.getuid()).pw_name
+        inner_path = f"/tmp/boutique-aur-{self.id}-packages.sh"
         with open(inner_path, "w", encoding="utf-8") as fh:
             fh.write("#!/bin/bash\n")
             fh.write("AUR_HELPER=\"$(command -v paru || command -v yay)\"\n")
@@ -150,15 +362,18 @@ class InstallJob:
             "set +e",
             "umask 077",
             "limite='/etc/sudoers.d/zz-boutique'",
-            "printf '%s\\n' 'nilsonlinux ALL=(ALL) NOPASSWD: /usr/bin/pacman' > \"$limite\"",
+            "printf '%s\\n' "
+            + shlex.quote(f"{username} ALL=(ALL) NOPASSWD: /usr/bin/pacman")
+            + " > \"$limite\"",
             "chmod 0440 \"$limite\"",
             "visudo -cf \"$limite\" >/dev/null 2>&1",
             f"cleanup() {{ rm -f \"$limite\" \"{inner_path}\"; }}",
             "trap cleanup EXIT INT TERM",
-            f"su - -s /bin/bash nilsonlinux -c 'bash {inner_path}'",
+            "pacman -Sy --noconfirm || exit $?",
+            f"su - -s /bin/bash {shlex.quote(username)} -c 'bash {inner_path}'",
             "exit $?",
         ])
-        path = f"/tmp/boutique-aur-{self.id}.sh"
+        path = f"/tmp/boutique-aur-{self.id}-root.sh"
         with open(path, "w", encoding="utf-8") as fh:
             fh.write(script)
         return path, script, inner_path
@@ -179,15 +394,52 @@ class InstallJob:
                     artifacts = [script_path, inner_path]
                     cmd = ["pkexec", "bash", script_path]
                 else:
-                    cmd = ["pkexec", "pacman", "-S", "--noconfirm", "--needed"] + self.packages
-                process = subprocess.Popen(
-                    cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
-                )
-                if process.stdout is not None:
-                    for line in iter(process.stdout.readline, ""):
-                        line = line.rstrip()
-                        if line:
-                            self.lines.append(line)
+                    cmd = (
+                        ["pkexec", "pacman", "-Sy", "--noconfirm", "--needed"]
+                        + self.packages
+                    )
+                master_fd, slave_fd = pty.openpty()
+                try:
+                    fcntl.ioctl(
+                        slave_fd,
+                        termios.TIOCSWINSZ,
+                        struct.pack("HHHH", 24, 80, 0, 0),
+                    )
+                    try:
+                        process = subprocess.Popen(
+                            cmd,
+                            stdin=subprocess.DEVNULL,
+                            stdout=slave_fd,
+                            stderr=slave_fd,
+                            close_fds=True,
+                        )
+                    finally:
+                        os.close(slave_fd)
+                    pending = ""
+                    while True:
+                        try:
+                            chunk = os.read(master_fd, 4096)
+                        except OSError as exc:
+                            if exc.errno == errno.EIO:
+                                break
+                            raise
+                        if not chunk:
+                            break
+                        pending += chunk.decode("utf-8", "replace")
+                        while True:
+                            delimiter = min(
+                                (position for position in (
+                                    pending.find("\n"), pending.find("\r")
+                                ) if position >= 0),
+                                default=-1,
+                            )
+                            if delimiter < 0:
+                                break
+                            self._record_output(pending[:delimiter])
+                            pending = pending[delimiter + 1:]
+                    self._record_output(pending)
+                finally:
+                    os.close(master_fd)
                 self.success = process.wait() == 0
             except Exception as e:
                 self.success = False
@@ -200,6 +452,7 @@ class InstallJob:
                         pass
             self.state = "success" if self.success else "failed"
             if self.success:
+                self.progress = 100
                 self.lines.append(f"{'Removido' if removing else 'Instalado'}: {names}")
             else:
                 self.lines.append(
@@ -216,6 +469,7 @@ class InstallJob:
             "state": self.state,
             "done": self.done,
             "success": self.success,
+            "progress": self.progress,
             "lines": self.lines[-12:],
         }
 
@@ -340,7 +594,7 @@ class BoutiqueHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
-    def _serve_file(self, path: str, ctype: str = None) -> None:
+    def _serve_file(self, path: str, ctype: str = None, html_lang: str = None) -> None:
         if not os.path.isfile(path):
             self._send_json({"error": "not found"}, 404)
             return
@@ -349,6 +603,12 @@ class BoutiqueHandler(BaseHTTPRequestHandler):
             ctype = MIME.get(ext, "application/octet-stream")
         with open(path, "rb") as f:
             body = f.read()
+        if html_lang:
+            text = body.decode("utf-8", "replace")
+            text, _ = re.subn(
+                r'<html lang="[^"]*"', f'<html lang="{html_lang}"', text
+            )
+            body = text.encode("utf-8")
         self.send_response(200)
         self.send_header("Content-Type", ctype)
         self.send_header("Content-Length", str(len(body)))
@@ -369,7 +629,8 @@ class BoutiqueHandler(BaseHTTPRequestHandler):
         path = urlparse(self.path).path
 
         if path in ("/", "/index.html"):
-            self._serve_file(os.path.join(WEB_DIR, "index.html"))
+            _, region = resolve_store_lang()
+            self._serve_file(os.path.join(WEB_DIR, "index.html"), html_lang=region)
             return
 
         if path == "/admin":
@@ -485,6 +746,9 @@ class BoutiqueHandler(BaseHTTPRequestHandler):
         if not isinstance(packages, list) or not packages:
             self._send_json({"error": "no packages"}, 400)
             return
+        if any(not is_pacman_package(package) for package in packages):
+            self._send_json({"error": "invalid package name"}, 400)
+            return
 
         source = body.get("source", "arch")
         mode = body.get("action", "install")
@@ -502,7 +766,7 @@ class BoutiqueHandler(BaseHTTPRequestHandler):
 
 
 def build_payload() -> dict:
-    index_path = resources.resource_path(f"apps/{pick_index_file()}")
+    index_path = os.path.join(APPS_DIR, pick_index_file())
     with open(index_path) as f:
         raw = json.load(f)
 
@@ -523,10 +787,17 @@ def build_payload() -> dict:
             if "pacman" not in methods:
                 continue
             details = package.get("pacman", {}).get("default", {}) or {}
-            install_packages = list(details.get("install-packages") or [])
+            install_packages = [
+                item for item in (details.get("install-packages") or [])
+                if is_pacman_package(item)
+            ]
             main_package = details.get("main-package")
-            if main_package and main_package not in install_packages:
+            if is_pacman_package(main_package) and main_package not in install_packages:
                 install_packages.insert(0, main_package)
+            primary_package = (
+                main_package if is_pacman_package(main_package)
+                else next(iter(install_packages), None)
+            )
             source = details.get("source", "arch")
             products.append(
                 {
@@ -547,7 +818,7 @@ def build_payload() -> dict:
                     "website": (package.get("urls") or {}).get("info"),
                     "launch": package.get("launch-cmd"),
                     "installed": bool(
-                        main_package and main_package in installed
+                        primary_package and primary_package in installed
                     ),
                 }
             )
@@ -593,7 +864,6 @@ def mark_installed(packages: list) -> None:
 
 _ADMIN_LOCK = threading.Lock()
 SPECIAL_KEYS = ("stats", "distro", "supported")
-ASSETS_DIR = os.path.join(APPS_DIR, "assets")
 IMG_RE = re.compile(r"^data:image/(png|jpeg|webp);base64,", re.IGNORECASE)
 ASSET_RE = re.compile(r"^assets/[a-z0-9][a-z0-9._-]*\.(png|jpe?g|webp)$", re.IGNORECASE)
 APP_KEY_ORDER = [
@@ -610,7 +880,7 @@ def _slug(value: str) -> str:
 
 
 def _index_path() -> str:
-    return resources.resource_path(f"apps/{pick_index_file()}")
+    return os.path.join(APPS_DIR, pick_index_file())
 
 
 def _load_raw() -> dict:
@@ -870,6 +1140,29 @@ def admin_delete(handler):
     return {"ok": True}, 200
 
 
+def _write_assets_manifest(pkg_root: str, revision: int) -> None:
+    assets_dir = os.path.join(pkg_root, "src", "apps", "assets")
+    files = {}
+    for root, _, names in os.walk(assets_dir):
+        for name in names:
+            path = os.path.join(root, name)
+            rel = os.path.relpath(path, os.path.join(pkg_root, "src", "apps"))
+            rel = rel.replace(os.sep, "/")
+            if not ASSET_RE.fullmatch(rel):
+                continue
+            digest = hashlib.sha256()
+            with open(path, "rb") as fh:
+                for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+                    digest.update(chunk)
+            files[rel] = digest.hexdigest()
+
+    manifest = {"revision": revision, "files": files}
+    path = os.path.join(pkg_root, "catalog-assets.json")
+    with open(path, "w", encoding="utf-8") as fh:
+        json.dump(manifest, fh, ensure_ascii=False, indent=2, sort_keys=True)
+        fh.write("\n")
+
+
 def admin_build(progress=None):
     """Gera o pacote de distribuição da loja (sem a opção de administração).
 
@@ -906,6 +1199,14 @@ def admin_build(progress=None):
 
             shutil.copytree(SRC_ROOT, os.path.join(pkg_root, "src"),
                             ignore=ignore, dirs_exist_ok=True)
+
+            # Fora do projeto de desenvolvimento o catálogo e a mídia não moram
+            # em src/apps, e sim na pasta gravável do usuário. O build tem que
+            # levar o catálogo vivo, não o snapshot que veio no pacote.
+            if os.path.realpath(APPS_DIR) != os.path.realpath(
+                    os.path.join(SRC_ROOT, "apps")):
+                shutil.copytree(APPS_DIR, os.path.join(pkg_root, "src", "apps"),
+                                dirs_exist_ok=True)
 
             src_ws = os.path.join(pkg_root, "src", "nlinux", "web_server.py")
             with open(src_ws, encoding="utf-8") as fh:
@@ -975,28 +1276,26 @@ def admin_build(progress=None):
                     "exec /opt/nlinux-software/nlinux-software \"$@\"\n"
                     "EOF\n"
                     "chmod +x /usr/local/bin/nlinux-software\n"
+                    "# --- dados gravaveis, fora do /opt ---------------------------------\n"
+                    "# O catalogo e a midia mudam toda vez que a loja sincroniza com o\n"
+                    "# GitHub. Em /opt isso pediria root, entao vao para o HOME do\n"
+                    "# usuario que instalou, com a propriedade dele.\n"
+                    "STORE_USER=\"${SUDO_USER:-root}\"\n"
+                    "STORE_HOME=\"$(getent passwd \"$STORE_USER\" | cut -d: -f6)\"\n"
+                    "if [ -n \"$STORE_HOME\" ] && [ \"$STORE_USER\" != \"root\" ]; then\n"
+                    "  STORE_DATA=\"${XDG_DATA_HOME:-$STORE_HOME/.local/share}\"\n"
+                    "  DATA_DIR=\"$STORE_DATA/nlinux/store\"\n"
+                    "  mkdir -p \"$DATA_DIR\"\n"
+                    "  if [ ! -d \"$DATA_DIR/apps\" ]; then\n"
+                    "    cp -a \"$DEST/src/apps\" \"$DATA_DIR/apps\"\n"
+                    "  fi\n"
+                    "  chown -R \"$STORE_USER\" \"$DATA_DIR\"\n"
+                    "  echo \"Catalogo e midia: $DATA_DIR/apps\"\n"
+                    "fi\n"
                     "# --- ícone + atalho no menu de aplicativos --------------------------\n"
-                    "cat > \"$DEST/icon.svg\" <<'SVG'\n"
-                    "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\" viewBox=\"0 0 128 128\">\n"
-                    "  <defs>\n"
-                    "    <linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\">\n"
-                    "      <stop offset=\"0\" stop-color=\"#1f6feb\"/>\n"
-                    "      <stop offset=\"1\" stop-color=\"#0d3b8f\"/>\n"
-                    "    </linearGradient>\n"
-                    "  </defs>\n"
-                    "  <rect x=\"4\" y=\"4\" width=\"120\" height=\"120\" rx=\"26\" fill=\"url(#g)\"/>\n"
-                    "  <rect x=\"4\" y=\"4\" width=\"120\" height=\"120\" rx=\"26\" fill=\"none\" stroke=\"#12233f\" stroke-width=\"4\"/>\n"
-                    "  <path d=\"M32 86 L58 40 L74 72 L84 54 L98 86\" stroke=\"#ffffff\" stroke-width=\"10\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\n"
-                    "  <circle cx=\"58\" cy=\"94\" r=\"9\" fill=\"#3fb950\"/>\n"
-                    "  <g transform=\"translate(90,90)\">\n"
-                    "    <path d=\"M-18 -8 L-18 18 Q-18 24 -12 24 L12 24 Q18 24 18 18 L18 -8 Z\" fill=\"#3fb950\" stroke=\"#12233f\" stroke-width=\"3\" stroke-linejoin=\"round\"/>\n"
-                    "    <path d=\"M-9 -8 L-9 -14 Q-9 -20 0 -20 Q9 -20 9 -14 L9 -8\" fill=\"none\" stroke=\"#12233f\" stroke-width=\"3\" stroke-linecap=\"round\"/>\n"
-                    "  </g>\n"
-                    "</svg>\n"
-                    "SVG\n"
-                    "mkdir -p /usr/share/icons/hicolor/scalable/apps\n"
-                    "cp \"$DEST/icon.svg\" /usr/share/icons/hicolor/scalable/apps/nlinux-software.svg\n"
-                    "(command -v gtk-update-icon-cache >/dev/null 2>&1 && gtk-update-icon-cache -f -t /usr/share/icons/hicolor) || true\n"
+                    "mkdir -p /usr/share/pixmaps\n"
+                    "cp \"$DEST/src/apps/nlinux-logo.png\" /usr/share/pixmaps/nlinux-software.png\n"
+                    "rm -f /usr/share/icons/hicolor/scalable/apps/nlinux-software.svg\n"
                     "rm -f /usr/share/applications/nlinux-software.desktop\n"
                     "rm -f /usr/share/applications/nlinuxsoftware.desktop\n"
                     "cat > /usr/share/applications/nlinuxstore.desktop <<'EOF'\n"
@@ -1039,6 +1338,8 @@ def admin_build(progress=None):
                     "  sudo ./install.sh\n"
                     "Executar:\n"
                     "  nlinux-software\n"
+                    "Os bancos do pacman são atualizados com `pacman -Sy` ao iniciar\n"
+                    "uma instalação, não ao abrir a loja.\n"
                 )
 
             _step(f"empacotando {os.path.basename(tar_path)}")
@@ -1051,13 +1352,14 @@ def admin_build(progress=None):
             marker = {
                 "revision": rev,
                 "compiled": raw.get("stats", {}).get("compiled"),
-                "apps": sum(len(v) for v in raw.values() if isinstance(v, list)),
+                "apps": raw.get("stats", {}).get("apps"),
                 "sha1": _catalog_fingerprint(raw),
                 "published": int(time.time()),
             }
             with open(os.path.join(pkg_root, "catalog-head.json"), "w",
                       encoding="utf-8") as fh:
                 json.dump(marker, fh, ensure_ascii=False, indent=2)
+            _write_assets_manifest(pkg_root, rev)
 
             # Assinatura GPG real (detached, armadura ASCII) pela curadoria.
             _step("assinando com GPG")
@@ -1209,6 +1511,10 @@ def _cache_busted(url: str) -> str:
 
 def _remote_get(url: str, timeout: int = 20):
     """GET sem cache: o parâmetro cb= força o CDN a buscar no servidor."""
+    return json.loads(_remote_get_bytes(url, timeout).decode("utf-8"))
+
+
+def _remote_get_bytes(url: str, timeout: int = 20) -> bytes:
     import urllib.request
 
     req = urllib.request.Request(
@@ -1216,7 +1522,7 @@ def _remote_get(url: str, timeout: int = 20):
         headers={"User-Agent": "nlinux-software", "Cache-Control": "no-cache"},
     )
     with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return json.loads(resp.read().decode("utf-8"))
+        return resp.read()
 
 
 def remote_head_sha() -> str | None:
@@ -1284,12 +1590,19 @@ def apply_remote_catalog(force: bool = False) -> bool:
                 marker = _remote_get(REMOTE_MARKER_URL, timeout=15)
                 _REMOTE_SYNC["last_full"] = time.time()
                 if _local_matches_marker(local, marker):
+                    assets_key = marker.get("sha1")
+                    if assets_key and _REMOTE_SYNC.get("assets") != assets_key:
+                        if _sync_remote_assets(local, None):
+                            _REMOTE_SYNC["assets"] = assets_key
                     return False
             except Exception:
                 if time.time() - _REMOTE_SYNC["last_full"] < REMOTE_FALLBACK_SECONDS:
                     return False
                 _REMOTE_SYNC["last_full"] = time.time()
         elif sha == _REMOTE_SYNC["sha"]:
+            if _REMOTE_SYNC.get("assets") != sha:
+                if _sync_remote_assets(local, sha):
+                    _REMOTE_SYNC["assets"] = sha
             return False  # nada novo publicado no repositório
     else:
         _REMOTE_SYNC["last_full"] = time.time()
@@ -1303,12 +1616,17 @@ def apply_remote_catalog(force: bool = False) -> bool:
         print("[nlinux] catálogo remoto vazio ou inválido; mantido o atual")
         return False
 
+    assets_synced = _sync_remote_assets(remote, sha)
+    assets_key = sha or _catalog_fingerprint(remote)
     with _ADMIN_LOCK:
         current = _load_raw()
         same = json.dumps(remote, sort_keys=True, ensure_ascii=False) == \
             json.dumps(current, sort_keys=True, ensure_ascii=False)
         if same:
             _REMOTE_SYNC["applied"] = _catalog_fingerprint(remote)
+            _REMOTE_SYNC["sha"] = sha
+            if assets_synced:
+                _REMOTE_SYNC["assets"] = assets_key
             return False
         new_stats = remote.get("stats")
         if not (isinstance(new_stats, dict)
@@ -1322,11 +1640,92 @@ def apply_remote_catalog(force: bool = False) -> bool:
         rebuild_payload()
         revision = remote.get("stats", {}).get("revision")
         _REMOTE_SYNC["applied"] = _catalog_fingerprint(remote)
-        if sha:
-            _REMOTE_SYNC["sha"] = sha
+        _REMOTE_SYNC["sha"] = sha
+        if assets_synced:
+            _REMOTE_SYNC["assets"] = assets_key
     print(f"[nlinux] catálogo atualizado do repositório remoto "
           f"(revision {revision}, commit {sha[:8] if sha else 'local'})", flush=True)
     return True
+
+
+def _sync_remote_assets(raw: dict, sha: str | None) -> bool:
+    """Atualiza a mídia referenciada pelo catálogo a partir da mesma revisão."""
+    manifest_url = (
+        f"{REMOTE_REPO_RAW}/{sha}/catalog-assets.json" if sha
+        else f"{REMOTE_REPO_RAW}/main/catalog-assets.json"
+    )
+    try:
+        manifest = _remote_get(manifest_url)
+    except (OSError, ValueError) as exc:
+        print(f"[nlinux] manifesto de mídia remoto indisponível: {exc}")
+        return False
+
+    files = manifest.get("files") if isinstance(manifest, dict) else None
+    if not isinstance(files, dict):
+        print("[nlinux] manifesto de mídia remoto inválido")
+        return False
+
+    referenced = set()
+    for category, items in raw.items():
+        if category in SPECIAL_KEYS or not isinstance(items, dict):
+            continue
+        for app in items.values():
+            if not isinstance(app, dict):
+                continue
+            icon = app.get("icon")
+            if isinstance(icon, str) and ASSET_RE.fullmatch(icon):
+                referenced.add(icon)
+            for shot in app.get("screenshots") or []:
+                if isinstance(shot, str) and ASSET_RE.fullmatch(shot):
+                    referenced.add(shot)
+
+    updated = 0
+    complete = True
+    for rel in sorted(referenced):
+        expected = files.get(rel)
+        if not isinstance(expected, str) or not re.fullmatch(r"[a-f0-9]{64}", expected):
+            print(f"[nlinux] mídia ausente ou inválida no manifesto: {rel}")
+            complete = False
+            continue
+
+        destination = os.path.join(APPS_DIR, rel)
+        try:
+            with open(destination, "rb") as fh:
+                local_hash = hashlib.sha256(fh.read()).hexdigest()
+        except FileNotFoundError:
+            local_hash = ""
+        except OSError as exc:
+            print(f"[nlinux] não foi possível ler a mídia local {rel}: {exc}")
+            complete = False
+            continue
+        if local_hash == expected:
+            continue
+
+        asset_url = (
+            f"{REMOTE_REPO_RAW}/{sha}/src/apps/{rel}" if sha
+            else f"{REMOTE_REPO_RAW}/main/src/apps/{rel}"
+        )
+        try:
+            data = _remote_get_bytes(asset_url)
+            if hashlib.sha256(data).hexdigest() != expected:
+                raise ValueError("hash diferente do manifesto")
+            os.makedirs(os.path.dirname(destination), exist_ok=True)
+            tmp = destination + f".sync-{os.getpid()}"
+            try:
+                with open(tmp, "wb") as fh:
+                    fh.write(data)
+                os.replace(tmp, destination)
+            finally:
+                if os.path.exists(tmp):
+                    os.remove(tmp)
+            updated += 1
+        except (OSError, ValueError) as exc:
+            print(f"[nlinux] falha ao sincronizar mídia {rel}: {exc}")
+            complete = False
+
+    if updated:
+        print(f"[nlinux] {updated} arquivo(s) de mídia atualizado(s)", flush=True)
+    return complete
 
 
 def remote_refresh_loop() -> None:
@@ -1388,17 +1787,23 @@ def ensure_admin_shortcut() -> None:
         return
 
     icon_src = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "icon-admin.svg")
-    if not os.path.exists(icon_src):
-        icon_src = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), "icon.svg")
+        os.path.dirname(os.path.abspath(__file__)),
+        "..", "apps", "nlinux-logo.png")
     icon_name = "nlinux-software-admin"
-    icons_dir = os.path.join(
-        os.path.expanduser("~"), ".local", "share", "icons", "hicolor",
-        "scalable", "apps")
+    icons_root = os.path.join(
+        os.path.expanduser("~"), ".local", "share", "icons", "hicolor")
+    icons_dir = os.path.join(icons_root, "128x128", "apps")
     try:
         os.makedirs(icons_dir, exist_ok=True)
-        shutil.copy2(icon_src, os.path.join(icons_dir, icon_name + ".svg"))
+        shutil.copy2(icon_src, os.path.join(icons_dir, icon_name + ".png"))
+        # ícone antigo em SVG sobrepunha o PNG no tema (scalable tem prioridade)
+        stale = os.path.join(icons_root, "scalable", "apps", icon_name + ".svg")
+        if os.path.exists(stale):
+            os.remove(stale)
+        updater = shutil.which("gtk-update-icon-cache")
+        if updater:
+            subprocess.run([updater, "-f", "-t", icons_root],
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except OSError:
         icon_name = icon_src
 

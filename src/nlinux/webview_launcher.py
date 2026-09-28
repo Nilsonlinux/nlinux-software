@@ -21,11 +21,18 @@ from nlinux.web_server import BoutiqueHandler, build_payload
 class Api:
     """Bridging object exposed to the WebView page (window.pywebview.api)."""
 
+    def __init__(self) -> None:
+        self.window = None
+
     def open_external(self, url: str) -> None:
         try:
             webbrowser.open(url)
         except Exception:
             pass
+
+    def close_window(self) -> None:
+        if self.window is not None:
+            self.window.destroy()
 
 
 def run_webview() -> None:
@@ -50,6 +57,7 @@ def run_webview() -> None:
     print("Feche a janela para encerrar.")
 
     try:
+        api = Api()
         window = webview.create_window(
             "Loja de Software NLinux",
             url,
@@ -57,8 +65,9 @@ def run_webview() -> None:
             height=780,
             min_size=(900, 620),
             background_color="#070722",
-            js_api=Api(),
+            js_api=api,
         )
+        api.window = window
         try:
             window.set_wmclass("nlinux-software-admin", "nlinux-software-admin")
         except Exception:

@@ -49,28 +49,26 @@ cat > /usr/local/bin/nlinux-software <<'EOF'
 exec /opt/nlinux-software/nlinux-software "$@"
 EOF
 chmod +x /usr/local/bin/nlinux-software
+# --- dados gravaveis, fora do /opt ---------------------------------
+# O catalogo e a midia mudam toda vez que a loja sincroniza com o
+# GitHub. Em /opt isso pediria root, entao vao para o HOME do
+# usuario que instalou, com a propriedade dele.
+STORE_USER="${SUDO_USER:-root}"
+STORE_HOME="$(getent passwd "$STORE_USER" | cut -d: -f6)"
+if [ -n "$STORE_HOME" ] && [ "$STORE_USER" != "root" ]; then
+  STORE_DATA="${XDG_DATA_HOME:-$STORE_HOME/.local/share}"
+  DATA_DIR="$STORE_DATA/nlinux/store"
+  mkdir -p "$DATA_DIR"
+  if [ ! -d "$DATA_DIR/apps" ]; then
+    cp -a "$DEST/src/apps" "$DATA_DIR/apps"
+  fi
+  chown -R "$STORE_USER" "$DATA_DIR"
+  echo "Catalogo e midia: $DATA_DIR/apps"
+fi
 # --- ícone + atalho no menu de aplicativos --------------------------
-cat > "$DEST/icon.svg" <<'SVG'
-<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#1f6feb"/>
-      <stop offset="1" stop-color="#0d3b8f"/>
-    </linearGradient>
-  </defs>
-  <rect x="4" y="4" width="120" height="120" rx="26" fill="url(#g)"/>
-  <rect x="4" y="4" width="120" height="120" rx="26" fill="none" stroke="#12233f" stroke-width="4"/>
-  <path d="M32 86 L58 40 L74 72 L84 54 L98 86" stroke="#ffffff" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="58" cy="94" r="9" fill="#3fb950"/>
-  <g transform="translate(90,90)">
-    <path d="M-18 -8 L-18 18 Q-18 24 -12 24 L12 24 Q18 24 18 18 L18 -8 Z" fill="#3fb950" stroke="#12233f" stroke-width="3" stroke-linejoin="round"/>
-    <path d="M-9 -8 L-9 -14 Q-9 -20 0 -20 Q9 -20 9 -14 L9 -8" fill="none" stroke="#12233f" stroke-width="3" stroke-linecap="round"/>
-  </g>
-</svg>
-SVG
-mkdir -p /usr/share/icons/hicolor/scalable/apps
-cp "$DEST/icon.svg" /usr/share/icons/hicolor/scalable/apps/nlinux-software.svg
-(command -v gtk-update-icon-cache >/dev/null 2>&1 && gtk-update-icon-cache -f -t /usr/share/icons/hicolor) || true
+mkdir -p /usr/share/pixmaps
+cp "$DEST/src/apps/nlinux-logo.png" /usr/share/pixmaps/nlinux-software.png
+rm -f /usr/share/icons/hicolor/scalable/apps/nlinux-software.svg
 rm -f /usr/share/applications/nlinux-software.desktop
 rm -f /usr/share/applications/nlinuxsoftware.desktop
 cat > /usr/share/applications/nlinuxstore.desktop <<'EOF'
@@ -88,4 +86,4 @@ StartupWMClass=nlinuxstore
 X-GNOME-UsesNotifications=false
 EOF
 (command -v update-desktop-database >/dev/null 2>&1 && update-desktop-database /usr/share/applications) || true
-echo "Instalado: NLinux Software v106 (/usr/local/bin/nlinux-software)"
+echo "Instalado: NLinux Software v115 (/usr/local/bin/nlinux-software)"
