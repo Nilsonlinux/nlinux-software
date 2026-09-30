@@ -257,12 +257,31 @@ function renderCats(cats) {
   const nav = $("#cats");
   const list = [{ id: "all", count: state.data.total }, ...cats];
   const installedCount = state.data.products.filter((p) => p.installed).length;
+  const chaves = list.map((c) => c.id).join("|");
+
+  /* Só as contagens mudam na maioria das atualizações: manter os botões no
+     lugar evita refazer a linha inteira (e a animação dela) a cada revisão. */
+  if (nav.dataset.chaves === chaves) {
+    const fc = nav.querySelector("[data-installed-filter] b");
+    if (fc) fc.textContent = installedCount;
+    list.forEach((c) => {
+      const b = nav.querySelector(`[data-cat="${cssEsc(c.id)}"]`);
+      if (b) {
+        const n = b.querySelector("b");
+        if (n) n.textContent = c.count;
+        b.classList.toggle("active", c.id === state.cat);
+      }
+    });
+    return;
+  }
+
   const installedFilter = `<button class="cat cat-installed${state.installedOnly ? " active" : ""}" data-installed-filter aria-pressed="${state.installedOnly}">
     <i class="ti ti-circle-check"></i><span>${tr("filter.installed")}</span><b id="installed-filter-count">${installedCount}</b>
   </button>`;
+  nav.dataset.chaves = chaves;
   nav.innerHTML = installedFilter + list.map((c, i) => {
     const label = UI["cat." + c.id] || c.id;
-    return `<button class="cat ${c.id === "all" ? "active" : ""}" data-cat="${c.id}" style="animation:fadeUp .4s ${i * 25}ms both">
+    return `<button class="cat ${c.id === state.cat ? "active" : ""}" data-cat="${c.id}" style="animation:fadeUp .4s ${i * 25}ms both">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${CAT_ICONS[c.id] || CAT_ICONS.all}</svg>
       <span>${label}</span><b>${c.count}</b>
     </button>`;
@@ -376,7 +395,7 @@ function render(animate = true) {
   $("#empty").hidden = products.length > 0;
 
   grid.innerHTML = products.map(cardHtml).join("");
-  state.cardSig = new Map(products.map((p) => [p.key, cardHtml(p, 0)]));
+  state.cardSig = new Map(products.map((p) => [p.key, cardSig(p)]));
   grid.querySelectorAll("img").forEach((img) => mountIcon(img, img.dataset.fb));
   if (!animate) {
     grid.querySelectorAll(".card").forEach((c) => (c.style.animation = "none"));
@@ -791,6 +810,13 @@ function diffCatalog(antes, agora) {
   return { novos, removidos, alterados };
 }
 
+/* Assinatura de um card. Compara o registro inteiro, e não o HTML: o card
+   mostra só um trecho da descrição, então comparar o HTML deixaria passar
+   mudança de resumo ou de qualquer campo fora do trecho. */
+function cardSig(p) {
+  return JSON.stringify(p);
+}
+
 /* Atualiza a grade sem recarregar a janela: cada card que não mudou continua
    exatamente onde está (mesmo elemento, mesma posição), então a tela não pisca.
    Só entram os cards novos e saem os removidos. */
@@ -803,7 +829,7 @@ function patchGrid() {
   });
   let anterior = null;
   products.forEach((p, i) => {
-    const sig = cardHtml(p, 0);
+    const sig = cardSig(p);
     let el = grid.querySelector(`.card[data-key="${cssEsc(p.key)}"]`);
     /* Card novo ou card cujo conteúdo mudou: troca o elemento inteiro. Montar
        o HTML dentro do card antigo criaria um <article> dentro do outro. */
@@ -811,14 +837,19 @@ function patchGrid() {
       const tpl = document.createElement("template");
       tpl.innerHTML = cardHtml(p, i).trim();
       const novo = tpl.content.firstElementChild;
-      if (el) el.replaceWith(novo);
+      if (el) {
+        /* Card trocido porque mudou: entra sem a animação de entrada, senão a
+           tela pisca como se tivesse recarregado. Só card novo anima. */
+        novo.classList.add("no-anim");
+        el.replaceWith(novo);
+      }
       el = novo;
     }
     const alvo = anterior ? anterior.nextSibling : grid.firstChild;
     if (alvo !== el) grid.insertBefore(el, alvo);
     anterior = el;
   });
-  state.cardSig = new Map(products.map((p) => [p.key, cardHtml(p, 0)]));
+  state.cardSig = new Map(products.map((p) => [p.key, cardSig(p)]));
   grid.querySelectorAll("img").forEach((img) => mountIcon(img, img.dataset.fb));
   $("#installed-filter-count").textContent =
     state.data.products.filter((p) => p.installed).length;

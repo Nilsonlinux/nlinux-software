@@ -238,6 +238,9 @@ img { display: block; }
   animation-delay: calc(var(--i, 0) * 26ms);
   transition: border-color .25s ease;
 }
+/* Card trocido por atualização do catálogo: entra pronto, sem a animação de
+   entrada, que faria a tela piscar como num recarregamento. */
+.card.no-anim { animation: none; }
 .card::before {
   content: ""; position: absolute; inset: -40% -30% auto -30%; height: 120%;
   background: radial-gradient(220px 120px at 50% 0%, var(--glow), transparent 70%);

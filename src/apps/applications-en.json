@@ -1771,50 +1771,6 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
-    },
-    "pinta": {
-      "name": "Pinta",
-      "summary": "An easy to use drawing/editing program.",
-      "description": "Pinta&#8217;s goal is to provide a simplified experience for casual users. Features include drawing tools, adjustments, effects, unlimited undo/redo. ",
-      "icon": "assets/pinta.png",
-      "screenshots": [
-        "assets/pinta-1.jpg"
-      ],
-      "developer-name": "Various Contributors",
-      "developer-url": "https://github.com/PintaProject/Pinta/graphs/contributors",
-      "urls": {
-        "info": "http://pinta-project.com/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "pinta",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "pinta",
-          "install-packages": [
-            "pinta"
-          ],
-          "remove-packages": [
-            "pinta"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
     }
   },
   "internet": {
@@ -4394,9 +4350,9 @@
   },
   "stats": {
     "version": 7,
-    "revision": 195,
-    "compiled": 1790777998,
-    "apps": 100,
+    "revision": 196,
+    "compiled": 1790779795,
+    "apps": 99,
     "categories": 11
   },
   "distro": {
