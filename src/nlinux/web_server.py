@@ -570,6 +570,49 @@ class BuildJob:
             self.log(f"erro: {self.result.get('error')}")
 
 
+ATUALIZACOES_TTL = 90.0
+_atualizacoes_lock = threading.Lock()
+_atualizacoes_cache: dict = {"quando": 0.0, "pacotes": [], "erro": None}
+
+
+def pacotes_com_atualizacao(agora: bool = False) -> tuple:
+    """Pacotes instalados com versão nova no repositório.
+
+    `pacman -Qu` roda como usuário comum e só compara a base de sincronização,
+    então serve para avisar na tela que há versões novas. O resultado fica em
+    cache por `ATUALIZACOES_TTL`: a tela pergunta a cada minuto e não faz
+    sentido repetir a consulta a cada 4 segundos. Com `agora`, ignora o cache.
+    """
+    momento = time.time()
+    with _atualizacoes_lock:
+        if (not agora and _atualizacoes_cache["pacotes"] is not None
+                and momento - _atualizacoes_cache["quando"] < ATUALIZACOES_TTL):
+            return _atualizacoes_cache["pacotes"], _atualizacoes_cache["erro"]
+
+    pacotes, erro = [], None
+    try:
+        proc = subprocess.run(
+            ["pacman", "-Qu"], capture_output=True, text=True, timeout=25,
+            env={**os.environ, "LC_ALL": "C", "LANG": "C", "COLUMNS": "400"})
+        # "pacote 1.0-1 -> 1.1-1" (LC_ALL=C garante esse formato)
+        for linha in proc.stdout.splitlines():
+            if "->" not in linha:
+                continue
+            nome, _, resto = linha.strip().partition(" ")
+            antes, _, depois = resto.partition("->")
+            if not nome or not antes.strip() or not depois.strip():
+                continue
+            pacotes.append({"pacote": nome, "de": antes.strip(), "para": depois.strip()})
+        if proc.returncode not in (0, 1):  # 1 = há atualizações, sem erro
+            erro = proc.stderr.strip().splitlines()[-1] if proc.stderr.strip() else None
+    except Exception as exc:  # sem pacman, sem permissão, tempo esgotado...
+        erro = str(exc)
+
+    with _atualizacoes_lock:
+        _atualizacoes_cache.update({"quando": momento, "pacotes": pacotes, "erro": erro})
+    return pacotes, erro
+
+
 class BoutiqueHandler(BaseHTTPRequestHandler):
     payload = None
     payload_lock = threading.Lock()
@@ -668,6 +711,11 @@ class BoutiqueHandler(BaseHTTPRequestHandler):
                 self._send_json({"error": "bad path"}, 400)
                 return
             self._serve_file(media)
+            return
+
+        if path == "/api/updates":
+            pacotes, erro = pacotes_com_atualizacao()
+            self._send_json({"pacotes": pacotes, "total": len(pacotes), "erro": erro})
             return
 
         if path == "/api/index":
@@ -1100,7 +1148,7 @@ def _registered_source() -> str | None:
 
     A curadoria instalada grava em ~/.local/share/nlinux/admin/apps (o /opt é do
     sistema). Sem isto, o src/apps do projeto — que é o que está no git —
-    ficaria defasado a cada editionsalva.
+    ficaria defasado a cada edição salva.
     """
     marker = os.path.join(os.path.dirname(APPS_DIR), "source-path")
     try:
@@ -1133,6 +1181,32 @@ def _export_to_source(raw: dict) -> list:
         os.makedirs(os.path.dirname(alvo), exist_ok=True)
         shutil.copyfile(origem, alvo)
         copiados.append(rel)
+
+    # O projeto é o que o git versiona: mídia que saiu do catálogo não pode
+    # ficar lá órfã, senão cada app removido deixa arquivo para sempre.
+    dest_assets = os.path.join(dest, "assets")
+    if os.path.isdir(dest_assets):
+        referenciados = set(_media_referenced(raw))
+        removidos = 0
+        for raiz, _pastas, arquivos in os.walk(dest_assets, topdown=False):
+            for arquivo in arquivos:
+                caminho = os.path.join(raiz, arquivo)
+                rel = os.path.relpath(caminho, dest)
+                if rel in referenciados:
+                    continue
+                try:
+                    os.remove(caminho)
+                    removidos += 1
+                except OSError:
+                    pass
+            if raiz != dest_assets and not os.listdir(raiz):
+                try:
+                    os.rmdir(raiz)
+                except OSError:
+                    pass
+        if removidos:
+            print(f"[nlinux] {removidos} midia orfa removida do projeto", flush=True)
+
     print(f"[nlinux] catalogo exportado para {dest}"
           + (f" ({len(copiados)} midia)" if copiados else ""), flush=True)
     return copiados

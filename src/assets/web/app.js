@@ -126,7 +126,7 @@ async function api(path, opts) {
 }
 
 /* ============================== Toasts =================================== */
-function toast(msg, kind = "info") {
+function toast(msg, kind = "info", ms = 3400) {
   const box = $("#toasts");
   const el = document.createElement("div");
   el.className = "toast " + kind;
@@ -135,10 +135,15 @@ function toast(msg, kind = "info") {
   setTimeout(() => {
     el.classList.add("out");
     setTimeout(() => el.remove(), 320);
-  }, 3400);
+  }, ms);
 }
 
 /* ============================== App icons ================================ */
+/* Escape para uso em .card[data-key="..."]: o id vem do catálogo e pode ter
+   "/" ou aspas. */
+function cssEsc(s) {
+  return String(s).replace(/["\\]/g, "\\$&");
+}
 function mountIcon(img, fallback) {
   img.addEventListener("error", function handler() {
     img.removeEventListener("error", handler);
@@ -252,14 +257,12 @@ function renderCats(cats) {
   const nav = $("#cats");
   const list = [{ id: "all", count: state.data.total }, ...cats];
   const installedCount = state.data.products.filter((p) => p.installed).length;
-  const installedFilter = `<button class="cat cat-installed tip${state.installedOnly ? " active" : ""}" data-installed-filter aria-pressed="${state.installedOnly}" data-tip="${esc(tr("filter.installed"))}">
+  const installedFilter = `<button class="cat cat-installed${state.installedOnly ? " active" : ""}" data-installed-filter aria-pressed="${state.installedOnly}">
     <i class="ti ti-circle-check"></i><span>${tr("filter.installed")}</span><b id="installed-filter-count">${installedCount}</b>
   </button>`;
   nav.innerHTML = installedFilter + list.map((c, i) => {
     const label = UI["cat." + c.id] || c.id;
-    return `<button class="cat tip ${c.id === "all" ? "active" : ""}" data-cat="${c.id}" data-tip="${esc(
-      label.toLowerCase()
-    )}" style="animation:fadeUp .4s ${i * 25}ms both">
+    return `<button class="cat ${c.id === "all" ? "active" : ""}" data-cat="${c.id}" style="animation:fadeUp .4s ${i * 25}ms both">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${CAT_ICONS[c.id] || CAT_ICONS.all}</svg>
       <span>${label}</span><b>${c.count}</b>
     </button>`;
@@ -347,7 +350,7 @@ function cardHtml(p, i) {
   <article class="card" data-key="${esc(p.key)}" style="--i:${Math.min(i, 18)}">
     ${installedChip}
     <div class="card-top">
-      <div class="icon-wrap tip" data-tip="${esc(tr("icon.tip", p.name))}">
+      <div class="icon-wrap">
         <img src="${esc(p.icon)}" alt="" loading="lazy" data-fb="${esc(p.name)}">
       </div>
       <div>
@@ -373,6 +376,7 @@ function render(animate = true) {
   $("#empty").hidden = products.length > 0;
 
   grid.innerHTML = products.map(cardHtml).join("");
+  state.cardSig = new Map(products.map((p) => [p.key, cardHtml(p, 0)]));
   grid.querySelectorAll("img").forEach((img) => mountIcon(img, img.dataset.fb));
   if (!animate) {
     grid.querySelectorAll(".card").forEach((c) => (c.style.animation = "none"));
@@ -636,6 +640,7 @@ function bindModalActions() {
 }
 
 function bindGlobal() {
+  blockContextMenu();
   $("#store-info").addEventListener("click", openStoreInfo);
   window.addEventListener("online", renderNet);
   window.addEventListener("offline", renderNet);
@@ -759,22 +764,143 @@ function setupTips() {
 }
 
 /* ============================== Boot ===================================== */
+
+/* O clique direito fica desativado: o menu do WebKit traz recarregar,
+   inspecionar e "abrir com", que não fazem sentido numa loja de sistema. */
+function blockContextMenu() {
+  document.addEventListener("contextmenu", (e) => e.preventDefault());
+  window.addEventListener("contextmenu", (e) => e.preventDefault());
+}
+
+/* Diff entre dois catálogos: o que entrou, o que saiu e o que mudou. */
+function diffCatalog(antes, agora) {
+  const A = new Map((antes.products || []).map((p) => [p.key, p]));
+  const B = new Map((agora.products || []).map((p) => [p.key, p]));
+  const novos = [], removidos = [], alterados = [];
+  B.forEach((p, k) => {
+    const velho = A.get(k);
+    if (!velho) { novos.push(p); return; }
+    /* Compara o registro inteiro, e não o HTML do card: o card mostra só um
+       trecho da descrição, então resumo, pacote, ícone ou link alterados
+       continuariam invisíveis para a tela (e para o aviso). */
+    if (JSON.stringify(p) !== JSON.stringify(velho)) {
+      alterados.push({ agora: p, antes: velho });
+    }
+  });
+  A.forEach((p, k) => { if (!B.has(k)) removidos.push(p); });
+  return { novos, removidos, alterados };
+}
+
+/* Atualiza a grade sem recarregar a janela: cada card que não mudou continua
+   exatamente onde está (mesmo elemento, mesma posição), então a tela não pisca.
+   Só entram os cards novos e saem os removidos. */
+function patchGrid() {
+  const grid = $("#grid");
+  const products = visibleProducts();
+  const querer = new Set(products.map((p) => p.key));
+  grid.querySelectorAll(".card").forEach((c) => {
+    if (!querer.has(c.dataset.key)) c.remove();
+  });
+  let anterior = null;
+  products.forEach((p, i) => {
+    const sig = cardHtml(p, 0);
+    let el = grid.querySelector(`.card[data-key="${cssEsc(p.key)}"]`);
+    /* Card novo ou card cujo conteúdo mudou: troca o elemento inteiro. Montar
+       o HTML dentro do card antigo criaria um <article> dentro do outro. */
+    if (!el || (state.cardSig || new Map()).get(p.key) !== sig) {
+      const tpl = document.createElement("template");
+      tpl.innerHTML = cardHtml(p, i).trim();
+      const novo = tpl.content.firstElementChild;
+      if (el) el.replaceWith(novo);
+      el = novo;
+    }
+    const alvo = anterior ? anterior.nextSibling : grid.firstChild;
+    if (alvo !== el) grid.insertBefore(el, alvo);
+    anterior = el;
+  });
+  state.cardSig = new Map(products.map((p) => [p.key, cardHtml(p, 0)]));
+  grid.querySelectorAll("img").forEach((img) => mountIcon(img, img.dataset.fb));
+  $("#installed-filter-count").textContent =
+    state.data.products.filter((p) => p.installed).length;
+  $("#results-count").textContent = tr("results.count", products.length, state.data.total);
+  $("#empty").hidden = products.length > 0;
+}
+
+/* Escuta o servidor: quando o catálogo muda, aplica só o que mudou e avisa.
+   Não existe location.reload() em lugar nenhum — a janela nunca recarrega. */
+function applyFresh(fresh) {
+  const antes = state.data;
+  if (!antes) { state.data = fresh; renderHeader(fresh); renderCats(fresh.categories); render(); return; }
+
+  const revAntes = (antes.store || {}).revision, revAgora = (fresh.store || {}).revision;
+  const updAntes = (antes.store || {}).updated, updAgora = (fresh.store || {}).updated;
+
+  /* Cabeçalho e contadores são baratos: mudam sempre que o servidor mudou. */
+  if (revAntes !== revAgora || updAntes !== updAgora) {
+    renderRevBadge(fresh);
+    renderStoreMeta(fresh);
+    $("#foot-info").textContent = tr("foot.apps", fresh.total);
+    const ab = $("#admin-badge");
+    if (ab) ab.hidden = !fresh.admin;
+  }
+
+  const hashAntes = antes.stats && antes.stats.catalog_hash;
+  const hashAgora = fresh.stats && fresh.stats.catalog_hash;
+  /* A base do diff tem de ser o payload mais recente, mesmo quando não entra
+     nenhum card novo: senão o próximo poll compara sempre com a mesma versão. */
+  if (!hashAgora || hashAgora === hashAntes) { state.data = fresh; return; }
+
+  const d = diffCatalog(antes, fresh);
+  if (antes.total === fresh.total &&
+      JSON.stringify(antes.categories) === JSON.stringify(fresh.categories) &&
+      !d.novos.length && !d.removidos.length && !d.alterados.length) {
+    state.data = fresh;
+    return;
+  }
+
+  state.data = fresh;
+  renderCats(fresh.categories);
+  patchGrid();
+
+  const partes = [];
+  if (d.novos.length) partes.push(tr(d.novos.length === 1 ? "upd.new.one" : "upd.new", d.novos.length));
+  if (d.removidos.length) partes.push(tr(d.removidos.length === 1 ? "upd.gone.one" : "upd.gone", d.removidos.length));
+  if (d.alterados.length) partes.push(tr(d.alterados.length === 1 ? "upd.changed.one" : "upd.changed", d.alterados.length));
+  const titulo = tr("upd.toast", revAgora == null ? "?" : revAgora);
+  toast(partes.length ? `${titulo} · ${partes.join(" · ")}` : titulo, "upd", 6000);
+}
+
 function watchRevision() {
-  let last = state.data && state.data.stats && state.data.stats.revision;
-  let lastHash = state.data && state.data.stats && state.data.stats.catalog_hash;
   setInterval(async () => {
     if (state.busy) return;
     try {
-      const meta = await fetch("/api/index", { cache: "no-store" });
-      const fresh = await meta.json();
-      const rev = fresh.stats && fresh.stats.revision;
-      const hash = fresh.stats && fresh.stats.catalog_hash;
-      if (hash && hash !== lastHash) { location.reload(); return; }
-      if (typeof rev === "number" && typeof last === "number" && rev !== last) location.reload();
-      else if (typeof rev === "number") last = rev;
-      if (hash) lastHash = hash;
+      const resp = await fetch("/api/index", { cache: "no-store" });
+      applyFresh(await resp.json());
     } catch (e) { /* offline momentâneo */ }
   }, 4000);
+}
+
+/* Versões dos programas: o servidor pergunta ao pacman (com cache, porque a
+   consulta é mais cara que a do catálogo) e a tela avisa no canto quando
+   aparece versão nova. Endpoint ausente em versões antigas: silêncio. */
+function watchUpdates() {
+  let anterior = null;
+  const checar = async () => {
+    if (state.busy) return;
+    try {
+      const resp = await fetch("/api/updates", { cache: "no-store" });
+      if (!resp.ok) return;
+      const d = await resp.json();
+      state.updates = d;
+      const total = d.total || 0;
+      if (anterior !== null && total > anterior) {
+        toast(tr(total === 1 ? "upd.pkg.one" : "upd.pkg", total), "upd", 6000);
+      }
+      anterior = total;
+    } catch (e) { /* sem endpoint ou offline: não é motivo para incomodar */ }
+  };
+  setTimeout(checar, 6000);
+  setInterval(checar, 60000);
 }
 
 async function boot() {
@@ -792,6 +918,7 @@ async function boot() {
     bindGlobal();
     setupTips();
     watchRevision();
+    watchUpdates();
   } catch (e) {
     console.error(e);
     $("#grid").innerHTML = "";

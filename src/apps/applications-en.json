@@ -858,52 +858,6 @@
       "alternate-to": "Sid Meier’s Civilization",
       "listed": true
     },
-    "frozenbubble": {
-      "name": "Frozen-Bubble",
-      "summary": "Clone of Puzzle Bobble",
-      "description": "A clone of the popular <i>Puzzle Bobble</i> game, in which you attempt to shoot bubbles into groups of the same color to cause them to pop. Players compete as penguins and must use the arrow keys to aim a colored bubble at groups of bubbles. The objective is to clear all the bubbles off the screen before a bubble passes below a line at the bottom. It features 100 single-player levels, a two-player mode, music and striking graphics. A level editor is also included to allow players to create and play their own levels. ",
-      "icon": "assets/frozenbubble.png",
-      "screenshots": [
-        "assets/frozenbubble-1.jpg"
-      ],
-      "developer-name": "The Frozen-Bubble Team",
-      "developer-url": "http://www.frozen-bubble.org/downloads/",
-      "urls": {
-        "info": "http://frozen-bubble.org/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "frozen-bubble",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "frozen-bubble",
-          "install-packages": [
-            "frozen-bubble",
-            "frozen-bubble-data"
-          ],
-          "remove-packages": [
-            "frozen-bubble",
-            "frozen-bubble-data"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "hedgewars": {
       "name": "Hedgewars",
       "summary": "Turn-based artillery game featuring Hedgehogs",
@@ -2671,46 +2625,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "wire-desktop": {
-      "name": "Wire",
-      "summary": "Secure communication for full privacy",
-      "description": "Modern communication. Full privacy. Crystal clear voice and video calls. Chats full of pics, movies, GIFs, music, sketches and more. Always private and secure with end-to-end encryption. ",
-      "icon": "assets/wire-desktop.png",
-      "screenshots": [],
-      "developer-name": "Wire Swiss GmbH",
-      "developer-url": "https://wire.com/en/impressum/",
-      "urls": {
-        "info": "https://wire.com/",
-        "android-app": "https://play.google.com/store/apps/details?id=com.wire",
-        "ios-app": "https://itunes.apple.com/gb/app/wire-private-messenger/id930944768"
-      },
-      "launch-cmd": "/opt/wire-desktop/wire-desktop",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "manual",
-          "main-package": "wire-desktop",
-          "install-packages": [
-            "wire-desktop"
-          ],
-          "remove-packages": [
-            "wire-desktop"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": "WhatsApp",
-      "listed": true
-    },
     "zenmap": {
       "name": "Zenmap",
       "summary": "Frontend for Nmap, for network discovery and security auditing",
@@ -3100,50 +3014,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "easytag": {
-      "name": "EasyTAG",
-      "summary": "View, edit and write tags for audio files",
-      "description": "A utility for viewing, editing and writing the tags of different audio files. Currently EasyTAG supports viewing, editing and writing tags of MP3, MP2 files (ID3 tag), FLAC files (FLAC Vorbis tag), Ogg Opus, Ogg Speex and Ogg Vorbis files (Ogg Vorbis tag), MP4/M4A/AAC files (MPEG-4 Part 10 tag), and MusePack, Monkey&#8217;s Audio files (APE tag). ",
-      "icon": "assets/easytag.png",
-      "screenshots": [
-        "assets/easytag-1.jpg"
-      ],
-      "developer-name": "GNOME Team and Contributors",
-      "developer-url": "https://git.gnome.org/browse/easytag/tree/AUTHORS",
-      "urls": {
-        "info": "https://wiki.gnome.org/Apps/EasyTAG",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "easytag",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "easytag",
-          "install-packages": [
-            "easytag"
-          ],
-          "remove-packages": [
-            "easytag"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "kdenlive": {
       "name": "kdenlive",
       "summary": "Non-linear video editing suite",
@@ -3404,50 +3274,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "pauvcontrol": {
-      "name": "PulseAudio Volume Control",
-      "summary": "Simple volume control mixer tool for PulseAudio",
-      "description": "A simple volume control tool (mixer) for the PulseAudio sound server. In contrast to classic mixer tools this one allows you to control both the volume of hardware devices and of each playback stream separately. It also allows you to redirect a playback stream to another output device without interrupting playback. ",
-      "icon": "assets/pauvcontrol.png",
-      "screenshots": [
-        "assets/pauvcontrol-1.jpg"
-      ],
-      "developer-name": "Freedesktop",
-      "developer-url": "https://cgit.freedesktop.org/pulseaudio/pavucontrol/",
-      "urls": {
-        "info": "http://freedesktop.org/software/pulseaudio/pavucontrol/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "pavucontrol",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "pavucontrol",
-          "install-packages": [
-            "pavucontrol"
-          ],
-          "remove-packages": [
-            "pavucontrol"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "rhythmbox": {
       "name": "Rhythmbox",
       "summary": "Media player and music management application",
@@ -3528,49 +3354,6 @@
           ],
           "remove-packages": [
             "simplescreenrecorder"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
-    "soundconverter": {
-      "name": "Sound Converter",
-      "summary": "Converts audio files to another format",
-      "description": "SoundConverter is a simple sound converter application It reads sound files in any format supported by GStreamer and outputs them in Ogg Vorbis, FLAC, or WAV format, or MP3 format. ",
-      "icon": "assets/soundconverter.png",
-      "screenshots": [],
-      "developer-name": "Various Contributors",
-      "developer-url": "https://github.com/kassoulet/soundconverter/blob/py3k/AUTHORS",
-      "urls": {
-        "info": "http://soundconverter.org",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "soundconverter",
-      "arch": [
-        "i686",
-        "x86_64",
-        "aarch64",
-        "armv7h"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "soundconverter",
-          "install-packages": [
-            "soundconverter",
-            "gstreamer1.0-plugins-ugly"
-          ],
-          "remove-packages": [
-            "soundconverter"
           ]
         }
       },
@@ -4383,50 +4166,6 @@
     }
   },
   "system": {
-    "bleachbit": {
-      "name": "BleachBit",
-      "summary": "Clears unnecessary files to save disk space and ensure privacy.",
-      "description": "Deletes unnecessary files to free valuable disk space, maintain privacy, and remove junk. It removes cache, Internet history, temporary files, cookies, and broken shortcuts. Beyond simply erasing junk files, BleachBit wipes free disk space (to hide previously deleted files for privacy and to improve compression of images), vacuums Firefox databases (to improve performance without deleting data), and securely shreds arbitrary files. ",
-      "icon": "assets/bleachbit.png",
-      "screenshots": [
-        "assets/bleachbit-1.jpg"
-      ],
-      "developer-name": "Andrew Ziem & Contributors",
-      "developer-url": "https://www.bleachbit.org/contributors",
-      "urls": {
-        "info": "http://bleachbit.sourceforge.net",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "bleachbit",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "bleachbit",
-          "install-packages": [
-            "bleachbit"
-          ],
-          "remove-packages": [
-            "bleachbit"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": "Piriform CCleaner",
-      "listed": true
-    },
     "virt-manager": {
       "name": "Virtual Machine Manager",
       "summary": "Manages KVM-based virual machines, with support for Xen and LXC.",
@@ -4655,9 +4394,9 @@
   },
   "stats": {
     "version": 7,
-    "revision": 189,
-    "compiled": 1790762195,
-    "apps": 106,
+    "revision": 195,
+    "compiled": 1790777998,
+    "apps": 100,
     "categories": 11
   },
   "distro": {

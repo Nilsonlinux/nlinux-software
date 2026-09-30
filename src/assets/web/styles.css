@@ -181,6 +181,20 @@ img { display: block; }
 }
 .cat.active b { background: rgba(0,0,0,.09); border-color: transparent; color: inherit; }
 
+/* O filtro "Instalados" não é uma categoria: é outra coisa (mostrar só o que já
+   está na máquina), então fica verde para não se confundir com o azul do resto. */
+.cat-installed {
+  color: var(--success); background: var(--success-soft);
+  border-color: color-mix(in srgb, var(--success) 38%, transparent);
+}
+.cat-installed b { background: color-mix(in srgb, var(--success) 20%, transparent); border-color: transparent; }
+.cat-installed:hover { color: var(--success); border-color: var(--success); }
+.cat-installed.active {
+  color: var(--on-accent); background: var(--success); border-color: var(--success);
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--success) 32%, transparent);
+}
+.cat-installed.active b { background: rgba(0,0,0,.12); color: inherit; }
+
 /* --------------------------- tooltips (JS-positioned) -------------------- */
 @keyframes tooltip-appear {
   from { opacity: 0; transform: translateY(-4px) scale(.97); }
@@ -499,3 +513,6 @@ a.m-link:hover { border-bottom-style: solid; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+/* Notificação de atualização (canto superior direito, junto das demais) */
+.toast.upd { border-color: var(--accent-strong); }
+.toast.upd::before { content: "\f0663"; font-family: "tabler-icons"; color: var(--accent-strong); font-weight: 800; }
