@@ -1,4 +1,4 @@
-NLinux Software v130 - loja de aplicativos (distribuicao)
+NLinux Software v131 - loja de aplicativos (distribuicao)
 Sem opcao de administracao.
 
 Dependencias (veja DEPENDENCIES.txt):
