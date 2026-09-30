@@ -1520,9 +1520,21 @@ def admin_build(progress=None):
                     "  echo \"ERRO: gpg ausente; não é possível validar a assinatura.\" >&2\n"
                     "  exit 1\n"
                     "fi\n"
-                    "TARBALL=\"$(ls \"$SRC\"/nlinux-software-v*.tar.gz \"$SRC\"/../nlinux-software-v*.tar.gz 2>/dev/null | head -n1)\"\n"
-                    "if [ -n \"$TARBALL\" ] && [ -f \"$TARBALL.asc\" ]; then\n"
-                    "  gpg --batch --import \"$SRC/nlinux-software_pub.asc\" >/dev/null 2>&1\n"
+                    "# ls ordena alfabeticamente, e 'v115' < 'v211': com varios\n"
+                    "# tarballs na pasta, head -n1 pegava o MAIS ANTIGO, nao o\n"
+                    "# mais novo. sort -V ordena por numero de versao.\n"
+                    "TARBALL=\"$(ls \"$SRC\"/nlinux-software-v*.tar.gz \"$SRC\"/../nlinux-software-v*.tar.gz 2>/dev/null | sort -V | tail -n1)\"\n"
+                    "if [ -z \"$TARBALL\" ]; then\n"
+                    "  echo \"Aviso: nenhum nlinux-software-v<N>.tar.gz encontrado em $SRC.\"\n"
+                    "  echo \"         Instalando a loja a partir do src/ sem validar assinatura.\"\n"
+                    "elif [ -f \"$TARBALL.asc\" ] && [ -f \"$SRC/nlinux-software_pub.asc\" ]; then\n"
+                    "  # set -e + redirecionamento silencioso aqui ja matou o\n"
+                    "  # instalador sem mensagem alguma quando a chave publica faltava.\n"
+                    "  if ! gpg --batch --import \"$SRC/nlinux-software_pub.asc\" >/dev/null 2>&1; then\n"
+                    "    echo \"ERRO: nlinux-software_pub.asc não pôde ser importada.\" >&2\n"
+                    "    echo \"O pacote está sem a chave pública: baixe o repositório inteiro.\" >&2\n"
+                    "    exit 1\n"
+                    "  fi\n"
                     "  if ! gpg --batch --verify \"$TARBALL.asc\" \"$TARBALL\" >/dev/null 2>&1; then\n"
                     "    echo \"ERRO: assinatura GPG do pacote INVÁLIDA. Instalação abortada.\" >&2\n"
                     "    echo \"O arquivo (ou o repositório) pode ter sido adulterado. Baixe de novo.\" >&2\n"
@@ -1530,7 +1542,11 @@ def admin_build(progress=None):
                     "  fi\n"
                     "  echo \"Verificação GPG: OK (pacote autêntico da curadoria).\"\n"
                     "else\n"
-                    "  echo \"Aviso: assinatura (.asc) não encontrada junto do pacote; sem validação.\"\n"
+                    "  echo \"ERRO: assinatura ou chave pública ausente; sem validação.\" >&2\n"
+                    "  echo \"Esperado junto de $(basename \"$TARBALL\"):\" >&2\n"
+                    "  echo \"  $(basename \"$TARBALL\").asc  e  nlinux-software_pub.asc\" >&2\n"
+                    "  echo \"O pacote está incompleto. Baixe o repositório inteiro.\" >&2\n"
+                    "  exit 1\n"
                     "fi\n"
                     "# --- instala a loja ----------------------------------------------------\n"
                     f"DEST=\"/opt/nlinux-software\"\n"
@@ -1648,6 +1664,17 @@ def admin_build(progress=None):
             pub_asc = os.path.expanduser("~/nlinux-software_pub.asc")
             if os.path.exists(pub_asc):
                 shutil.copy2(pub_asc, os.path.join(pkg_root, "nlinux-software_pub.asc"))
+            else:
+                # Sem a chave publica no pacote, o install.sh da outra
+                # maquina nao consegue validar a assinatura: ou morre em
+                # silencio (set -e) ou instala sem verificar. Gerava um
+                # pacote inutilizavel sem ninguem avisar -- v204 em diante.
+                print("[nlinux] AVISO: ~/nlinux-software_pub.asc não existe; "
+                      "o pacote vai sair sem a chave pública e o instalador "
+                      "não conseguirá validar a assinatura.", flush=True)
+                print("[nlinux] Gere com: "
+                      "gpg --armor --export <FINGERPRINT> > ~/nlinux-software_pub.asc",
+                      flush=True)
 
             _step("publicando no GitHub")
             publish = git_publish(pkg_root, tar_path, rev)

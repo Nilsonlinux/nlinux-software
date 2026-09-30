@@ -25,9 +25,21 @@ if ! command -v gpg >/dev/null 2>&1; then
   echo "ERRO: gpg ausente; não é possível validar a assinatura." >&2
   exit 1
 fi
-TARBALL="$(ls "$SRC"/nlinux-software-v*.tar.gz "$SRC"/../nlinux-software-v*.tar.gz 2>/dev/null | head -n1)"
-if [ -n "$TARBALL" ] && [ -f "$TARBALL.asc" ]; then
-  gpg --batch --import "$SRC/nlinux-software_pub.asc" >/dev/null 2>&1
+# ls ordena alfabeticamente, e 'v115' < 'v211': com varios
+# tarballs na pasta, head -n1 pegava o MAIS ANTIGO, nao o
+# mais novo. sort -V ordena por numero de versao.
+TARBALL="$(ls "$SRC"/nlinux-software-v*.tar.gz "$SRC"/../nlinux-software-v*.tar.gz 2>/dev/null | sort -V | tail -n1)"
+if [ -z "$TARBALL" ]; then
+  echo "Aviso: nenhum nlinux-software-v<N>.tar.gz encontrado em $SRC."
+  echo "         Instalando a loja a partir do src/ sem validar assinatura."
+elif [ -f "$TARBALL.asc" ] && [ -f "$SRC/nlinux-software_pub.asc" ]; then
+  # set -e + redirecionamento silencioso aqui ja matou o
+  # instalador sem mensagem alguma quando a chave publica faltava.
+  if ! gpg --batch --import "$SRC/nlinux-software_pub.asc" >/dev/null 2>&1; then
+    echo "ERRO: nlinux-software_pub.asc não pôde ser importada." >&2
+    echo "O pacote está sem a chave pública: baixe o repositório inteiro." >&2
+    exit 1
+  fi
   if ! gpg --batch --verify "$TARBALL.asc" "$TARBALL" >/dev/null 2>&1; then
     echo "ERRO: assinatura GPG do pacote INVÁLIDA. Instalação abortada." >&2
     echo "O arquivo (ou o repositório) pode ter sido adulterado. Baixe de novo." >&2
@@ -35,7 +47,11 @@ if [ -n "$TARBALL" ] && [ -f "$TARBALL.asc" ]; then
   fi
   echo "Verificação GPG: OK (pacote autêntico da curadoria)."
 else
-  echo "Aviso: assinatura (.asc) não encontrada junto do pacote; sem validação."
+  echo "ERRO: assinatura ou chave pública ausente; sem validação." >&2
+  echo "Esperado junto de $(basename "$TARBALL"):" >&2
+  echo "  $(basename "$TARBALL").asc  e  nlinux-software_pub.asc" >&2
+  echo "O pacote está incompleto. Baixe o repositório inteiro." >&2
+  exit 1
 fi
 # --- instala a loja ----------------------------------------------------
 DEST="/opt/nlinux-software"
