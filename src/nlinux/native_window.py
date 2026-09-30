@@ -88,6 +88,77 @@ def _build_view(inject, port):
     return WebKit2.WebView.new_with_user_content_manager(manager), manager
 
 
+def _create_tray(app_id, window, icon_file, quit_app):
+    """Ícone na bandeja, para a loja continuar viva com a janela fechada.
+
+    Devolve o indicador criado, ou None quando a sessão não tem bandeja. Nesse
+    caso quem chama mantém o comportamento antigo: fechar a janela encerra.
+    """
+    def mostrar(*_args):
+        window.show_all()
+        window.present()
+
+    menu = Gtk.Menu()
+    abrir = Gtk.MenuItem(label="Abrir loja")
+    abrir.connect("activate", mostrar)
+    sair = Gtk.MenuItem(label="Sair da loja")
+    sair.connect("activate", lambda *_: quit_app())
+    menu.append(abrir)
+    menu.append(Gtk.SeparatorMenuItem())
+    menu.append(sair)
+    menu.show_all()
+
+    # StatusNotifier é o caminho das sessões moderne (GNOME, KDE, Noctalia...).
+    try:
+        gi.require_version("AppIndicator3", "0.1")
+        from gi.repository import AppIndicator3
+
+        indicador = AppIndicator3.Indicator.new(
+            app_id, icon_file, AppIndicator3.IndicatorCategory.APPLICATION_STATUS)
+        indicador.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
+        indicador.set_title("Loja de Software NLinux")
+        indicador.set_menu(menu)
+        print("Bandeja: ícone de notificação (StatusNotifier).", flush=True)
+        return indicador
+    except Exception as e:
+        print(f"StatusNotifier indisponível ({e}); tentando Gtk.StatusIcon.",
+              flush=True)
+
+    # Sem SNI sobra o ícone antigo da GTK 3, que depende de um painel com bandeja.
+    try:
+        icone = Gtk.StatusIcon.new_from_file(icon_file)
+        icone.set_tooltip_text("Loja de Software NLinux")
+        icone.connect("activate", mostrar)
+
+        def _popup(_icon, button, _time):
+            menu.popup(None, None, None, None, button, _time)
+
+        icone.connect("popup-menu", _popup)
+        print("Bandeja: Gtk.StatusIcon.", flush=True)
+        return icone
+    except Exception as e:
+        print(f"Sem bandeja disponível ({e}); a janela encerra o programa.", flush=True)
+        return None
+
+
+def _hide_tray(tray):
+    if tray is None:
+        return
+    try:
+        gi.require_version("AppIndicator3", "0.1")
+        from gi.repository import AppIndicator3
+
+        if isinstance(tray, AppIndicator3.Indicator):
+            tray.set_status(AppIndicator3.IndicatorStatus.PASSIVE)
+            return
+    except Exception:
+        pass
+    try:
+        tray.set_visible(False)
+    except Exception:
+        pass
+
+
 def run_window() -> None:
     with BoutiqueHandler.payload_lock:
         BoutiqueHandler.payload = build_payload()
@@ -97,7 +168,6 @@ def run_window() -> None:
     url = f"http://127.0.0.1:{port}/"
     threading.Thread(target=server.serve_forever, daemon=True).start()
     print(f"Loja de Software NLinux em {url}", flush=True)
-    print("Feche a janela para encerrar.", flush=True)
 
     try:
         from nlinux.web_server import (ADMIN_ENABLED, ensure_admin_shortcut,
@@ -125,9 +195,23 @@ def run_window() -> None:
             Gdk.set_program_class(wm_class)
         except Exception:
             pass
-        app = Gtk.Application(
-            application_id=app_id, flags=Gio.ApplicationFlags.NON_UNIQUE)
-        app.register(None)
+        try:
+            app = Gtk.Application(
+                application_id=app_id, flags=Gio.ApplicationFlags.FLAGS_NONE)
+            app.register(None)
+            if app.get_is_remote():
+                # Já existe uma loja rodando: mostra a dela e encerra esta.
+                print("A loja já está aberta; mostrando a janela existente.",
+                      flush=True)
+                app.activate()
+                server.shutdown()
+                server.server_close()
+                return
+        except Exception as e:  # sessão sem barramento: aceitamos duas janelas
+            print(f"Instância única indisponível ({e}).", flush=True)
+            app = Gtk.Application(
+                application_id=app_id, flags=Gio.ApplicationFlags.NON_UNIQUE)
+            app.register(None)
         window = Gtk.ApplicationWindow(
             application=app, title="Loja de Software NLinux")
         window.set_wmclass(wm_class, wm_class)
@@ -143,6 +227,36 @@ def run_window() -> None:
 
         view, content_manager = _build_view(_INJECT % {"port": port}, port)
 
+        tray = None
+
+        def _quit_app():
+            _hide_tray(tray)
+            try:
+                window.destroy()
+            except Exception:
+                pass
+            app.quit()
+
+        def _hide_or_quit():
+            if tray is not None:
+                window.hide()  # continua na bandeja
+            else:
+                GLib.idle_add(window.destroy)
+
+        def _on_delete(_window, _event):
+            if tray is not None:
+                window.hide()
+                return True  # segura o fechamento: quem encerra é o menu
+            return False
+
+        tray = _create_tray(app_id, window, icon_file, _quit_app)
+        window.connect("delete-event", _on_delete)
+        if tray is not None:
+            print("Fechar a janela deixa a loja na bandeja; use 'Sair da loja' "
+                  "para encerrar.", flush=True)
+        else:
+            print("Feche a janela para encerrar.", flush=True)
+
         def _close_window(_manager, message):
             try:
                 command = message.get_js_value().to_string()
@@ -150,7 +264,7 @@ def run_window() -> None:
                 print(f"Mensagem de fechamento inválida: {exc}", flush=True)
                 return
             if command == "close":
-                GLib.idle_add(window.destroy)
+                GLib.idle_add(_hide_or_quit)
 
         content_manager.connect(
             "script-message-received::nlinuxCloseWindow", _close_window)
@@ -246,7 +360,12 @@ def run_window() -> None:
         view.connect("decide-policy", on_decide_policy)
 
         window.connect("destroy", lambda *_: app.quit())
-        app.connect("activate", lambda *_: window.present())
+
+        def _activate(*_args):  # loja na bandeja, aberta pelo ícone do sistema
+            window.show_all()
+            window.present()
+
+        app.connect("activate", _activate)
 
         window.add(view)
         view.load_uri(url)
