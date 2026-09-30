@@ -640,6 +640,13 @@ class BoutiqueHandler(BaseHTTPRequestHandler):
             self._serve_file(os.path.join(WEB_DIR, "admin.html"))
             return
 
+        if path == "/api/admin/published":
+            if not ADMIN_ENABLED:
+                self._send_json({"error": "not found"}, 404)
+                return
+            self._send_json(admin_published_info())
+            return
+
         if path == "/api/admin/catalog":
             if not ADMIN_ENABLED:
                 self._send_json({"error": "not found"}, 404)
@@ -716,6 +723,14 @@ class BoutiqueHandler(BaseHTTPRequestHandler):
                 self._send_json({"error": "not found"}, 404)
                 return
             data, code = admin_delete(self)
+            self._send_json(data, code)
+            return
+
+        if path == "/api/admin/sync":
+            if not ADMIN_ENABLED:
+                self._send_json({"error": "not found"}, 404)
+                return
+            data, code = admin_sync_published()
             self._send_json(data, code)
             return
 
@@ -903,6 +918,131 @@ def _write_raw(raw: dict) -> None:
     os.replace(tmp, path)
 
 
+def _media_referenced(raw: dict) -> set:
+    """Caminhos (relativos a src/apps) de icones e screenshots usados."""
+    out = set()
+
+    def walk(node):
+        if isinstance(node, dict):
+            for key, val in node.items():
+                if key == "icon" and isinstance(val, str):
+                    out.add(val)
+                elif key == "screenshots" and isinstance(val, list):
+                    out.update(x for x in val if isinstance(x, str))
+                else:
+                    walk(val)
+        elif isinstance(node, list):
+            for item in node:
+                walk(item)
+
+    walk(raw)
+    return out
+
+
+def _fetch_media(sha: str, wanted: set) -> list:
+    """Baixa do repositório publicado os arquivos de mídia que faltam aqui."""
+    import urllib.request
+
+    got = []
+    base = f"{REMOTE_REPO_RAW}/{sha}/src/apps/"
+    for rel in sorted(wanted):
+        destino = os.path.join(APPS_DIR, rel)
+        if os.path.exists(destino):
+            continue
+        os.makedirs(os.path.dirname(destino), exist_ok=True)
+        tmp = destino + ".dl"
+        try:
+            req = urllib.request.Request(
+                _cache_busted(base + urllib.parse.quote(rel)),
+                headers={"User-Agent": "nlinux-software"},
+            )
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                data = resp.read()
+        except Exception as exc:
+            print(f"[nlinux] mídia não baixada ({rel}): {exc}")
+            continue
+        with open(tmp, "wb") as fh:
+            fh.write(data)
+        os.replace(tmp, destino)
+        got.append(rel)
+    return got
+
+
+def admin_published_info() -> dict:
+    """Revisão do catálogo publicado no GitHub (para comparar com o local)."""
+    sha = remote_head_sha()
+    if not sha:
+        return {"error": "GitHub indisponível"}
+    publicado = remote_marker_revision(sha)
+    local = _load_raw().get("stats", {}).get("revision")
+    if publicado is None or local is None:
+        return {"sha": sha, "revision": publicado, "local_revision": local,
+                "ahead": False}
+    return {"sha": sha, "revision": publicado, "local_revision": local,
+            "ahead": publicado > local}
+
+
+def remote_marker_revision(sha: str):
+    """revision do catálogo publicado, lida do catalog-head.json do commit."""
+    import urllib.request
+
+    url = f"{REMOTE_REPO_RAW}/{sha}/catalog-head.json"
+    try:
+        req = urllib.request.Request(
+            _cache_busted(url), headers={"User-Agent": "nlinux-software"})
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            return json.loads(resp.read().decode("utf-8")).get("revision")
+    except Exception:
+        return None
+
+
+def admin_sync_published() -> tuple:
+    """Adota o catálogo publicado, para a curadoria seguir o mesmo catálogo.
+
+    Usado quando o catálogo muda em outra máquina (ou seja, quando a versão da
+    distribuição foi gerada lá): baixa o JSON do commit publicado, adota as
+    alterações, busca a mídia que faltar e reconstrói o payload.
+    """
+    sha = remote_head_sha()
+    if not sha:
+        return {"error": "não foi possível consultar o GitHub"}, 502
+    try:
+        remote = fetch_remote_catalog(sha)
+    except Exception as exc:
+        return {"error": f"catálogo publicado indisponível: {exc}"}, 502
+    if not isinstance(remote, dict) or not remote:
+        return {"error": "catálogo publicado vazio ou inválido"}, 502
+
+    with _ADMIN_LOCK:
+        current = _load_raw()
+        antes = current.get("stats", {}).get("revision")
+        if json.dumps(remote, sort_keys=True, ensure_ascii=False) == \
+                json.dumps(current, sort_keys=True, ensure_ascii=False):
+            return {"ok": True, "unchanged": True, "revision": antes,
+                    "media": []}, 200
+        antes_ids = _catalog_ids(current)
+        media = _fetch_media(sha, _media_referenced(remote))
+        _write_raw(remote)
+        _gc_assets(remote)
+        exportados = _export_to_source(remote)
+        rebuild_payload()
+        depois = remote.get("stats", {}).get("revision")
+        novos = sorted(_catalog_ids(remote) - antes_ids)
+        saida = sorted(antes_ids - _catalog_ids(remote))
+    print(f"[nlinux] catálogo da curadoria atualizado do publicado "
+          f"(revision {antes} -> {depois}; {len(saida)} removidos, "
+          f"{len(novos)} novos, {len(media)} midia baixada)", flush=True)
+    return {"ok": True, "unchanged": False, "sha": sha, "de": antes,
+            "revision": depois, "media": media, "removidos": saida,
+            "novos": novos, "exportados": exportados}, 200
+
+
+def _catalog_ids(raw: dict) -> set:
+    return {f"{cat}/{ident}" for cat, val in raw.items()
+            if cat not in SPECIAL_KEYS and isinstance(val, dict)
+            for ident in val}
+
+
 def _canonical_app(app: dict) -> dict:
     out = {}
     for k in APP_KEY_ORDER:
@@ -953,6 +1093,49 @@ def _bump_stats(raw: dict) -> None:
 def rebuild_payload() -> None:
     with BoutiqueHandler.payload_lock:
         BoutiqueHandler.payload = build_payload()
+
+
+def _registered_source() -> str | None:
+    """Projeto de curadoria registrado, para o git enxergar o catálogo vivo.
+
+    A curadoria instalada grava em ~/.local/share/nlinux/admin/apps (o /opt é do
+    sistema). Sem isto, o src/apps do projeto — que é o que está no git —
+    ficaria defasado a cada editionsalva.
+    """
+    marker = os.path.join(os.path.dirname(APPS_DIR), "source-path")
+    try:
+        with open(marker, encoding="utf-8") as fh:
+            path = fh.read().strip()
+    except OSError:
+        return None
+    if path and os.path.isdir(os.path.join(path, "src", "apps")):
+        return path
+    return None
+
+
+def _export_to_source(raw: dict) -> list:
+    """Copia catálogo e mídia para o projeto registrado (o que o git versiona)."""
+    src = _registered_source()
+    if not src or os.path.realpath(src) == os.path.realpath(SRC_ROOT):
+        return []
+    dest = os.path.join(src, "src", "apps")
+    os.makedirs(dest, exist_ok=True)
+    shutil.copyfile(_index_path(), os.path.join(dest, "applications-en.json"))
+    copiados = []
+    for rel in _media_referenced(raw):
+        origem = os.path.join(APPS_DIR, rel)
+        alvo = os.path.join(dest, rel)
+        if not os.path.exists(origem):
+            continue
+        if os.path.exists(alvo) and \
+                os.path.getmtime(alvo) >= os.path.getmtime(origem):
+            continue
+        os.makedirs(os.path.dirname(alvo), exist_ok=True)
+        shutil.copyfile(origem, alvo)
+        copiados.append(rel)
+    print(f"[nlinux] catalogo exportado para {dest}"
+          + (f" ({len(copiados)} midia)" if copiados else ""), flush=True)
+    return copiados
 
 
 def _gc_assets(raw: dict) -> None:
@@ -1107,6 +1290,7 @@ def admin_save(handler):
         _bump_stats(raw)
         try:
             _write_raw(raw)
+            _export_to_source(raw)
         except OSError:
             return {"error": "falha ao gravar o catálogo"}, 500
         _gc_assets(raw)
@@ -1133,6 +1317,7 @@ def admin_delete(handler):
         _bump_stats(raw)
         try:
             _write_raw(raw)
+            _export_to_source(raw)
         except OSError:
             return {"error": "falha ao gravar o catálogo"}, 500
         _gc_assets(raw)
