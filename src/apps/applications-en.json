@@ -45,61 +45,6 @@
       "alternate-to": "Post-it &reg; notes",
       "listed": true
     },
-    "gparted": {
-      "name": "GParted",
-      "summary": "An advanced tool for editing and formatting partitions on disks.",
-      "description": "An advanced partition editor that uses `libparted` to detect and manipulate devices and partition tables while several (optional) filesystem tools provide support for filesystems not included in libparted.",
-      "icon": "assets/gparted.png",
-      "screenshots": [
-        "assets/gparted-1.jpg"
-      ],
-      "developer-name": "GParted Team",
-      "developer-url": "http://gparted.org/contact.php",
-      "urls": {
-        "info": "http://gparted.org/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "pkexec gparted",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "gparted",
-          "install-packages": [
-            "gparted",
-            "xfsprogs",
-            "reiserfsprogs",
-            "reiser4progs",
-            "jfsutils",
-            "ntfs-3g",
-            "dosfstools",
-            "mtools",
-            "kpartx",
-            "dmraid",
-            "dmsetup",
-            "gpart"
-          ],
-          "remove-packages": [
-            "gparted"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "keepassxc": {
       "name": "KeePassXC",
       "summary": "Local password manager for securely storing passwords.",
@@ -4350,9 +4295,9 @@
   },
   "stats": {
     "version": 7,
-    "revision": 196,
-    "compiled": 1790779795,
-    "apps": 99,
+    "revision": 197,
+    "compiled": 1790787920,
+    "apps": 98,
     "categories": 11
   },
   "distro": {

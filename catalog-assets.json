@@ -37,7 +37,7 @@
     "assets/darktable.png": "2e96056f72b6b2fc660015310641f24ea20a5620cb83e0c5161e0dface6e6b53",
     "assets/emby.png": "73d058969eb32752bd361e819b910c18fd08d0a7c8c0f17a915dd7e20ab2ea09",
     "assets/etcher-1.jpg": "0eeef21c82ddd93561a7896fdffef5d5f8eea2a394c2eb24aadf243657e9e7cd",
-    "assets/etcher.png": "ed816438b20232d39935d3d7e7e5c0fd725c8ceed089a89ebbc8d6590fc6ab80",
+    "assets/etcher.png": "5209d3bfcc74ed0d6232e30df8100e1dbc288d6ab5f9f24f462b16c7b478155c",
     "assets/evolution-1.jpg": "5b1010465e262adf0ab36dba2e59049adce6e8970ddd8cf197992e5894b7726b",
     "assets/evolution-2.jpg": "815ce4a0484c78a403c3b39515fc387e9b7bf5951e6964969f635316414531bf",
     "assets/evolution.png": "b5df65f6909ff29541e8f83ce84ede5dfe162faf06c3dbbb76486e706870c2e6",
@@ -175,5 +175,5 @@
     "assets/zenmap-1.jpg": "136b7f268bd14d829843cb878c4f57db3fae8b4f551b392823e50d27d83efaa8",
     "assets/zenmap.png": "a18cd769f13f92d7ee70983893c977eaac5cce11f418314d337bf468ee745c17"
   },
-  "revision": 196
+  "revision": 197
 }

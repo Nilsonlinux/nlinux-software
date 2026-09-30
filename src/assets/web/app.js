@@ -320,39 +320,25 @@ function visibleProducts() {
   });
 }
 
-function primaryActionHtml(p) {
-  if (p.source === "aur") {
-    const url = `https://aur.archlinux.org/packages/${encodeURIComponent(p.packages[0] || "")}`;
-    return `<a class="btn btn-ghost tip" data-tip="${tr("tip.aurPage")}" href="${esc(url)}" target="_blank" rel="noopener"><i class="ti ti-package"></i> AUR</a>` +
-      `<button class="btn btn-primary btn-install tip" data-action="install" data-key="${esc(p.key)}" data-tip="${tr("tip.aurPkgs", esc(p.packages.join(", ")))}" ${state.busy ? "disabled" : ""}><i class="ti ti-download"></i> ${p.installed ? tr("ui.reinstall") : tr("ui.install")}</button>`;
-  }
-  if (p.source === "manual") {
-    if (p.website) return `<a class="btn btn-ghost tip" data-tip="${tr("tip.dlOfficial")}" href="${esc(p.website)}" target="_blank" rel="noopener"><i class="ti ti-external-link"></i> ${tr("src.manual")}</a>`;
-    return `<button class="btn btn-ghost" disabled><i class="ti ti-tools"></i> ${tr("ui.manual")}</button>`;
-  }
-  const label = p.installed ? tr("ui.reinstall") : tr("ui.install");
-  return `<button class="btn btn-primary btn-install tip" data-action="install" data-key="${esc(p.key)}" data-tip="${tr("tip.package", esc(p.packages.join(", ")))}" ${state.busy ? "disabled" : ""}><i class="ti ti-download"></i> ${label}</button>`;
-}
-
-function removeActionHtml(p) {
-  if (!p.installed || !p.packages.length) return "";
-  return `<button class="btn btn-ghost btn-remove tip" data-action="remove" data-key="${esc(p.key)}" data-tip="${tr("tip.remove", esc(p.packages.join(", ")))}" ${state.busy ? "disabled" : ""}><i class="ti ti-trash"></i> ${tr("ui.uninstall")}</button>`;
-}
-
-function installActionHtml(p) {
-  return primaryActionHtml(p) + removeActionHtml(p);
-}
-
-function cardActionHtml(p) {
+/* Uma ação só por app: "Instalar" quando não está instalado, "Remover" quando
+   está. Não existe "Reinstalar": quem está instalado sai pelo mesmo botão. */
+function actionHtml(p, tip) {
   const dis = state.busy ? "disabled" : "";
   if (p.installed) {
-    return `<button class="btn btn-ghost btn-remove tip" data-action="remove" data-key="${esc(p.key)}" data-tip="${tr("tip.remove", esc(p.packages.join(", ")))}" ${dis}><i class="ti ti-trash"></i> ${tr("ui.remove")}</button>`;
+    if (!p.packages.length) return "";
+    const dica = tip || tr("tip.remove", esc(p.packages.join(", ")));
+    return `<button class="btn btn-ghost btn-remove tip" data-action="remove" data-key="${esc(p.key)}" data-tip="${dica}" ${dis}><i class="ti ti-trash"></i> ${tr("ui.remove")}</button>`;
   }
   if (p.source === "manual") {
     if (p.website) return `<a class="btn btn-ghost" href="${esc(p.website)}" target="_blank" rel="noopener"><i class="ti ti-external-link"></i> ${tr("src.manual")}</a>`;
     return `<button class="btn btn-ghost" disabled><i class="ti ti-tools"></i> ${tr("ui.manual")}</button>`;
   }
-  return `<button class="btn btn-primary btn-install tip" data-action="install" data-key="${esc(p.key)}" data-tip="${tr("tip.package", esc(p.packages.join(", ")))}" ${dis}><i class="ti ti-download"></i> ${tr("ui.install")}</button>`;
+  const dica = tip || tr("tip.package", esc(p.packages.join(", ")));
+  return `<button class="btn btn-primary btn-install tip" data-action="install" data-key="${esc(p.key)}" data-tip="${dica}" ${dis}><i class="ti ti-download"></i> ${tr("ui.install")}</button>`;
+}
+
+function cardActionHtml(p) {
+  return actionHtml(p);
 }
 
 function chipFor(p) {
@@ -449,15 +435,13 @@ function modalActionsHtml(p) {
   if (p.source !== "arch") {
     if (p.source === "aur") {
       const url = `https://aur.archlinux.org/packages/${encodeURIComponent(p.packages[0] || "")}`;
-      return `<a class="btn btn-ghost tip" data-tip="${tr("tip.aurModal")}" href="${esc(url)}" target="_blank" rel="noopener"><i class="ti ti-package"></i> AUR</a>` +
-        `<button class="btn btn-primary btn-install" data-action="install" data-key="${esc(p.key)}" ${state.busy ? "disabled" : ""}><i class="ti ti-download"></i> ${p.installed ? tr("ui.reinstall") : tr("ui.install")}</button>` +
-        removeActionHtml(p);
+      return `<a class="btn btn-ghost tip" data-tip="${tr("tip.aurPage")}" href="${esc(url)}" target="_blank" rel="noopener"><i class="ti ti-package"></i> AUR</a>` +
+        actionHtml(p, tr("tip.aurPkgs", esc(p.packages.join(", "))));
     }
     if (p.website) return `<a class="btn btn-primary" href="${esc(p.website)}" target="_blank" rel="noopener"><i class="ti ti-external-link"></i> ${tr("src.manual")}</a>`;
     return `<button class="btn btn-primary" disabled><i class="ti ti-alert-triangle"></i> ${tr("ui.noPackage")}</button>`;
-  }
-  return `<button class="btn btn-primary btn-install" data-action="install" data-key="${esc(p.key)}" ${state.busy ? "disabled" : ""}><i class="ti ti-download"></i> ${p.installed ? tr("ui.reinstall") : tr("ui.install")}</button>` +
-    removeActionHtml(p);
+}
+  return actionHtml(p);
 }
 
 function fromKey(key) {
@@ -503,12 +487,15 @@ function updateInstallButtons(product, progress, mode, running = true) {
     .replace(/…$/, "").trim();
   const label = running
     ? Number.isFinite(progress) ? `${verb} ~${progress}%` : `${verb}…`
-    : product.installed ? tr("ui.reinstall") : tr("ui.install");
-  $$("[data-action=install]")
+    : product.installed ? tr("ui.remove") : tr("ui.install");
+  /* O botão que mostra o progresso é o da ação em andamento: desinstalar também
+     precisa aparecer na tela, senão a barra de status é a única pista. */
+  const emAndamento = running && mode === "remove" ? "remove" : "install";
+  $$(`[data-action=${emAndamento}]`)
     .filter((button) => button.dataset.key === product.key)
     .forEach((button) => {
       const icon = document.createElement("i");
-      icon.className = "ti ti-download";
+      icon.className = running && mode === "remove" ? "ti ti-trash" : "ti ti-download";
       button.replaceChildren(icon, document.createTextNode(` ${label}`));
       button.classList.toggle("is-running", running);
       button.setAttribute("aria-label", label);
@@ -621,7 +608,7 @@ function finishInstall(ok, product, btn, card, mode = "install") {
   }
   state.busy = false;
   setBusy(false);
-  conferirDoServidor();
+  conferirDoServidor(product);
 }
 
 /* ============================== Delegation =============================== */
@@ -859,7 +846,7 @@ function patchGrid() {
 
 /* Escuta o servidor: quando o catálogo muda, aplica só o que mudou e avisa.
    Não existe location.reload() em lugar nenhum — a janela nunca recarrega. */
-function applyFresh(fresh, silencioso) {
+function applyFresh(fresh, silencioso, forcar) {
   const antes = state.data;
   if (!antes) { state.data = fresh; renderHeader(fresh); renderCats(fresh.categories); render(); return; }
 
@@ -888,7 +875,11 @@ function applyFresh(fresh, silencioso) {
     const mudou = (fresh.products || []).some((p) => antesInstalado.get(p.key) !== p.installed)
       || antesInstalado.size !== (fresh.products || []).length;
     state.data = fresh;
-    if (!mudou) return;
+    /* `forcar` é o caso de instalar/desinstalar: aqui o estado local já foi
+       mexido à mão e por isso a comparação diz que "não mudou", mas o card na
+       tela continua com o botão antigo. O patch compara com a assinatura da
+       última renderização, então ele troca o card certo. */
+    if (!mudou && !forcar) return;
     renderCats(fresh.categories);
     patchGrid();
     return;
@@ -920,11 +911,21 @@ function applyFresh(fresh, silencioso) {
    confirmar agora: o estado guardado aqui era uma aposta e o poll seguinte
    sobrescrevia com o do servidor. Buscar de verdade também evita refazer a
    tela inteira, que fazia a loja piscar como se tivesse recarregado. */
-async function conferirDoServidor() {
+async function conferirDoServidor(product) {
   try {
-    applyFresh(await api("/api/index"), true);
+    applyFresh(await api("/api/index"), true, true);
   } catch (e) {
     render(false);
+  }
+  /* O modal nao e reconstruido pelo patch, entao os botoes dele ficariam com o
+     estado antigo (instalar um app deixaria "Instalar" em vez de "Remover"). */
+  if (product && !$("#modal").hidden) {
+    const box = $("#modal-content .m-actions");
+    if (box) {
+      const atual = fromKey(product.key);
+      box.innerHTML = modalActionsHtml(atual || product);
+      bindModalActions();
+    }
   }
 }
 

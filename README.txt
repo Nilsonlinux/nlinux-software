@@ -1,4 +1,4 @@
-NLinux Software v196 - loja de aplicativos (distribuicao)
+NLinux Software v197 - loja de aplicativos (distribuicao)
 Sem opcao de administracao.
 
 Dependencias (veja DEPENDENCIES.txt):
