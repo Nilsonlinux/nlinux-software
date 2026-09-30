@@ -315,7 +315,7 @@ function visibleProducts() {
     if (state.cat !== "all" && p.category !== state.cat) return false;
     if (state.installedOnly && !p.installed) return false;
     if (!re) return true;
-    return re.test(p.name) || re.test(p.summary) || re.test(p.description) ||
+    return re.test(p.name) || re.test(p.id || "") || re.test(p.summary) || re.test(p.description) ||
            re.test(p.developer || "") || re.test(p.category);
   });
 }

@@ -874,7 +874,8 @@ def build_payload() -> dict:
                 {
                     "key": f"{key}/{name}",
                     "category": key,
-                    "name": name,
+                    "id": name,
+                    "name": package.get("name") or name,
                     "summary": package.get("summary", ""),
                     "description": package.get("description", ""),
                     "developer": package.get("developer-name"),
