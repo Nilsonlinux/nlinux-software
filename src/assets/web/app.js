@@ -176,12 +176,26 @@ function themeInit() {
 
 /* ============================== Header =================================== */
 function renderHeader(info) {
-  $("#arch-badge").textContent = info.system.arch;
   $("#brand-name").textContent = "NLinux";
   $("#foot-info").textContent = tr("foot.apps", info.total);
   const al = $("#admin-link");
   if (al) al.style.display = info.admin ? "" : "none";
+  // A Loja só mostra o selo ADMIN quando está sob curadoria (payload admin).
+  // Na distro, gerada com ADMIN_ENABLED = False, ele nunca aparece.
+  const ab = $("#admin-badge");
+  if (ab) ab.hidden = !info.admin;
+  renderRevBadge(info);
   renderStoreMeta(info);
+}
+
+/* Revisão do catálogo em uso. Fica no cabeçalho para identificar de relance qual
+   versão está instalada: a loja sincroniza sozinha e é este número que muda. */
+function renderRevBadge(info) {
+  const el = $("#rev-badge");
+  if (!el) return;
+  const rev = info && info.store && info.store.revision;
+  el.textContent = rev == null ? "" : "v" + rev;
+  el.hidden = rev == null;
 }
 
 function formatStamp(epoch) {

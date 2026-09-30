@@ -133,6 +133,17 @@ img { display: block; }
   background: var(--accent-soft); border: 1px solid var(--line-strong, var(--line));
   padding: 4px 10px; border-radius: 999px; white-space: nowrap;
 }
+/* Revisão do catálogo: o número que identifica a versão em uso. */
+.badge-rev {
+  font-variant-numeric: tabular-nums; letter-spacing: .3px;
+  border-color: var(--accent-strong); font-weight: 700;
+}
+/* Curadoria: marca que esta janela edita o catálogo (a loja só sincroniza). */
+.badge-admin {
+  text-transform: uppercase; letter-spacing: 1.2px; font-weight: 700;
+  color: var(--on-accent); background: var(--accent-strong);
+  border-color: var(--accent-strong);
+}
 
 .icon-btn {
   display: grid; place-items: center;
