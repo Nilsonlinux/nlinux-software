@@ -2198,50 +2198,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "mumble": {
-      "name": "Mumble",
-      "summary": "Low-latency, high quality VoIP chat software",
-      "description": "An open source, low-latency, high quality voice chat software. It features noise suppression, encrypted connections for both voice and instant messaging, automatic gain control and low latency audio with support for multiple audio standards. Mumble includes an in-game overlay compatible with most open-source and commercial 3D applications. Mumble is just a client and uses a non-standard protocol. You will need a dedicated server to talk to other users. <ul><li>Install Murmur, your own private Mumble server, with a <a onclick=jumpOneClickServers(3)>one-click installation.</a></li></ul> ",
-      "icon": "assets/mumble.png",
-      "screenshots": [
-        "assets/mumble-1.jpg"
-      ],
-      "developer-name": "Various Contributors",
-      "developer-url": "https://github.com/mumble-voip/mumble/blob/master/AUTHORS",
-      "urls": {
-        "info": "http://wiki.mumble.info/wiki/Main_Page",
-        "android-app": "https://play.google.com/store/apps/details?id=com.morlunk.mumbleclient.free",
-        "ios-app": "http://itunes.apple.com/us/app/mumble/id443472808"
-      },
-      "launch-cmd": "mumble",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "mumble",
-          "install-packages": [
-            "mumble"
-          ],
-          "remove-packages": [
-            "mumble"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "nextcloud-client": {
       "name": "Nextcloud Client",
       "summary": "Synchronize files from a Nextcloud server",
@@ -2673,50 +2629,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "uget": {
-      "name": "uGet",
-      "summary": "Simple and lightweight download manager",
-      "description": "A simple, lightweight and easy-to-use download manager. It provides the following features: resume downloads, queue downloads, classify downloads in categories, Firefox integration (through Flashgot plugin), clipboard monitoring, import downloads import from HTML files and batch download. ",
-      "icon": "assets/uget.png",
-      "screenshots": [
-        "assets/uget-1.jpg"
-      ],
-      "developer-name": "uGet Team",
-      "developer-url": "http://ugetdm.com/about",
-      "urls": {
-        "info": "http://ugetdm.com/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "uget-gtk",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "aur",
-          "main-package": "uget",
-          "install-packages": [
-            "uget"
-          ],
-          "remove-packages": [
-            "uget"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "vivaldi": {
       "name": "Vivaldi",
       "summary": "Web browser built with power users in mind",
@@ -2797,51 +2709,6 @@
       },
       "proprietary": false,
       "alternate-to": "WhatsApp",
-      "listed": true
-    },
-    "x2goclient": {
-      "name": "X2Go Client",
-      "summary": "Remotely start a graphical session on another computer",
-      "description": "A graphical client for the X2Go Server. You can use it to start new X2Go remote sessions or reconnect to running sessions. <ul><li><a onclick=jumpOneClickServers(2)>One-click server install available</a></li></ul> ",
-      "icon": "assets/x2goclient.png",
-      "screenshots": [
-        "assets/x2goclient-1.jpg",
-        "assets/x2goclient-2.jpg"
-      ],
-      "developer-name": "Various Contributors",
-      "developer-url": "https://wiki.x2go.org/doku.php/about:start",
-      "urls": {
-        "info": "http://wiki.x2go.org/doku.php",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "x2goclient",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "aur",
-          "main-package": "x2goclient",
-          "install-packages": [
-            "x2goclient"
-          ],
-          "remove-packages": [
-            "x2goclient"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
       "listed": true
     },
     "zenmap": {
@@ -3226,58 +3093,6 @@
           ],
           "remove-packages": [
             "clementine"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
-    "codecs": {
-      "name": "Codecs Pack",
-      "summary": "Complete collection of codecs for your system",
-      "description": "Includes a library that offers a complete, cross-platform solution to decode, encode, record, convert and stream audio and video. It also includes a MP3 audio decoder that permits the playback of MPEG 1 audio layer III (MP3) streams in Rhythmbox. ",
-      "icon": "assets/codecs.png",
-      "screenshots": [],
-      "developer-name": "Ubuntu Repositories",
-      "developer-url": "https://packages.ubuntu.com/search?keywords=libavcodec-extra",
-      "urls": {
-        "info": "https://packages.ubuntu.com/search?keywords=libavcodec-extra",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": null,
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "libavcodec-extra",
-          "install-packages": [
-            "libavcodec-extra",
-            "gstreamer1.0-plugins-good",
-            "gstreamer1.0-plugins-bad",
-            "gstreamer1.0-plugins-ugly",
-            "gstreamer1.0-fluendo-mp3",
-            "gstreamer1.0-libav"
-          ],
-          "remove-packages": [
-            "libavcodec-extra",
-            "gstreamer1.0-plugins-good",
-            "gstreamer1.0-plugins-bad",
-            "gstreamer1.0-plugins-ugly",
-            "gstreamer1.0-fluendo-mp3",
-            "gstreamer1.0-libav"
           ]
         }
       },
@@ -4840,9 +4655,9 @@
   },
   "stats": {
     "version": 7,
-    "revision": 185,
-    "compiled": 1790760278,
-    "apps": 110,
+    "revision": 189,
+    "compiled": 1790762195,
+    "apps": 106,
     "categories": 11
   },
   "distro": {
