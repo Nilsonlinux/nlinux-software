@@ -63,6 +63,7 @@
     "assets/gimp.png": "858b5821cae40a40acf99db86a8f677c157c15c86f45ad044a3a0f3e8499c98d",
     "assets/git-cola-1.jpg": "98a6d60f1d6e5e7fdb03270f071347ac57aaa7f76affc56edd0b3424ce98b108",
     "assets/git-cola.png": "068d89b2aba0a105f7051618e052cd4b23ec3e8e3d7c34063592dc7fd9e3e55b",
+    "assets/gnome-software.png": "f2f36fa70a6a9541fbf3a3f3a46ec06535c812ff5e0957f8940ac658c8651e93",
     "assets/gnote-1.jpg": "9d5dca267be5037529a1dce837b11fe068c830b02293bf72a186e0b8921543ad",
     "assets/gnote-2.jpg": "a56f44a3cf618a7f148cb3d6d3a5ba201b57f663b3ea66b275f4e19db3315d4d",
     "assets/gnote.png": "71f9fa032fc53dab117870420c633dc09dab15bbebe3360b6366b2fff9752aab",
@@ -180,5 +181,5 @@
     "assets/zenmap-1.jpg": "136b7f268bd14d829843cb878c4f57db3fae8b4f551b392823e50d27d83efaa8",
     "assets/zenmap.png": "a18cd769f13f92d7ee70983893c977eaac5cce11f418314d337bf468ee745c17"
   },
-  "revision": 204
+  "revision": 207
 }

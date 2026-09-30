@@ -3944,14 +3944,14 @@
     }
   },
   "more-software": {
-    "2-software": {
-      "name": "Software",
+    "gnome-software": {
+      "name": "Gnome Software",
       "summary": "A software center as seen in Ubuntu and many other Linux distributions.",
       "description": "Software lets you install and update applications and system extensions. It is the same software centre found on other Linux distributions like mainstream Ubuntu.",
-      "icon": "assets/2-software.png",
+      "icon": "assets/gnome-software.png",
       "screenshots": [],
-      "developer-name": "GNOME Team",
-      "developer-url": "https://www.gnome.org/about/",
+      "developer-name": "Jan Alexander Steffens, Fabian Bornschein",
+      "developer-url": "https://apps.gnome.org/Software",
       "urls": {
         "info": "https://wiki.gnome.org/Apps/Software",
         "android-app": "",
@@ -3986,8 +3986,8 @@
   },
   "stats": {
     "version": 7,
-    "revision": 204,
-    "compiled": 1790808175,
+    "revision": 207,
+    "compiled": 1790808940,
     "apps": 91,
     "categories": 11
   },

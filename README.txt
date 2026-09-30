@@ -1,4 +1,4 @@
-NLinux Software v204 - loja de aplicativos (distribuicao)
+NLinux Software v207 - loja de aplicativos (distribuicao)
 Sem opcao de administracao.
 
 Dependencias (veja DEPENDENCIES.txt):
