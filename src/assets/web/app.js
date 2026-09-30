@@ -621,7 +621,7 @@ function finishInstall(ok, product, btn, card, mode = "install") {
   }
   state.busy = false;
   setBusy(false);
-  render(false);
+  conferirDoServidor();
 }
 
 /* ============================== Delegation =============================== */
@@ -859,7 +859,7 @@ function patchGrid() {
 
 /* Escuta o servidor: quando o catálogo muda, aplica só o que mudou e avisa.
    Não existe location.reload() em lugar nenhum — a janela nunca recarrega. */
-function applyFresh(fresh) {
+function applyFresh(fresh, silencioso) {
   const antes = state.data;
   if (!antes) { state.data = fresh; renderHeader(fresh); renderCats(fresh.categories); render(); return; }
 
@@ -879,7 +879,20 @@ function applyFresh(fresh) {
   const hashAgora = fresh.stats && fresh.stats.catalog_hash;
   /* A base do diff tem de ser o payload mais recente, mesmo quando não entra
      nenhum card novo: senão o próximo poll compara sempre com a mesma versão. */
-  if (!hashAgora || hashAgora === hashAntes) { state.data = fresh; return; }
+  if (!hashAgora || hashAgora === hashAntes) {
+    /* O catálogo é o mesmo, mas o que está instalado pode ter mudado (a loja
+       acabou de instalar ou desinstalar). O hash não cobre isso, então sem esta
+       conferência o app desinstalado continuaria marcado como instalado até a
+       próxima mudança de catálogo. */
+    const antesInstalado = new Map((antes.products || []).map((p) => [p.key, p.installed]));
+    const mudou = (fresh.products || []).some((p) => antesInstalado.get(p.key) !== p.installed)
+      || antesInstalado.size !== (fresh.products || []).length;
+    state.data = fresh;
+    if (!mudou) return;
+    renderCats(fresh.categories);
+    patchGrid();
+    return;
+  }
 
   const d = diffCatalog(antes, fresh);
   if (antes.total === fresh.total &&
@@ -898,7 +911,21 @@ function applyFresh(fresh) {
   if (d.removidos.length) partes.push(tr(d.removidos.length === 1 ? "upd.gone.one" : "upd.gone", d.removidos.length));
   if (d.alterados.length) partes.push(tr(d.alterados.length === 1 ? "upd.changed.one" : "upd.changed", d.alterados.length));
   const titulo = tr("upd.toast", revAgora == null ? "?" : revAgora);
-  toast(partes.length ? `${titulo} · ${partes.join(" · ")}` : titulo, "upd", 6000);
+  /* `silencioso` é quando a própria loja causou a mudança (instalar ou
+     desinstalar): o aviso de catálogo seria enganoso. */
+  if (!silencioso) toast(partes.length ? `${titulo} · ${partes.join(" · ")}` : titulo, "upd", 6000);
+}
+
+/* Depois de instalar ou desinstalar, o "instalado" só vale se o servidor
+   confirmar agora: o estado guardado aqui era uma aposta e o poll seguinte
+   sobrescrevia com o do servidor. Buscar de verdade também evita refazer a
+   tela inteira, que fazia a loja piscar como se tivesse recarregado. */
+async function conferirDoServidor() {
+  try {
+    applyFresh(await api("/api/index"), true);
+  } catch (e) {
+    render(false);
+  }
 }
 
 function watchRevision() {

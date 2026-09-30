@@ -457,6 +457,14 @@ class InstallJob:
             else:
                 self.lines.append(
                     f"Falha ao {'desinstalar' if removing else 'instalar'}: {names}")
+            # O payload guarda o estado "instalado" de cada app. Sem reconstruir
+            # aqui, ele continua dizendo o que era verdade antes do trabalho, e o
+            # app volta a aparecer como instalado (e a desinstalar de novo dá
+            # erro, porque o pacote já não existe mais).
+            try:
+                rebuild_payload()
+            except Exception as exc:
+                print(f"[nlinux] falha ao reconstruir o payload: {exc}")
             self.done = True
 
         threading.Thread(target=work, daemon=True).start()
