@@ -3946,7 +3946,7 @@
   "more-software": {
     "gnome-software": {
       "name": "Gnome Software",
-      "summary": "A software center as seen in Ubuntu and many other Linux distributions.",
+      "summary": "Allows you to find and install new apps",
       "description": "Software lets you install and update applications and system extensions. It is the same software centre found on other Linux distributions like mainstream Ubuntu.",
       "icon": "assets/gnome-software.png",
       "screenshots": [],
@@ -3986,8 +3986,8 @@
   },
   "stats": {
     "version": 7,
-    "revision": 207,
-    "compiled": 1790808940,
+    "revision": 211,
+    "compiled": 1790809117,
     "apps": 91,
     "categories": 11
   },
