@@ -45,90 +45,6 @@
       "alternate-to": "Post-it &reg; notes",
       "listed": true
     },
-    "keepassxc": {
-      "name": "KeePassXC",
-      "summary": "Local password manager for securely storing passwords.",
-      "description": "A free/open-source password manager or safe which helps you to manage your passwords in a secure way. You can put all your passwords in one database, which is locked with one master key or a key-disk. So you only have to remember one single master password or, insert the key-disk to unlock the whole database. The databases are encrypted using the algorithms AES or Twofish. ",
-      "icon": "assets/keepassxc.png",
-      "screenshots": [
-        "assets/keepassxc-1.jpg"
-      ],
-      "developer-name": "Various Contributors",
-      "developer-url": "https://github.com/keepassxreboot/keepassxc/graphs/contributors",
-      "urls": {
-        "info": "https://keepassxc.org/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "keepassxc",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "keepassxc",
-          "install-packages": [
-            "keepassxc"
-          ],
-          "remove-packages": [
-            "keepassxc"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": "Enpass and LastPass",
-      "listed": true
-    },
-    "veracrypt": {
-      "name": "VeraCrypt",
-      "summary": "Software for maintaining on-the-fly encrypted volumes.",
-      "description": "Software for establishing and maintaining an on-the-fly-encrypted volume. The encrypted volume can be a virtual encrypted disk within a file, a partition or complete device such as a USB stick or disk drive. <ul><li><b>Successor to: </b><i>TrueCrypt</i></li></ul> ",
-      "icon": "assets/veracrypt.png",
-      "screenshots": [
-        "assets/veracrypt-1.jpg"
-      ],
-      "developer-name": "IDRIX",
-      "developer-url": "https://www.idrix.fr/",
-      "urls": {
-        "info": "https://veracrypt.codeplex.com/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "veracrypt",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "aur",
-          "main-package": "veracrypt",
-          "install-packages": [
-            "veracrypt"
-          ],
-          "remove-packages": [
-            "veracrypt"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "etcher": {
       "name": "Etcher",
       "summary": "Flash OS images to SD cards & USB drives, safely and easily",
@@ -803,6 +719,52 @@
       "alternate-to": "Sid Meier’s Civilization",
       "listed": true
     },
+    "frozenbubble": {
+      "name": "Frozen-Bubble",
+      "summary": "Clone of Puzzle Bobble",
+      "description": "A clone of the popular <i>Puzzle Bobble</i> game, in which you attempt to shoot bubbles into groups of the same color to cause them to pop. Players compete as penguins and must use the arrow keys to aim a colored bubble at groups of bubbles. The objective is to clear all the bubbles off the screen before a bubble passes below a line at the bottom. It features 100 single-player levels, a two-player mode, music and striking graphics. A level editor is also included to allow players to create and play their own levels. ",
+      "icon": "assets/frozenbubble.png",
+      "screenshots": [
+        "assets/frozenbubble-1.jpg"
+      ],
+      "developer-name": "The Frozen-Bubble Team",
+      "developer-url": "http://www.frozen-bubble.org/downloads/",
+      "urls": {
+        "info": "http://frozen-bubble.org/",
+        "android-app": null,
+        "ios-app": null
+      },
+      "launch-cmd": "frozen-bubble",
+      "arch": [
+        "i686",
+        "x86_64",
+        "armv7h",
+        "aarch64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "frozen-bubble",
+          "install-packages": [
+            "frozen-bubble",
+            "frozen-bubble-data"
+          ],
+          "remove-packages": [
+            "frozen-bubble",
+            "frozen-bubble-data"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
     "hedgewars": {
       "name": "Hedgewars",
       "summary": "Turn-based artillery game featuring Hedgehogs",
@@ -1319,50 +1281,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "teeworlds": {
-      "name": "Teeworlds",
-      "summary": "Online multiplayer retro cartoon-themed shooter",
-      "description": "A free online multiplayer retro shooter featuring cartoon-themed graphics and physics, and relies heavily on classic shooter weaponry and gameplay. Battle with up to 16 players in a variety of game modes, including Team Deathmatch and Capture The Flag. You can even design your own maps! ",
-      "icon": "assets/teeworlds.png",
-      "screenshots": [],
-      "developer-name": "Various Contributors",
-      "developer-url": "https://github.com/teeworlds/teeworlds/graphs/contributors",
-      "urls": {
-        "info": "https://www.teeworlds.com",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "teeworlds",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "teeworlds",
-          "install-packages": [
-            "teeworlds",
-            "teeworlds-data"
-          ],
-          "remove-packages": [
-            "teeworlds",
-            "teeworlds-data"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "warzone2100": {
       "name": "Warzone 2100",
       "summary": "3D real-time strategy game",
@@ -1669,6 +1587,52 @@
       },
       "proprietary": false,
       "alternate-to": "Adobe&reg; Illustrator",
+      "listed": true
+    },
+    "mypaint": {
+      "name": "MyPaint",
+      "summary": "A pressure- and tilt-sensitive painting...",
+      "description": "A pressure and tilt-sensitive painting program which works well with Wacom graphics tablets and other similar devices. It comes with a large brush collection including charcoal and ink to emulate real media, but the highly configurable brush engine allows you to experiment with your own brushes and with not-quite-natural painting. ",
+      "icon": "assets/mypaint.png",
+      "screenshots": [],
+      "developer-name": "Andrew Chadwick and Contributors",
+      "developer-url": "https://github.com/mypaint/mypaint/graphs/contributors",
+      "urls": {
+        "info": "http://mypaint.org/",
+        "android-app": null,
+        "ios-app": null
+      },
+      "launch-cmd": "mypaint",
+      "arch": [
+        "i686",
+        "x86_64",
+        "armv7h",
+        "aarch64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "mypaint",
+          "install-packages": [
+            "mypaint",
+            "mypaint-data",
+            "mypaint-data-extras"
+          ],
+          "remove-packages": [
+            "mypaint",
+            "mypaint-data",
+            "mypaint-data-extras"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
       "listed": true
     }
   },
@@ -2650,54 +2614,6 @@
     }
   },
   "multimedia": {
-    "anoise": {
-      "name": "Ambient Noise",
-      "summary": "Relax or concentrate by playing an ambient background track",
-      "description": "Helps you relax or concentrate by creating an ambient background sound track allowing you to focus on your productivity. It features a minimal player, that can be integrated into the Sound Indicator, where you can choose one of the following sound tracks; Coffee Shop, Fire, Forest, Night, Rain, Sea, Storm and Wind. <ul><li><b>Note: </b><i>Ambient Noise works best with <u>Indicators enabled</u> via <a onclick=\"cmd(&#8217;run?mate-tweak&#8217;)\"> MATE Tweak</a>.</i></li></ul> ",
-      "icon": "assets/anoise.png",
-      "screenshots": [
-        "assets/anoise-1.jpg"
-      ],
-      "developer-name": "Marcos Alvarez Costales",
-      "developer-url": "https://launchpad.net/~costales",
-      "urls": {
-        "info": "http://anoise.tuxfamily.org/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "anoise",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "aur",
-          "main-package": "anoise",
-          "install-packages": [
-            "anoise",
-            "anoise-gui",
-            "anoise-media"
-          ],
-          "remove-packages": [
-            "anoise",
-            "anoise-gui",
-            "anoise-media"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "ardour": {
       "name": "Ardour",
       "summary": "Cross-platform tool for recording, editing, and mixing audio",
@@ -2869,6 +2785,50 @@
       "alternate-to": null,
       "listed": true
     },
+    "easytag": {
+      "name": "EasyTAG",
+      "summary": "View, edit and write tags for audio files",
+      "description": "A utility for viewing, editing and writing the tags of different audio files. Currently EasyTAG supports viewing, editing and writing tags of MP3, MP2 files (ID3 tag), FLAC files (FLAC Vorbis tag), Ogg Opus, Ogg Speex and Ogg Vorbis files (Ogg Vorbis tag), MP4/M4A/AAC files (MPEG-4 Part 10 tag), and MusePack, Monkey&#8217;s Audio files (APE tag). ",
+      "icon": "assets/easytag.png",
+      "screenshots": [
+        "assets/easytag-1.jpg"
+      ],
+      "developer-name": "GNOME Team and Contributors",
+      "developer-url": "https://git.gnome.org/browse/easytag/tree/AUTHORS",
+      "urls": {
+        "info": "https://wiki.gnome.org/Apps/EasyTAG",
+        "android-app": null,
+        "ios-app": null
+      },
+      "launch-cmd": "easytag",
+      "arch": [
+        "i686",
+        "x86_64",
+        "armv7h",
+        "aarch64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "easytag",
+          "install-packages": [
+            "easytag"
+          ],
+          "remove-packages": [
+            "easytag"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
     "kdenlive": {
       "name": "kdenlive",
       "summary": "Non-linear video editing suite",
@@ -2949,50 +2909,6 @@
           ],
           "remove-packages": [
             "kodi"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
-    "musescore": {
-      "name": "MuseScore",
-      "summary": "Music notation software",
-      "description": "A WYSIWYG music score typesetter that features, WYSIWYG, notes are entered on a &#8217;virtual note sheet&#8217;, nlimited score length, unlimited number of staves per system, up to four independent voices per staff, easy and fast note entry with mouse, keyboard or midi integrated sequencer and FluidSynth software synthesizer, import and export of MusicXml and standard midifiles (SMF) automatic part extraction and transposition, chord symbols, swing and shuffle playback, and much more... ",
-      "icon": "assets/musescore.png",
-      "screenshots": [
-        "assets/musescore-1.jpg"
-      ],
-      "developer-name": "MuseScore Team",
-      "developer-url": "https://github.com/orgs/musescore/people",
-      "urls": {
-        "info": "https://musescore.org/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "musescore",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "musescore",
-          "install-packages": [
-            "musescore"
-          ],
-          "remove-packages": [
-            "musescore"
           ]
         }
       },
@@ -3087,20 +3003,22 @@
       "alternate-to": "telestream Wirecast",
       "listed": true
     },
-    "openshot-qt": {
-      "name": "OpenShot",
-      "summary": "Non-linear video editor",
-      "description": "A non-linear video editor that can create and edit videos and movies using many popular video, audio, and image formats. Create videos for YouTube, Flickr, Vimeo, Metacafe, Xbox, and many more common formats! ",
-      "icon": "assets/openshot-qt.png",
-      "screenshots": [],
-      "developer-name": "Jonathan Thomas",
-      "developer-url": "https://github.com/orgs/OpenShot/people",
+    "pauvcontrol": {
+      "name": "PulseAudio Volume Control",
+      "summary": "Simple volume control mixer tool for PulseAudio",
+      "description": "A simple volume control tool (mixer) for the PulseAudio sound server. In contrast to classic mixer tools this one allows you to control both the volume of hardware devices and of each playback stream separately. It also allows you to redirect a playback stream to another output device without interrupting playback. ",
+      "icon": "assets/pauvcontrol.png",
+      "screenshots": [
+        "assets/pauvcontrol-1.jpg"
+      ],
+      "developer-name": "Freedesktop",
+      "developer-url": "https://cgit.freedesktop.org/pulseaudio/pavucontrol/",
       "urls": {
-        "info": "http://openshot.org/",
+        "info": "http://freedesktop.org/software/pulseaudio/pavucontrol/",
         "android-app": null,
         "ios-app": null
       },
-      "launch-cmd": "openshot-qt",
+      "launch-cmd": "pavucontrol",
       "arch": [
         "i686",
         "x86_64",
@@ -3115,13 +3033,13 @@
       ],
       "pacman": {
         "default": {
-          "source": "aur",
-          "main-package": "openshot-qt",
+          "source": "arch",
+          "main-package": "pavucontrol",
           "install-packages": [
-            "openshot-qt"
+            "pavucontrol"
           ],
           "remove-packages": [
-            "openshot-qt"
+            "pavucontrol"
           ]
         }
       },
@@ -3209,6 +3127,49 @@
           ],
           "remove-packages": [
             "simplescreenrecorder"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "soundconverter": {
+      "name": "Sound Converter",
+      "summary": "Converts audio files to another format",
+      "description": "SoundConverter is a simple sound converter application It reads sound files in any format supported by GStreamer and outputs them in Ogg Vorbis, FLAC, or WAV format, or MP3 format. ",
+      "icon": "assets/soundconverter.png",
+      "screenshots": [],
+      "developer-name": "Various Contributors",
+      "developer-url": "https://github.com/kassoulet/soundconverter/blob/py3k/AUTHORS",
+      "urls": {
+        "info": "http://soundconverter.org",
+        "android-app": null,
+        "ios-app": null
+      },
+      "launch-cmd": "soundconverter",
+      "arch": [
+        "i686",
+        "x86_64",
+        "aarch64",
+        "armv7h"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "soundconverter",
+          "install-packages": [
+            "soundconverter",
+            "gstreamer1.0-plugins-ugly"
+          ],
+          "remove-packages": [
+            "soundconverter"
           ]
         }
       },
@@ -3671,94 +3632,6 @@
       "alternate-to": "Microsoft&reg; Access",
       "listed": true
     },
-    "planner": {
-      "name": "Planner",
-      "summary": "Scheduling tool and project management application",
-      "description": "A Project Management application that supports Gantt charts and resource allocation. Among its important features are the definition of tasks with start/end dates and durations, dependancies between tasks, sub-tasks can also be defined, project calendars with holidays, definition of resources, assignment of resources to tasks, resource specific calendars. ",
-      "icon": "assets/planner.png",
-      "screenshots": [
-        "assets/planner-1.jpg"
-      ],
-      "developer-name": "Brian C. Christensen",
-      "developer-url": "http://www.simpleprojectmanagement.com/planner/what.html",
-      "urls": {
-        "info": "http://www.simpleprojectmanagement.com/planner/home.html",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "planner",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "planner",
-          "install-packages": [
-            "planner"
-          ],
-          "remove-packages": [
-            "planner"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
-    "rednotebook": {
-      "name": "RedNoteBook",
-      "summary": "Graphical diary and journal application",
-      "description": "A graphical diary and journal to keep track of notes and thoughts throughout the day. It includes a calendar navigation, customisable templates for each day, and a keyword search and cloud. ",
-      "icon": "assets/rednotebook.png",
-      "screenshots": [
-        "assets/rednotebook-1.jpg"
-      ],
-      "developer-name": "Jendrik Seipp",
-      "developer-url": "http://jendrikseipp.de/",
-      "urls": {
-        "info": "http://rednotebook.sourceforge.net/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "rednotebook",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "rednotebook",
-          "install-packages": [
-            "rednotebook"
-          ],
-          "remove-packages": [
-            "rednotebook"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "retext": {
       "name": "ReText",
       "summary": "Simple editor for Markdown and reStructuredText markup languages.",
@@ -3796,54 +3669,6 @@
           ],
           "remove-packages": [
             "retext"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
-    "gramps": {
-      "name": "gramps",
-      "summary": "Genealogy program created, developed and governed by genealogists",
-      "description": "Gramps is extremely flexible and strives to produce a genealogy program that is both intuitive for hobbyists and feature-complete for professional genealogists. Gramps has the ability to import GEDCOM files exported from many proprietary genealogy programs and can produce a large number of reports in many popular formats. ",
-      "icon": "assets/gramps.png",
-      "screenshots": [
-        "assets/gramps-1.jpg"
-      ],
-      "developer-name": "Various Contributors",
-      "developer-url": "https://github.com/gramps-project/gramps/blob/master/AUTHORS",
-      "urls": {
-        "info": "https://gramps-project.org/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "gramps",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "gramps",
-          "install-packages": [
-            "gramps",
-            "gir1.2-gtkspell3-3.0",
-            "gir1.2-webkit-3.0",
-            "python3-pil",
-            "rcs"
-          ],
-          "remove-packages": [
-            "gramps"
           ]
         }
       },
@@ -3930,48 +3755,6 @@
         }
       },
       "proprietary": true,
-      "alternate-to": null,
-      "listed": true
-    },
-    "murmur": {
-      "name": "Murmur",
-      "summary": "Murmur is the VoIP server component for Mumble.",
-      "description": "Murmur is the VoIP server component for Mumble. Murmur is installed in a system-wide fashion, but can also be run by individual users. Each murmur process supports multiple virtual servers, each with their own user base and channel list. ",
-      "icon": "assets/murmur.png",
-      "screenshots": [],
-      "developer-name": "Mumble Team",
-      "developer-url": "https://github.com/orgs/mumble-voip/people",
-      "urls": {
-        "info": "http://wiki.mumble.info/wiki/Main_Page",
-        "android-app": "https://play.google.com/store/apps/details?id=com.morlunk.mumbleclient.free",
-        "ios-app": "http://itunes.apple.com/us/app/mumble/id443472808"
-      },
-      "launch-cmd": null,
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "aur",
-          "main-package": "mumble-server",
-          "install-packages": [
-            "mumble-server"
-          ],
-          "remove-packages": [
-            "mumble-server"
-          ]
-        }
-      },
-      "proprietary": false,
       "alternate-to": null,
       "listed": true
     },
@@ -4158,52 +3941,6 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
-    },
-    "brasero": {
-      "name": "Brasero",
-      "summary": "Simple application to burn, copy and erase CD/DVD media",
-      "description": "Brasero is a simple application to burn, copy and erase CD and DVD media: audio, video or data. It features among other things: <ul><li>On-the-fly burning</li> <li>Multisession support</li> <li>On-the-fly conversion of music playlists in all formats supported by GStreamer</li></ul> ",
-      "icon": "assets/brasero.png",
-      "screenshots": [
-        "assets/brasero-1.jpg"
-      ],
-      "developer-name": "GNOME Team",
-      "developer-url": "https://www.gnome.org/about/",
-      "urls": {
-        "info": "https://wiki.gnome.org/Apps/Brasero",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "brasero",
-      "arch": [
-        "i686",
-        "x86_64",
-        "aarch64",
-        "armv7h"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "brasero",
-          "install-packages": [
-            "brasero"
-          ],
-          "remove-packages": [
-            "brasero",
-            "brasero-cdrkit",
-            "brasero-common"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
     }
   },
   "more-software": {
@@ -4249,9 +3986,9 @@
   },
   "stats": {
     "version": 7,
-    "revision": 198,
-    "compiled": 1790790054,
-    "apps": 97,
+    "revision": 204,
+    "compiled": 1790808175,
+    "apps": 91,
     "categories": 11
   },
   "distro": {

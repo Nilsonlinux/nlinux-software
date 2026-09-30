@@ -35,6 +35,8 @@
     "assets/corebird.png": "79e860aacc372a9eeabd5862d7ec1d69aadd4341e77467e79040c9fe01637543",
     "assets/darktable-1.jpg": "1e5c1e726610f3e3558dc95b3eaf66f655d0ba21edaafb4b3aedab6f518c2d1b",
     "assets/darktable.png": "2e96056f72b6b2fc660015310641f24ea20a5620cb83e0c5161e0dface6e6b53",
+    "assets/easytag-1.jpg": "030baa76cd6e65342c95178b4fbafe0e00d41c33bc37ecf8463d408f88a627c4",
+    "assets/easytag.png": "63a8563bab28189615aea6504b14ad86a77602c43b7b906f46e3a942f6dd32b6",
     "assets/emby.png": "73d058969eb32752bd361e819b910c18fd08d0a7c8c0f17a915dd7e20ab2ea09",
     "assets/etcher-1.jpg": "0eeef21c82ddd93561a7896fdffef5d5f8eea2a394c2eb24aadf243657e9e7cd",
     "assets/etcher.png": "5209d3bfcc74ed0d6232e30df8100e1dbc288d6ab5f9f24f462b16c7b478155c",
@@ -52,6 +54,8 @@
     "assets/focuswriter.png": "2f3241679f9d92591a59b686c992e8972f095336ad8618392beba790c7228e42",
     "assets/freeciv-1.jpg": "42f76c5ed4673475f83f094cd77f15c23b5a0361de422278c472cc90bb57a694",
     "assets/freeciv.png": "ad2c7f03f6c056a5eb1b7a98d0a4c196464472d5c84b543c4d1ef9dd863435d3",
+    "assets/frozenbubble-1.jpg": "e8addebcfae27f2c953c246e8b41c9a329c239cc1ce7e03ca16eb3f01b330394",
+    "assets/frozenbubble.png": "3b5de3859fb413a5ef0b3caf44801ea2523bff102bd68e4ea86673933a2d044d",
     "assets/geany-1.jpg": "ca7c7d258e0e27549a0d710103d8686fb2651da3b9789c77cc4ab860552d5448",
     "assets/geany.png": "3122e49c5943ac16130c4975826478390629707d0ed79b2a5048868b9b0aa9e3",
     "assets/gimp-1.jpg": "d8aa606284a3a0d8b148fd7437cd6b13cce74b582f28d810b98ccd5021cf1e92",
@@ -67,8 +71,6 @@
     "assets/google-chrome-1.jpg": "d20a9ebe8925da7bd7b00516502de545469daacb6c1e59f8b5d8dabf7b451a72",
     "assets/google-chrome.png": "bb6179bc163f20fafafa10580df95b0ab720ec637265f0dd0a7277ac7ad320ae",
     "assets/google-earth.png": "bb36a5ca0335bd83d7edf05675e19d275bb96850d28c7e3129b6429c946e7174",
-    "assets/gparted-1.jpg": "e9358635b1d07c755a10c3c6ee273eb362f454c7916b2f6e4101464465d0dadf",
-    "assets/gparted.png": "3cec90cee9baa0cd938baef34be22805fe9b44b55e6a239c66f6d7525bb9c3a1",
     "assets/gramps-1.jpg": "f48ca0306ad07b9d57bbbb02e8975f3fa634113bcff3aa669c99e4b4930658c3",
     "assets/gramps.png": "35ef8d668a8ff9c077ce9847b396bc8470b89219cca772b909ce3c77d7e3d9a3",
     "assets/hedgewars.png": "bda9f599669937711ad6901d09e72d93d57fb6ee717c9dac100ed8f531f03bab",
@@ -113,6 +115,8 @@
     "assets/opera-browser-1.jpg": "67901bf2d9be348f65161344f5790a8a133120da9c4fe04f2c2c28aa2998fca2",
     "assets/opera-browser.png": "64825c67b0e232d2d445f04db096e459195f956f471a23ab396f4f4861e277c7",
     "assets/owncloud-client.png": "d0706e97b4c9335510fda775c95b934118f587ea42e8cb4ab04e49c119641198",
+    "assets/pauvcontrol-1.jpg": "3c3b53b8873378aa22aa0a990fc467c873cb58f00fe4625fd328c08a7b0e8736",
+    "assets/pauvcontrol.png": "c4b34f5b0cfcf828168f75f43e69de4ace2625895743d4fd581bf53ff57840c8",
     "assets/pgadmin3.png": "ae6acf5e068f389fa615dc7ded81561cc121500df1f6a64fd3ffea187cc91655",
     "assets/pidgin-1.jpg": "407da99a68057f3fa53d0377830e9ac868ab486f51fccb4ba608a41eff7f842f",
     "assets/pidgin-2.jpg": "f1516496e57a55c410219bc4370ac8623ada65776de51c67af518e952b2f772d",
@@ -139,6 +143,7 @@
     "assets/simplescreenrecorder.png": "f47bf1ddbf0c96eed03079ac071e25ba7cceb99992fd23132789e05d8afe11a1",
     "assets/skypeforlinux.png": "ef0a534fd12432b4846b0c5d92664b5641b94c27162c1e80e5ee0916a9de31a0",
     "assets/slack.png": "75a8e8c8b948e4cef4ccc3dc057af8fa8e8e2fbff3e4459046d4cccee2463b83",
+    "assets/soundconverter.png": "306d32793851fbc0f4e1a4377edf584f066449023b9b05000f51fde6ed00e44f",
     "assets/spotify-1.jpg": "004e08a6c23ed2083f5118e6d6c6a4a186da429c98a9d3fe62ee94821ecf1a8e",
     "assets/spotify.png": "7fb6433fd4be8c7a7cdef86d097b498dcadb77edad535e0438c15c1004ce440b",
     "assets/steam-devices.png": "78f720b9e6cdd2bce379b7d519b0e57fe37dd69c68bb1e3f7b33feff35d56263",
@@ -175,5 +180,5 @@
     "assets/zenmap-1.jpg": "136b7f268bd14d829843cb878c4f57db3fae8b4f551b392823e50d27d83efaa8",
     "assets/zenmap.png": "a18cd769f13f92d7ee70983893c977eaac5cce11f418314d337bf468ee745c17"
   },
-  "revision": 198
+  "revision": 204
 }
