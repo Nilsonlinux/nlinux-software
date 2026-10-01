@@ -19,6 +19,7 @@ import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from uuid import uuid4
 
+from nlinux import aur_db
 from nlinux import pacman_db
 from nlinux import resources
 from nlinux.system_state import SystemState
@@ -91,8 +92,28 @@ ADMIN_ENABLED = False
 # em /opt, em ~/.local/share/nlinux/<papel>/apps, gravável sem root.
 # Definido aqui
 # porque depende de ADMIN_ENABLED.
-APPS_DIR = resources.apps_dir("admin" if ADMIN_ENABLED else "store")
-ASSETS_DIR = os.path.join(APPS_DIR, "assets")
+#
+# NLINUX_APPS_DIR sobrescreve o caminho. Existe por causa de uma armadilha: rodar
+# o projeto de dentro do $HOME faz a curadoria apontar para <projeto>/src/apps, o
+# snapshot do repositório, em vez de ~/.local/share/nlinux/admin/apps, que é o
+# catálogo que se está curando. Os dois são catálogos válidos e o servidor não
+# tem como adivinhar qual é o certo — com a variável, dá para escolher.
+APPS_DIR = os.environ.get("NLINUX_APPS_DIR") or \
+    resources.apps_dir("admin" if ADMIN_ENABLED else "store")
+
+
+def _assets_dir() -> str:
+    """Pasta de mídia do catálogo — derivada de `APPS_DIR` a cada chamada.
+
+    Não era uma constante `ASSETS_DIR` calculada na importação. O catálogo é lido
+    por `_index_path()`, que resolve `APPS_DIR` na hora; a mídia, congelada no
+    import. Quando os dois divergem — `NLINUX_APPS_DIR` mudado, ou o papel
+    admin/loja trocado em tempo de execução — o GC comparava o catálogo de um
+    lugar com a mídia de outro e apagava de mais: foi assim que 68 ícones do
+    snapshot saíram quando se salvou no catálogo vivo. Derivando sempre do mesmo
+    lugar, os dois não podem divergir.
+    """
+    return os.path.join(APPS_DIR, "assets")
 
 # Publicação automática no GitHub quando o build da versão da loja terminar.
 # Desligue com NLINUX_GIT_PUSH=0. O repositório local é clonado no GIT_PUSH_DIR
@@ -561,8 +582,15 @@ class BuildJob:
         self.log("aguardando autorização…")
         env = os.environ.copy()
         env["PKEXEC_UID"] = str(os.getuid())
+        # O caminho do catálogo vai por argumento: o `pkexec` descarta o
+        # ambiente do programa que executa, então só o que estiver na linha de
+        # comando chega ao build. Sem isto, o helper recalcula o caminho a
+        # partir do papel (admin/loja) em vez de usar o catálogo que esta
+        # janela está curando — e o build empacota o snapshot do projeto sem
+        # avisar ninguém. Ver `build_helper.run_as_user`.
+        cmd = [pkexec, "/usr/bin/python3", helper, f"--apps-dir={APPS_DIR}"]
         proc = subprocess.Popen(
-            [pkexec, "/usr/bin/python3", helper],
+            cmd,
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
             text=True, bufsize=1, env=env,
         )
@@ -718,21 +746,32 @@ class BoutiqueHandler(BaseHTTPRequestHandler):
         return os.path.join(APPS_DIR, rel)
 
     def _broken_apps(self) -> tuple:
-        """Apps do catálogo cujo pacote sumiu dos repositórios oficiais.
+        """Apps do catálogo cujo pacote principal não existe mais.
 
-        Só faz sentido nos repositórios do Arch: um app de fonte `aur` é
-        instalado pelo auxiliar, que consulta a AUR — ela tem pacotes que o
-        Arch não tem, e vice-versa. Apps `manual` não usam pacote nenhum.
+        Cobre as duas fontes, porque as duas quebram:
+
+        - `arch` é conferido no banco local do pacman, sem rede;
+        - `aur` é conferido na AUR (RPC v5), que exige rede — e por isso devolve
+          três respostas, não duas. Um pacote AUR que não deu para conferir
+          (offline, sem cache) vai para `sem_conferencia`, **não** para
+          `apps`: acusar quebra por falta de informação foi o que deixou
+          `atom`, `corebird` e os dois apps do Minecraft invisíveis, marcados
+          como `aur` e com pacote que não existe em lugar nenhum.
+
+        Apps `manual` não usam pacote, e ficam de fora.
+
+        Em ambos os casos o verificado é o **pacote principal**, que é o que o
+        botão instalar baixa. Extras que sumiram (um `-data`, um plugin) não
+        impedem a instalação e virariam ruído no aviso.
         """
-        if not pacman_db.available():
-            return {"apps": [], "erro": "sem banco de sincronização do pacman "
-                                        "(rode pacman -Sy)"}, 200
         try:
             raw = _load_raw()
         except Exception as exc:
-            return {"apps": [], "erro": str(exc)}, 200
+            return {"apps": [], "sem_conferencia": [], "erro": str(exc)}, 200
 
-        quebrados = []
+        # app_id -> o que precisa ser decidido, separado por fonte para que a
+        # AUR seja consultada uma única vez, no fim.
+        arch_alvos, aur_alvos = [], []
         for categoria, items in raw.items():
             if categoria in SPECIAL_KEYS or not isinstance(items, dict):
                 continue
@@ -740,46 +779,88 @@ class BoutiqueHandler(BaseHTTPRequestHandler):
                 if not isinstance(app, dict) or app.get("listed") is False:
                     continue
                 details = (app.get("pacman") or {}).get("default") or {}
-                if details.get("source") != "arch":
+                fonte = details.get("source")
+                if fonte not in ("arch", "aur"):
                     continue
-                pacotes = [p for p in (details.get("install-packages") or [])
-                           if is_pacman_package(p)]
                 principal = details.get("main-package")
 
                 # Nome que o pacman rejeita (`steam:i386`) também é quebra: o
                 # instalador nem chega a consultar o banco. Sem este caminho o
                 # app sumiria da lista, porque `is_pacman_package` descarta o
                 # nome antes de qualquer verificação — quebrado e invisível.
+                #
+                # Isso vale para as duas fontes: um nome rejeitado pelo pacman
+                # também não existe na AUR.
                 if not is_pacman_package(principal or ""):
-                    quebrados.append({
-                        "category": categoria,
-                        "id": app_id,
+                    if not principal:
+                        continue
+                    arch_alvos.append({
+                        "category": categoria, "id": app_id,
                         "name": app.get("name") or app_id,
-                        "packages": [principal or ""],
-                        "hint": pacman_db.renamed_hint(principal or ""),
+                        "pacote": principal, "fonte": fonte,
+                        "hint": pacman_db.renamed_hint(principal),
                     })
                     continue
 
-                if is_pacman_package(principal):
-                    pacotes = [principal] + [p for p in pacotes if p != principal]
-                if not pacotes:
-                    continue
-
-                # O app é quebrado quando o **pacote principal** não existe —
-                # é o que o botão instalar baixa. Pacotes extras que sumiram do
-                # Arch (um `-data`, um plugin) não impedem a instalação, e
-                # accuses por eles transformaria o aviso em ruído.
-                if pacman_db.lookup(principal or pacotes[0]):
-                    continue
-                alvo = principal or pacotes[0]
-                quebrados.append({
-                    "category": categoria,
-                    "id": app_id,
+                (arch_alvos if fonte == "arch" else aur_alvos).append({
+                    "category": categoria, "id": app_id,
                     "name": app.get("name") or app_id,
-                    "packages": [alvo],
-                    "hint": pacman_db.renamed_hint(alvo),
+                    "pacote": principal, "fonte": fonte, "hint": None,
                 })
-        return {"apps": quebrados, "total": len(quebrados), "erro": None}, 200
+
+        erro_aur = None
+        aur_existe, aur_ausente, aur_desconhecidos, erro_aur_consulta = \
+            aur_db.lookup_many([a["pacote"] for a in aur_alvos])
+        if erro_aur_consulta:
+            erro_aur = erro_aur_consulta
+
+        quebrados = []
+        sem_conferencia = []
+        if not pacman_db.available():
+            # Sem banco local, `lookup` devolve None para **todo** pacote, e
+            # acusar o catálogo inteiro seria pior que não dizer nada. Os apps
+            # do Arch entram como não conferidos, junto com os da AUR.
+            erro_aur = ("sem banco de sincronização do pacman "
+                        "(rode pacman -Sy)")
+            sem_conferencia = [{"category": a["category"], "id": a["id"],
+                                "name": a["name"], "package": a["pacote"]}
+                               for a in arch_alvos]
+        else:
+            for alvo in arch_alvos:
+                if pacman_db.lookup(alvo["pacote"]):
+                    continue
+                quebrados.append({
+                    "category": alvo["category"], "id": alvo["id"],
+                    "name": alvo["name"], "packages": [alvo["pacote"]],
+                    "source": alvo["fonte"],
+                    "hint": alvo["hint"] or pacman_db.renamed_hint(alvo["pacote"]),
+                })
+
+        for alvo in aur_alvos:
+            pacote = alvo["pacote"]
+            if pacote in aur_existe:
+                continue
+            if pacote in aur_desconhecidos:
+                sem_conferencia.append({
+                    "category": alvo["category"], "id": alvo["id"],
+                    "name": alvo["name"], "package": pacote,
+                })
+                continue
+            quebrados.append({
+                "category": alvo["category"], "id": alvo["id"],
+                "name": alvo["name"], "packages": [pacote],
+                "source": "aur",
+                # A AUR não guarda histórico de renomeação como o Arch; a RPC
+                # só diz que o nome não existe. Dizer isso é melhor que
+                # inventar um sucessor.
+                "hint": None,
+            })
+
+        sem_conferencia.sort(key=lambda a: a["name"])
+        quebrados.sort(key=lambda a: a["name"])
+        return {"apps": quebrados, "total": len(quebrados),
+                "sem_conferencia": sem_conferencia,
+                "erro": erro_aur}, 200
 
     # ---- routes -----------------------------------------------------------
 
@@ -1024,11 +1105,17 @@ def build_payload() -> dict:
             # `primary_package`: um nome que o pacman rejeita (`steam:i386`)
             # nunca chega a ser um `primary_package`, e consultando por ele o
             # app apareceria saudável enquanto a instalação falha.
-            declarado = main_package if is_pacman_package(main_package) else (
+            #
+            # `declarado` é o nome **como está escrito no catálogo**, mesmo
+            # quando o pacman recusa: é ele que o aviso precisa mostrar para a
+            # pessoa saber o que corrigir. `consultado` é o mesmo nome quando
+            # é válido, senão o primeiro da lista de instalação.
+            declarado = str(main_package).strip() if main_package else None
+            consultado = declarado if is_pacman_package(declarado) else (
                 next(iter(install_packages), None))
             meta = None
             if source == "arch":
-                meta = pacman_db.lookup(declarado)
+                meta = pacman_db.lookup(consultado)
             products.append(
                 {
                     "key": f"{key}/{name}",
@@ -1043,6 +1130,12 @@ def build_payload() -> dict:
                         f"/media/{s}" for s in package.get("screenshots", []) if s
                     ],
                     "packages": install_packages,
+                    # O pacote como está escrito no catálogo, mesmo quando o
+                    # pacman não aceita o nome. `packages` é a lista que o
+                    # instalador vai rodar, e um nome inválido nunca chega lá:
+                    # sem este campo o aviso do Steam diria "o pacote “” não
+                    # existe", que não ajuda ninguém a consertar.
+                    "declared": declarado,
                     "source": source,
                     "repo": (meta or {}).get("repo"),
                     "size": (meta or {}).get("isize"),
@@ -1052,6 +1145,14 @@ def build_payload() -> dict:
                     # app instala normalmente, então entra com a informação do
                     # novo nome em vez do aviso de pacote quebrado.
                     "missing": bool(source == "arch" and not meta),
+                    # Por que está quebrado: renomeado, nome inválido, ou nada.
+                    # "não existe mais" sozinho é falso para `steam:i386`, que
+                    # nunca existiu com esse nome — o `:` é sintaxe de
+                    # repositório, não de arquitetura.
+                    "missing_hint": (
+                        pacman_db.renamed_hint(declarado)
+                        if source == "arch" and not meta else None
+                    ),
                     "renamed": (meta or {}).get("renamed_from"),
                     "renamed_to": (meta or {}).get("renamed_to"),
                     "arches": package.get("arch", []),
@@ -1402,13 +1503,14 @@ def _gc_assets(raw: dict) -> None:
                 referenced.add(os.path.basename(str(app.get("icon"))))
             for shot in app.get("screenshots") or []:
                 referenced.add(os.path.basename(str(shot)))
-    if not os.path.isdir(ASSETS_DIR):
+    assets_dir = _assets_dir()
+    if not os.path.isdir(assets_dir):
         return
-    for fname in os.listdir(ASSETS_DIR):
+    for fname in os.listdir(assets_dir):
         if fname == "nlinux-logo.png" or fname in referenced:
             continue
         try:
-            os.remove(os.path.join(ASSETS_DIR, fname))
+            os.remove(os.path.join(assets_dir, fname))
         except OSError:
             pass
 
@@ -1483,8 +1585,9 @@ def admin_save(handler):
                 return {"error": str(e)}, 400
             rel = f"assets/{app_id}.{ext}"
             try:
-                os.makedirs(ASSETS_DIR, exist_ok=True)
-                with open(os.path.join(ASSETS_DIR, os.path.basename(rel)), "wb") as fh:
+                assets_dir = _assets_dir()
+                os.makedirs(assets_dir, exist_ok=True)
+                with open(os.path.join(assets_dir, os.path.basename(rel)), "wb") as fh:
                     fh.write(data)
             except OSError:
                 return {"error": "não foi possível salvar o ícone"}, 500
@@ -1511,7 +1614,9 @@ def admin_save(handler):
                 return {"error": str(e)}, 400
             rel = f"assets/{app_id}-{n}.{ext}"
             try:
-                with open(os.path.join(ASSETS_DIR, os.path.basename(rel)), "wb") as fh:
+                assets_dir = _assets_dir()
+                os.makedirs(assets_dir, exist_ok=True)
+                with open(os.path.join(assets_dir, os.path.basename(rel)), "wb") as fh:
                     fh.write(data)
             except OSError:
                 return {"error": "não foi possível salvar o screenshot"}, 500
@@ -1867,7 +1972,12 @@ def admin_build(progress=None):
             return {"error": f"falha ao gerar o pacote: {e}"}, 500
 
     return {"ok": True, "revision": rev, "path": tar_path, "run": pkg_root,
-            "size": size, "publish": publish, "iso": iso}, 200
+            "size": size, "publish": publish, "iso": iso,
+            # De qual catálogo o pacote saiu. O build roda em processo separado
+            # (pkexec), que recalcula o caminho a partir do papel; sem este
+            # campo, um caminho errado só apareceria quando a Loja mostrasse o
+            # catálogo antigo — e já teria sido publicado.
+            "apps_dir": APPS_DIR}, 200
 
 
 _ISO_IGNORE = shutil.ignore_patterns("__pycache__", "*.pyc", ".git")

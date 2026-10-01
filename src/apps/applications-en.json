@@ -216,54 +216,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "tuxpaint": {
-      "name": "Tux Paint",
-      "summary": "Creative drawing tool aimed at children.",
-      "description": "An award-winning drawing program designed for children aged 3 to 12. It provides an easy to use interface, fun sound effects and Tux as the cartoon mascot to guide the children throughout the program. ",
-      "icon": "assets/tuxpaint.png",
-      "screenshots": [
-        "assets/tuxpaint-1.jpg"
-      ],
-      "developer-name": "Bill Kendrick and Contributors",
-      "developer-url": "http://www.tuxpaint.org/developers/",
-      "urls": {
-        "info": "http://www.tuxpaint.org/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "tuxpaint",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "tuxpaint",
-          "install-packages": [
-            "tuxpaint"
-          ],
-          "remove-packages": [
-            "tuxpaint",
-            "tuxpaint-data",
-            "tuxpaint-config",
-            "tuxpaint-plugins-default",
-            "tuxpaint-stamps-default"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "libreoffice-math": {
       "name": "LibreOffice Math",
       "summary": "The formula editor for the LibreOffice suite.",
@@ -301,6 +253,51 @@
           ],
           "remove-packages": [
             "libreoffice-fresh"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "tuxpaint": {
+      "name": "Tux Paint",
+      "summary": "Creative drawing tool aimed at children.",
+      "description": "An award-winning drawing program designed for children aged 3 to 12. It provides an easy to use interface, fun sound effects and Tux as the cartoon mascot to guide the children throughout the program. ",
+      "icon": "assets/tuxpaint.png",
+      "screenshots": [
+        "assets/tuxpaint-1.jpg"
+      ],
+      "developer-name": "Bill Kendrick and Contributors",
+      "developer-url": "http://www.tuxpaint.org/developers/",
+      "urls": {
+        "info": "http://www.tuxpaint.org/",
+        "android-app": null,
+        "ios-app": null
+      },
+      "launch-cmd": "tuxpaint",
+      "arch": [
+        "i686",
+        "x86_64",
+        "armv7h",
+        "aarch64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "tuxpaint",
+          "install-packages": [
+            "tuxpaint"
+          ],
+          "remove-packages": [
+            "tuxpaint",
+            "tuxpaint-config"
           ]
         }
       },
@@ -397,138 +394,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "extremetuxracer": {
-      "name": "Extreme Tux Racer",
-      "summary": "Simple racing game featuring Tux",
-      "description": "A simple OpenGL racing game featuring Tux, the Linux mascot. The goal of the game is to slide down a snow- and ice-covered mountain as quickly as possible, avoiding the trees and rocks that will slow you down. Collect herrings and other goodies while sliding down the hill, but avoid fish bones. ",
-      "icon": "assets/extremetuxracer.png",
-      "screenshots": [
-        "assets/extremetuxracer-1.jpg"
-      ],
-      "developer-name": "Extreme Tux Racer Team",
-      "developer-url": "https://launchpad.net/~etracer",
-      "urls": {
-        "info": "http://sourceforge.net/projects/extremetuxracer/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "extremetuxracer",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "extremetuxracer",
-          "install-packages": [
-            "extremetuxracer",
-            "extremetuxracer-data"
-          ],
-          "remove-packages": [
-            "extremetuxracer",
-            "extremetuxracer-data"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
-    "flightgear": {
-      "name": "Flightgear",
-      "summary": "Open source flight simulator",
-      "description": "The goal of the FlightGear project is to create a sophisticated and open flight simulator framework for use in research, academic environments, pilot training, as an industry engineering tool and last but certainly not least, as a fun, realistic, and challenging desktop flight simulator. ",
-      "icon": "assets/flightgear.png",
-      "screenshots": [],
-      "developer-name": "Flightgear Team",
-      "developer-url": "http://www.flightgear.org/about/credits/",
-      "urls": {
-        "info": "http://www.flightgear.org/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "flightgear",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "flightgear",
-          "install-packages": [
-            "flightgear"
-          ],
-          "remove-packages": [
-            "flightgear"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
-    "frozenbubble": {
-      "name": "Frozen-Bubble",
-      "summary": "Clone of Puzzle Bobble",
-      "description": "A clone of the popular <i>Puzzle Bobble</i> game, in which you attempt to shoot bubbles into groups of the same color to cause them to pop. Players compete as penguins and must use the arrow keys to aim a colored bubble at groups of bubbles. The objective is to clear all the bubbles off the screen before a bubble passes below a line at the bottom. It features 100 single-player levels, a two-player mode, music and striking graphics. A level editor is also included to allow players to create and play their own levels. ",
-      "icon": "assets/frozenbubble.png",
-      "screenshots": [
-        "assets/frozenbubble-1.jpg"
-      ],
-      "developer-name": "The Frozen-Bubble Team",
-      "developer-url": "http://www.frozen-bubble.org/downloads/",
-      "urls": {
-        "info": "http://frozen-bubble.org/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "frozen-bubble",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "frozen-bubble",
-          "install-packages": [
-            "frozen-bubble",
-            "frozen-bubble-data"
-          ],
-          "remove-packages": [
-            "frozen-bubble",
-            "frozen-bubble-data"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "lutris": {
       "name": "Lutris",
       "summary": "Open gaming platform for organising games",
@@ -611,50 +476,6 @@
         }
       },
       "proprietary": true,
-      "alternate-to": null,
-      "listed": true
-    },
-    "neverball": {
-      "name": "Neverball",
-      "summary": "Tilt the floor to roll a ball through an obstacle course before time runs out",
-      "description": "Guide a rolling ball through dangerous territory in the grand tradition of Marble Madness and Super Monkey Ball. Balance on narrow bridges, navigate mazes, ride moving platforms, and dodge pushers and shovers to get to the goal. Race against the clock to collect coins to earn extra balls. ",
-      "icon": "assets/neverball.png",
-      "screenshots": [],
-      "developer-name": "Various Contributors",
-      "developer-url": "http://neverball.org/contributors.php",
-      "urls": {
-        "info": "http://neverball.org/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "neverball",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "neverball",
-          "install-packages": [
-            "neverball",
-            "neverball-data"
-          ],
-          "remove-packages": [
-            "neverball",
-            "neverball-data"
-          ]
-        }
-      },
-      "proprietary": false,
       "alternate-to": null,
       "listed": true
     },
@@ -746,49 +567,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "playonlinux": {
-      "name": "PlayOnLinux",
-      "summary": "Frontend for managing the Wine Compatibility Layer",
-      "description": "It enables you to easily install and configure Windows games and software on Linux with the use of tried and tested scripts as well as managing your own prefixes.",
-      "icon": "assets/playonlinux.png",
-      "screenshots": [
-        "assets/playonlinux-1.jpg",
-        "assets/playonlinux-2.jpg"
-      ],
-      "developer-name": "PlayOnLinux Team",
-      "developer-url": "https://github.com/orgs/PlayOnLinux/people",
-      "urls": {
-        "info": "https://www.playonlinux.com/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "playonlinux",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "playonlinux",
-          "install-packages": [
-            "playonlinux"
-          ],
-          "remove-packages": [
-            "playonlinux"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "pysolfc": {
       "name": "PySolFC",
       "summary": "A collection of more than 1000 solitaire card games",
@@ -832,90 +610,6 @@
         }
       },
       "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
-    "retroarch": {
-      "name": "RetroArch",
-      "summary": "Frontend for emulators for various systems",
-      "description": "RetroArch is an open source, multi-platform frontend for the libretro API. It is designed to be a fast, lightweight, and portable multi-system emulator. ",
-      "icon": "assets/retroarch.png",
-      "screenshots": [
-        "assets/retroarch-1.jpg",
-        "assets/retroarch-2.jpg"
-      ],
-      "developer-name": "RetroArch Team",
-      "developer-url": "https://github.com/orgs/libretro/people",
-      "urls": {
-        "info": "http://retroarch.com",
-        "android-app": "https://play.google.com/store/apps/details?id=com.retroarch",
-        "ios-app": null
-      },
-      "launch-cmd": "retroarch",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "aur",
-          "main-package": "retroarch",
-          "install-packages": [
-            "retroarch"
-          ],
-          "remove-packages": [
-            "retroarch",
-            "retroarch-assets"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
-    "steam": {
-      "name": "Steam",
-      "summary": "Digital distribution platform for games and software",
-      "description": "The ultimate entertainment platform. Play games, connect with friends, even create and share content of your own. Join 50 million of your closest friends on Steam. Enjoy exclusive deals, automatic game updates, and cross-platform multiplayer. Plus, now you take advantage of Big Picture mode, designed for use with your TV and game controller. ",
-      "icon": "assets/steam.png",
-      "screenshots": [],
-      "developer-name": "Valve Corporation",
-      "developer-url": "http://www.valvesoftware.com/",
-      "urls": {
-        "info": "http://store.steampowered.com/",
-        "android-app": "https://play.google.com/store/apps/details?id=com.valvesoftware.android.steam.community&hl=en",
-        "ios-app": "https://itunes.apple.com/gb/app/steam-mobile/id495369748"
-      },
-      "launch-cmd": "steam",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "steam:i386",
-          "install-packages": [
-            "steam:i386"
-          ],
-          "remove-packages": [
-            "steam:i386"
-          ]
-        }
-      },
-      "proprietary": true,
       "alternate-to": null,
       "listed": true
     },
@@ -1213,6 +907,302 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
+    },
+    "extremetuxracer": {
+      "name": "Extreme Tux Racer",
+      "summary": "Simple racing game featuring Tux",
+      "description": "A simple OpenGL racing game featuring Tux, the Linux mascot. The goal of the game is to slide down a snow- and ice-covered mountain as quickly as possible, avoiding the trees and rocks that will slow you down. Collect herrings and other goodies while sliding down the hill, but avoid fish bones. ",
+      "icon": "assets/extremetuxracer.png",
+      "screenshots": [
+        "assets/extremetuxracer-1.jpg"
+      ],
+      "developer-name": "Extreme Tux Racer Team",
+      "developer-url": "https://launchpad.net/~etracer",
+      "urls": {
+        "info": "http://sourceforge.net/projects/extremetuxracer/",
+        "android-app": null,
+        "ios-app": null
+      },
+      "launch-cmd": "extremetuxracer",
+      "arch": [
+        "i686",
+        "x86_64",
+        "armv7h",
+        "aarch64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "extremetuxracer",
+          "install-packages": [
+            "extremetuxracer"
+          ],
+          "remove-packages": [
+            "extremetuxracer"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "flightgear": {
+      "name": "Flightgear",
+      "summary": "Open source flight simulator",
+      "description": "The goal of the FlightGear project is to create a sophisticated and open flight simulator framework for use in research, academic environments, pilot training, as an industry engineering tool and last but certainly not least, as a fun, realistic, and challenging desktop flight simulator. ",
+      "icon": "assets/flightgear.png",
+      "screenshots": [],
+      "developer-name": "Flightgear Team",
+      "developer-url": "http://www.flightgear.org/about/credits/",
+      "urls": {
+        "info": "http://www.flightgear.org/",
+        "android-app": null,
+        "ios-app": null
+      },
+      "launch-cmd": "flightgear",
+      "arch": [
+        "i686",
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "flightgear",
+          "install-packages": [
+            "flightgear"
+          ],
+          "remove-packages": [
+            "flightgear"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "frozenbubble": {
+      "name": "Frozen-Bubble",
+      "summary": "Clone of Puzzle Bobble",
+      "description": "A clone of the popular <i>Puzzle Bobble</i> game, in which you attempt to shoot bubbles into groups of the same color to cause them to pop. Players compete as penguins and must use the arrow keys to aim a colored bubble at groups of bubbles. The objective is to clear all the bubbles off the screen before a bubble passes below a line at the bottom. It features 100 single-player levels, a two-player mode, music and striking graphics. A level editor is also included to allow players to create and play their own levels. ",
+      "icon": "assets/frozenbubble.png",
+      "screenshots": [
+        "assets/frozenbubble-1.jpg"
+      ],
+      "developer-name": "The Frozen-Bubble Team",
+      "developer-url": "http://www.frozen-bubble.org/downloads/",
+      "urls": {
+        "info": "http://frozen-bubble.org/",
+        "android-app": null,
+        "ios-app": null
+      },
+      "launch-cmd": "frozen-bubble",
+      "arch": [
+        "i686",
+        "x86_64",
+        "armv7h",
+        "aarch64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "frozen-bubble",
+          "install-packages": [
+            "frozen-bubble"
+          ],
+          "remove-packages": [
+            "frozen-bubble"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "neverball": {
+      "name": "Neverball",
+      "summary": "Tilt the floor to roll a ball through an obstacle course before time runs out",
+      "description": "Guide a rolling ball through dangerous territory in the grand tradition of Marble Madness and Super Monkey Ball. Balance on narrow bridges, navigate mazes, ride moving platforms, and dodge pushers and shovers to get to the goal. Race against the clock to collect coins to earn extra balls. ",
+      "icon": "assets/neverball.png",
+      "screenshots": [],
+      "developer-name": "Various Contributors",
+      "developer-url": "http://neverball.org/contributors.php",
+      "urls": {
+        "info": "http://neverball.org/",
+        "android-app": null,
+        "ios-app": null
+      },
+      "launch-cmd": "neverball",
+      "arch": [
+        "i686",
+        "x86_64",
+        "armv7h",
+        "aarch64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "neverball",
+          "install-packages": [
+            "neverball"
+          ],
+          "remove-packages": [
+            "neverball"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "playonlinux": {
+      "name": "PlayOnLinux",
+      "summary": "Frontend for managing the Wine Compatibility Layer",
+      "description": "It enables you to easily install and configure Windows games and software on Linux with the use of tried and tested scripts as well as managing your own prefixes.",
+      "icon": "assets/playonlinux.png",
+      "screenshots": [
+        "assets/playonlinux-1.jpg",
+        "assets/playonlinux-2.jpg"
+      ],
+      "developer-name": "PlayOnLinux Team",
+      "developer-url": "https://github.com/orgs/PlayOnLinux/people",
+      "urls": {
+        "info": "https://www.playonlinux.com/",
+        "android-app": null,
+        "ios-app": null
+      },
+      "launch-cmd": "playonlinux",
+      "arch": [
+        "i686",
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "playonlinux",
+          "install-packages": [
+            "playonlinux"
+          ],
+          "remove-packages": [
+            "playonlinux"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "steam": {
+      "name": "Steam",
+      "summary": "Digital distribution platform for games and software",
+      "description": "The ultimate entertainment platform. Play games, connect with friends, even create and share content of your own. Join 50 million of your closest friends on Steam. Enjoy exclusive deals, automatic game updates, and cross-platform multiplayer. Plus, now you take advantage of Big Picture mode, designed for use with your TV and game controller. ",
+      "icon": "assets/steam.png",
+      "screenshots": [],
+      "developer-name": "Valve Corporation",
+      "developer-url": "http://www.valvesoftware.com/",
+      "urls": {
+        "info": "http://store.steampowered.com/",
+        "android-app": "https://play.google.com/store/apps/details?id=com.valvesoftware.android.steam.community&hl=en",
+        "ios-app": "https://itunes.apple.com/gb/app/steam-mobile/id495369748"
+      },
+      "launch-cmd": "steam",
+      "arch": [
+        "i686",
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "steam",
+          "install-packages": [
+            "steam"
+          ],
+          "remove-packages": [
+            "steam"
+          ]
+        }
+      },
+      "proprietary": true,
+      "alternate-to": null,
+      "listed": true
+    },
+    "retroarch": {
+      "name": "RetroArch",
+      "summary": "Frontend for emulators for various systems",
+      "description": "RetroArch is an open source, multi-platform frontend for the libretro API. It is designed to be a fast, lightweight, and portable multi-system emulator. ",
+      "icon": "assets/retroarch.png",
+      "screenshots": [
+        "assets/retroarch-1.jpg",
+        "assets/retroarch-2.jpg"
+      ],
+      "developer-name": "RetroArch Team",
+      "developer-url": "https://github.com/orgs/libretro/people",
+      "urls": {
+        "info": "http://retroarch.com",
+        "android-app": "https://play.google.com/store/apps/details?id=com.retroarch",
+        "ios-app": null
+      },
+      "launch-cmd": "retroarch",
+      "arch": [
+        "i686",
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "retroarch",
+          "install-packages": [
+            "retroarch"
+          ],
+          "remove-packages": [
+            "retroarch"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
     }
   },
   "graphics": {
@@ -1480,48 +1470,6 @@
         }
       },
       "proprietary": true,
-      "alternate-to": null,
-      "listed": true
-    },
-    "hexchat": {
-      "name": "Hexchat",
-      "summary": "Graphical IRC client",
-      "description": "HexChat is a graphical IRC client with a GTK+ GUI. Features include Python and Perl scripting support, a plugin API, multiple server/channel windows, spell checking, multiple authentication methods including SASL, and customizable notifications. ",
-      "icon": "assets/hexchat.png",
-      "screenshots": [],
-      "developer-name": "Various Contributors",
-      "developer-url": "https://github.com/hexchat/hexchat/graphs/contributors",
-      "urls": {
-        "info": "https://hexchat.github.io/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "hexchat",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "hexchat",
-          "install-packages": [
-            "hexchat"
-          ],
-          "remove-packages": [
-            "hexchat"
-          ]
-        }
-      },
-      "proprietary": false,
       "alternate-to": null,
       "listed": true
     },
@@ -1942,6 +1890,48 @@
       "proprietary": true,
       "alternate-to": null,
       "listed": false
+    },
+    "hexchat": {
+      "name": "Hexchat",
+      "summary": "Graphical IRC client",
+      "description": "HexChat is a graphical IRC client with a GTK+ GUI. Features include Python and Perl scripting support, a plugin API, multiple server/channel windows, spell checking, multiple authentication methods including SASL, and customizable notifications. ",
+      "icon": "assets/hexchat.png",
+      "screenshots": [],
+      "developer-name": "Various Contributors",
+      "developer-url": "https://github.com/hexchat/hexchat/graphs/contributors",
+      "urls": {
+        "info": "https://hexchat.github.io/",
+        "android-app": null,
+        "ios-app": null
+      },
+      "launch-cmd": "hexchat",
+      "arch": [
+        "i686",
+        "x86_64",
+        "armv7h",
+        "aarch64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "hexchat",
+          "install-packages": [
+            "hexchat"
+          ],
+          "remove-packages": [
+            "hexchat"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
     }
   },
   "multimedia": {
@@ -2032,48 +2022,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "obs-studio": {
-      "name": "OBS Studio",
-      "summary": "Record and produce a live stream",
-      "description": "Free and Open Source software for video recording and live streaming. Supported features include, encoding using H264 (x264) and AAC, support for Intel Quick Sync Video (QSV) and NVENC, unlimited number of scenes and sources. Live RTMP streaming to Twitch, YouTube, DailyMotion, Hitbox and more. File output to MP4 or FLV, GPU-based game capture for high performance game streaming, capture device support (webcams, capture cards, etc), bi-linear or lanczos3 resampling. ",
-      "icon": "assets/obs-studio.png",
-      "screenshots": [
-        "assets/obs-studio-1.jpg"
-      ],
-      "developer-name": "Various Contributors",
-      "developer-url": "https://github.com/jp9000/obs-studio/blob/master/AUTHORS",
-      "urls": {
-        "info": "https://obsproject.com",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "obs",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "aur",
-          "main-package": "obs-studio",
-          "install-packages": [
-            "obs-studio"
-          ],
-          "remove-packages": [
-            "obs-studio"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": "telestream Wirecast",
-      "listed": true
-    },
     "rhythmbox": {
       "name": "Rhythmbox",
       "summary": "Media player and music management application",
@@ -2117,48 +2065,6 @@
       },
       "proprietary": false,
       "alternate-to": "Apple iTunes",
-      "listed": true
-    },
-    "simplescreenrecorder": {
-      "name": "SimpleScreenRecorder",
-      "summary": "Feature rich screen recorder",
-      "description": "A feature-rich screen recorder that can record the entire screen or part of it, or record OpenGL applications directly. The recording can be paused and resumed at any time. Many different file formats and codecs are supported. ",
-      "icon": "assets/simplescreenrecorder.png",
-      "screenshots": [
-        "assets/simplescreenrecorder-1.jpg"
-      ],
-      "developer-name": "Maarten Baert and Contributors",
-      "developer-url": "https://github.com/MaartenBaert/ssr/blob/master/AUTHORS.md",
-      "urls": {
-        "info": "http://www.maartenbaert.be/simplescreenrecorder/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "simplescreenrecorder",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "simplescreenrecorder",
-          "install-packages": [
-            "simplescreenrecorder"
-          ],
-          "remove-packages": [
-            "simplescreenrecorder"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
       "listed": true
     },
     "spotify": {
@@ -2287,6 +2193,90 @@
       },
       "proprietary": false,
       "alternate-to": null,
+      "listed": true
+    },
+    "simplescreenrecorder": {
+      "name": "SimpleScreenRecorder",
+      "summary": "Feature rich screen recorder",
+      "description": "A feature-rich screen recorder that can record the entire screen or part of it, or record OpenGL applications directly. The recording can be paused and resumed at any time. Many different file formats and codecs are supported. ",
+      "icon": "assets/simplescreenrecorder.png",
+      "screenshots": [
+        "assets/simplescreenrecorder-1.jpg"
+      ],
+      "developer-name": "Maarten Baert and Contributors",
+      "developer-url": "https://github.com/MaartenBaert/ssr/blob/master/AUTHORS.md",
+      "urls": {
+        "info": "http://www.maartenbaert.be/simplescreenrecorder/",
+        "android-app": null,
+        "ios-app": null
+      },
+      "launch-cmd": "simplescreenrecorder",
+      "arch": [
+        "i686",
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "simplescreenrecorder",
+          "install-packages": [
+            "simplescreenrecorder"
+          ],
+          "remove-packages": [
+            "simplescreenrecorder"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "obs-studio": {
+      "name": "OBS Studio",
+      "summary": "Record and produce a live stream",
+      "description": "Free and Open Source software for video recording and live streaming. Supported features include, encoding using H264 (x264) and AAC, support for Intel Quick Sync Video (QSV) and NVENC, unlimited number of scenes and sources. Live RTMP streaming to Twitch, YouTube, DailyMotion, Hitbox and more. File output to MP4 or FLV, GPU-based game capture for high performance game streaming, capture device support (webcams, capture cards, etc), bi-linear or lanczos3 resampling. ",
+      "icon": "assets/obs-studio.png",
+      "screenshots": [
+        "assets/obs-studio-1.jpg"
+      ],
+      "developer-name": "Various Contributors",
+      "developer-url": "https://github.com/jp9000/obs-studio/blob/master/AUTHORS",
+      "urls": {
+        "info": "https://obsproject.com",
+        "android-app": null,
+        "ios-app": null
+      },
+      "launch-cmd": "obs",
+      "arch": [
+        "i686",
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "obs-studio",
+          "install-packages": [
+            "obs-studio"
+          ],
+          "remove-packages": [
+            "obs-studio"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": "telestream Wirecast",
       "listed": true
     }
   },
@@ -2594,8 +2584,8 @@
   },
   "stats": {
     "version": 7,
-    "revision": 256,
-    "compiled": 1790865782,
+    "revision": 267,
+    "compiled": 1790870370,
     "apps": 60,
     "categories": 11
   },

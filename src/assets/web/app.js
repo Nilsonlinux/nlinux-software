@@ -89,14 +89,17 @@ function esc(s) {
 
 /* Bytes -> texto curto. Base 1024, como o pacman mostra ("59.2 MiB"), mas em
    MB/GB decimais de 1024 também: o número serve para comparar dois programas,
-   não para bater com a saída do pacman pacote a pacote. */
+   não para bater com a saída do pacman pacote a pacote.
+
+   Sempre uma casa decimal, e o ",0" final é removido: misturar "2.0 MB" ao
+   lado de "423 MB" no mesmo grid deixa o card com aparência de bug. */
 function fmtBytes(n) {
   if (!n || n < 0) return "";
   const units = ["B", "KB", "MB", "GB", "TB"];
   let v = Number(n), i = 0;
   while (v >= 1024 && i < units.length - 1) { v /= 1024; i++; }
   if (i === 0) return Math.round(v) + " B";
-  return (v < 10 ? v.toFixed(1) : Math.round(v)) + " " + units[i];
+  return v.toFixed(1).replace(/\.0$/, "") + " " + units[i];
 }
 
 function stripTags(html) {
@@ -195,10 +198,11 @@ function themeInit() {
 function renderHeader(info) {
   $("#brand-name").textContent = "NLinux";
   $("#foot-info").textContent = tr("foot.apps", info.total);
+  // O botão e o selo nascem com `hidden` no HTML, e quem mostra é o payload.
+  // Alternar o atributo (e não `style.display`) é o que faz funcionar o
+  // padrão: na loja da distro os dois nunca aparecem, nem antes do JS rodar.
   const al = $("#admin-link");
-  if (al) al.style.display = info.admin ? "" : "none";
-  // A Loja só mostra o selo ADMIN quando está sob curadoria (payload admin).
-  // Na distro, gerada com ADMIN_ENABLED = False, ele nunca aparece.
+  if (al) al.hidden = !info.admin;
   const ab = $("#admin-badge");
   if (ab) ab.hidden = !info.admin;
   renderRevBadge(info);
@@ -356,6 +360,10 @@ function cardActionHtml(p) {
 /* Rótulo do repositório de origem. `core` e `extra` são o Arch oficial; `aur`
    é a comunidade. Quando o repositório não veio (pacote manual, ou app de AUR
    que não tem repo porque não é dos repositórios), cai no rótulo antigo. */
+/* Repositório de origem. Core e Extra são oficiais mas têm cores distintas, e
+   o multiblib também é oficial — sem o caso dele, o Steam (que só existe lá)
+   cairia no genérico "Oficial" e pareceria igual a um app de qualquer repo.
+   Uma fonte manual não tem repositório: mostra o site oficial. */
 function repoChip(p) {
   if (p.source === "manual") return `<span class="chip">${UI["src.manual"] || "manual"}</span>`;
   if (p.source === "aur") {
@@ -363,29 +371,53 @@ function repoChip(p) {
   }
   if (p.repo === "core") return `<span class="chip chip-repo-core">${tr("chip.repoCore")}</span>`;
   if (p.repo === "extra") return `<span class="chip chip-repo-extra">${tr("chip.repoExtra")}</span>`;
+  if (p.repo === "multilib") {
+    return `<span class="chip chip-repo-multilib">${tr("chip.repoMultilib")}</span>`;
+  }
   return `<span class="chip chip-official">${tr("chip.official")}</span>`;
 }
 
 /* Tamanho instalado, ao lado do repositório. Só aparece com número real: sem
-   dado do pacman, é melhor não mostrar nada do que mostrar "—" ou 0 MB. */
+   dado do pacman, é melhor não mostrar nada do que mostrar "—" ou 0 MB. O
+   %ISIZE% falta em alguns pacotes do banco; o %CSIZE% quase sempre está. Nesses
+   casos o card mostra o tamanho de download — com a dica dizendo que é só de
+   download, senão a pessoa compara o número com os vizinhos e conclui que o
+   programa ocupa aquilo no disco. */
 function sizeChip(p) {
-  if (!p.size) return "";
-  const tip = p.download
-    ? tr("tip.sizeBoth", fmtBytes(p.size), fmtBytes(p.download))
-    : tr("tip.sizeOnly", fmtBytes(p.size));
+  if (!p.size && !p.download) return "";
+  const soDownload = !p.size;
+  const valor = soDownload ? fmtBytes(p.download) : fmtBytes(p.size);
+  const tip = soDownload
+    ? tr("tip.sizeDownload", valor)
+    : (p.download
+      ? tr("tip.sizeBoth", valor, fmtBytes(p.download))
+      : tr("tip.sizeOnly", valor));
   return `<span class="chip chip-size tip" data-tip="${esc(tip)}">` +
-    `<i class="ti ti-package"></i>${esc(fmtBytes(p.size))}</span>`;
+    `<i class="ti ti-package"></i>${esc(valor)}</span>`;
 }
 
+/* O pacote que o catálogo pede, para o aviso poder nomear. `declared` vem do
+   servidor justamente para o caso de nome inválido: quando o pacman recusa o
+   nome (steam:i386), `packages` fica vazio e o aviso sem este campo diria
+   "o pacote “” não existe mais".
+
+   `missing_hint` é o diagnóstico do servidor, que conhece a diferença entre
+   "saiu do Arch" e "nunca foi um nome válido". Sem ele o texto mente para o
+   Steam: `steam:i386` não deixou de existir, nunca existiu assim. */
 function missingChip(p) {
-  if (!p.missing) return "";
-  const what = (p.packages && p.packages[0]) || "";
-  return `<span class="chip chip-missing tip" data-tip="${esc(tr("tip.pkgMissing", what))}">` +
+  if (!p.missing && !p.aur_missing) return "";
+  const what = p.declared || (p.packages && p.packages[0]) || "";
+  const dica = p.aur_missing
+    ? tr("tip.aurMissing", what)
+    : (p.missing_hint
+      ? (what ? `${what} — ${p.missing_hint}` : p.missing_hint)
+      : (what ? tr("tip.pkgMissing", what) : tr("chip.pkgMissing")));
+  return `<span class="chip chip-missing tip" data-tip="${esc(dica)}">` +
     `${esc(tr("chip.pkgMissing"))}</span>`;
 }
 
 function renamedChip(p) {
-  if (!p.renamed || p.missing) return "";
+  if (!p.renamed || p.missing || p.aur_missing) return "";
   return `<span class="chip chip-renamed tip" data-tip="${esc(tr("tip.pkgRenamed", p.renamed_to))}">` +
     `${esc(tr("chip.pkgRenamed"))}</span>`;
 }
@@ -436,18 +468,30 @@ function render(animate = true) {
 }
 
 /* ============================== Modal ==================================== */
+
+/* O banco do pacman às vezes tem só um dos dois tamanhos: o %ISIZE% falta em
+   uns pacotes e o %CSIZE% em outros. São três textos separados porque juntar os
+   casos num texto só deixaria um separador órfão na tela
+   ("423 MB instalado ·  de download"). Sem nenhum número, string vazia — e o
+   modal não mostra a linha. */
+function modalSizeText(product) {
+  if (product.size && product.download) {
+    return tr("modal.sizeFull", fmtBytes(product.size), fmtBytes(product.download));
+  }
+  if (product.size) return tr("modal.sizeOnly", fmtBytes(product.size));
+  if (product.download) return tr("modal.sizeDownloadOnly", fmtBytes(product.download));
+  return "";
+}
+
 function openModal(product) {
   $("#modal").hidden = false;
   const desc = sanitize(product.description);
   const srcChip = repoChip(product) + sizeChip(product) +
     renamedChip(product) + missingChip(product);
-  // Linha de tamanho só quando há número: repetir "Pacote: firefox" sem
-  // versão e sem tamanho não acrescenta nada.
-  const sizeLine = (product.size || product.download)
-    ? `<div><dt>${tr("modal.size")}</dt><dd>${esc(
-        product.size ? tr("modal.sizeFull", fmtBytes(product.size), fmtBytes(product.download || 0))
-          : tr("modal.sizeDownloadOnly", fmtBytes(product.download))
-      )}${product.pkgversion ? ` <span class="m-ver">${esc(product.pkgversion)}</span>` : ""}</dd></div>`
+  const sizeText = modalSizeText(product);
+  const sizeLine = sizeText
+    ? `<div><dt>${tr("modal.size")}</dt><dd>${esc(sizeText)}` +
+      `${product.pkgversion ? ` <span class="m-ver">${esc(product.pkgversion)}</span>` : ""}</dd></div>`
     : "";
   const meta = `
     <div class="meta">
@@ -915,6 +959,8 @@ function applyFresh(fresh, silencioso, forcar) {
     $("#foot-info").textContent = tr("foot.apps", fresh.total);
     const ab = $("#admin-badge");
     if (ab) ab.hidden = !fresh.admin;
+    const al = $("#admin-link");
+    if (al) al.hidden = !fresh.admin;
   }
 
   const hashAntes = antes.stats && antes.stats.catalog_hash;
@@ -1018,6 +1064,48 @@ function renderSysUpdates(d) {
 /* Versões dos programas: o servidor pergunta ao pacman (com cache, porque a
    consulta é mais cara que a do catálogo) e a tela avisa no canto quando
    aparece versão nova. Endpoint ausente em versões antigas: silêncio. */
+/* Os pacotes do Arch já vêm decididos no payload, porque o verificador local
+   (`pacman_db`) é o mesmo que monta o payload. Os da AUR não: exigiriam uma
+   consulta à rede dentro do `build_payload`, que roda no boot e a cada
+   salvamento da curadoria — 6 s de espera quando está sem rede.
+
+   Por isso a AUR é conferida aqui, depois de a loja já estar na tela: uma
+   consulta só, cujo resultado marca `aur_missing` nos produtos. Se a consulta
+   falhar, nada muda — os apps AUR seguem sem chip, que é a posição honesta
+   quando não se sabe. */
+async function checkBrokenAUR() {
+  let d;
+  try {
+    d = await api("/api/broken");
+  } catch (_) {
+    return;                       // sem rede: nenhum chip novo
+  }
+  const aur = {};
+  for (const a of d.apps || []) {
+    if (a.source === "aur") aur[a.id] = a;
+  }
+  const semConf = new Set((d.sem_conferencia || []).map((a) => a.id));
+  let mudou = false;
+  for (const p of (state.data && state.data.products) || []) {
+    const quebrado = aur[p.id];
+    const alvo = !!quebrado;
+    if (!!p.aur_missing !== alvo) {
+      p.aur_missing = alvo;
+      mudou = true;
+    }
+    // Não conferido não vira quebrado: o card fica sem chip, que é o mesmo
+    // tratamento do payload para os apps AUR.
+    if (semConf.has(p.id)) p.aur_unverified = true;
+  }
+  if (mudou) render();
+}
+
+/* A AUR muda sozinha (um pacote sai de lá sem aviso). Reconsultar de vez em
+   quando faz o aviso aparecer sem precisar recarregar a loja inteira. */
+function watchBrokenAUR() {
+  setInterval(() => { checkBrokenAUR(); }, 15 * 60 * 1000);
+}
+
 function watchUpdates() {
   let anterior = null;
   const checar = async () => {
@@ -1055,6 +1143,8 @@ async function boot() {
     setupTips();
     watchRevision();
     watchUpdates();
+    checkBrokenAUR();
+    watchBrokenAUR();
   } catch (e) {
     console.error(e);
     $("#grid").innerHTML = "";

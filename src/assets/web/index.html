@@ -42,7 +42,10 @@
       <button class="icon-btn tip" id="store-info" data-tip="Detalhes da loja" aria-label="Detalhes da loja" data-i18n-attr="data-tip:store.infoTip,aria-label:store.infoTip">
         <i class="ti ti-info-circle"></i>
       </button>
-      <a class="icon-btn tip" href="/admin" id="admin-link" data-tip="Gerenciar loja" aria-label="Gerenciar loja" data-i18n-attr="data-tip:admin.tip,aria-label:admin.tip">
+      <!-- `hidden` por padrão, como o selo ADMIN: na loja da distro não há
+           curadoria, e sem isso o botão aparecia até o JS rodar. O app.js
+           mostra quando o payload diz que esta janela administra o catálogo. -->
+      <a class="icon-btn tip" href="/admin" id="admin-link" data-tip="Gerenciar loja" aria-label="Gerenciar loja" data-i18n-attr="data-tip:admin.tip,aria-label:admin.tip" hidden>
         <i class="ti ti-settings"></i>
       </a>
       <button id="theme-toggle" class="icon-btn tip" data-tip="Tema: escuro" aria-label="Alternar tema" data-i18n-attr="aria-label:theme.aria">

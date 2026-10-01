@@ -292,10 +292,15 @@ img { display: block; }
   color: var(--success);
   background: var(--success-soft);
 }
-/* Repositório: core e extra são do Arch, AUR é da comunidade. A distinção
-   importa porque AUR não é revisado pelo Arch e não tem verificação de
-   assinatura — daí a cor diferente, não só o texto. */
-.chip-repo-core, .card .chip-repo-core { color: var(--success); background: var(--success-soft); }
+/* Repositório: core, extra e multilib são do Arch, AUR é da comunidade. A
+   distinção importa porque AUR não é revisado pelo Arch e não tem verificação
+   de assinatura — daí a cor diferente, não só o texto. O multilib fica com
+   core, que também é oficial: a cor segue a origem (Arch ou comunidade), não o
+   nome do repositório. */
+.chip-repo-core, .card .chip-repo-core,
+.chip-repo-multilib, .card .chip-repo-multilib {
+  color: var(--success); background: var(--success-soft);
+}
 .chip-repo-extra, .card .chip-repo-extra { color: var(--accent-strong); background: var(--accent-soft); }
 .chip-repo-aur, .card .chip-repo-aur {
   color: var(--warning, #d9a441); background: var(--warning-soft, rgba(217, 164, 65, .14));

@@ -56,15 +56,19 @@ var STORE_I18N = {
     "chip.repoOfficial": "Repositório Oficial",
     "chip.repoCore": "Core",
     "chip.repoExtra": "Extra",
+    "chip.repoMultilib": "Multilib",
     "chip.pkgMissing": "Pacote indisponível",
     "chip.pkgRenamed": "Pacote renomeado",
     "tip.sizeOnly": "Ocupa {0} instalado",
     "tip.sizeBoth": "Ocupa {0} instalado · {1} de download",
+    "tip.sizeDownload": "Só {0} de download",
     "tip.pkgMissing": "O pacote “{0}” não existe mais nos repositórios do Arch, então a instalação vai falhar.",
+    "tip.aurMissing": "O pacote “{0}” não existe na AUR, então a instalação vai falhar.",
     "tip.pkgRenamed": "O Arch renomeou este pacote para “{0}”.",
     "tip.repoAUR": "AUR: mantido pela comunidade, sem revisão nem assinatura do Arch.",
     "modal.size": "Tamanho",
     "modal.sizeFull": "{0} instalado · {1} de download",
+    "modal.sizeOnly": "{0} instalado",
     "modal.sizeDownloadOnly": "{0} de download",
     "sysupd.tip": "Atualizações do sistema disponíveis",
     "sysupd.tipFull": "{0} pacotes com versão nova · {1} para baixar",
@@ -139,6 +143,9 @@ var STORE_I18N = {
     "err.load": "Erro ao carregar a loja",
     "err.checkServer": "Verifique se o servidor local está rodando.",
     "toast.loadFail": "Não foi possível carregar a loja.",
+
+
+
   },
 
   en: {
@@ -192,15 +199,19 @@ var STORE_I18N = {
     "chip.repoOfficial": "Official Repository",
     "chip.repoCore": "Core",
     "chip.repoExtra": "Extra",
+    "chip.repoMultilib": "Multilib",
     "chip.pkgMissing": "Package unavailable",
     "chip.pkgRenamed": "Package renamed",
     "tip.sizeOnly": "Takes {0} installed",
     "tip.sizeBoth": "Takes {0} installed · {1} download",
+    "tip.sizeDownload": "{0} download only",
     "tip.pkgMissing": "The package “{0}” no longer exists in the Arch repositories, so installing will fail.",
+    "tip.aurMissing": "The package “{0}” no longer exists in the AUR, so installing will fail.",
     "tip.pkgRenamed": "Arch renamed this package to “{0}”.",
     "tip.repoAUR": "AUR: community-maintained, without Arch review or signature.",
     "modal.size": "Size",
     "modal.sizeFull": "{0} installed · {1} download",
+    "modal.sizeOnly": "{0} installed",
     "modal.sizeDownloadOnly": "{0} download",
     "sysupd.tip": "System updates available",
     "sysupd.tipFull": "{0} packages with a new version · {1} to download",
@@ -275,6 +286,9 @@ var STORE_I18N = {
     "err.load": "Error loading the store",
     "err.checkServer": "Check that the local server is running.",
     "toast.loadFail": "Could not load the store.",
+
+
+
   },
 
   es: {
@@ -328,15 +342,19 @@ var STORE_I18N = {
     "chip.repoOfficial": "Repositorio oficial",
     "chip.repoCore": "Core",
     "chip.repoExtra": "Extra",
+    "chip.repoMultilib": "Multilib",
     "chip.pkgMissing": "Paquete no disponible",
     "chip.pkgRenamed": "Paquete renombrado",
     "tip.sizeOnly": "Ocupa {0} instalado",
     "tip.sizeBoth": "Ocupa {0} instalado · {1} de descarga",
+    "tip.sizeDownload": "Solo {0} de descarga",
     "tip.pkgMissing": "El paquete “{0}” ya no existe en los repositorios de Arch, así que la instalación fallará.",
+    "tip.aurMissing": "El paquete “{0}” ya no existe en la AUR, así que la instalación fallará.",
     "tip.pkgRenamed": "Arch renombró este paquete a “{0}”.",
     "tip.repoAUR": "AUR: mantenido por la comunidad, sin revisión ni firma de Arch.",
     "modal.size": "Tamaño",
     "modal.sizeFull": "{0} instalado · {1} de descarga",
+    "modal.sizeOnly": "{0} instalado",
     "modal.sizeDownloadOnly": "{0} de descarga",
     "sysupd.tip": "Actualizaciones del sistema disponibles",
     "sysupd.tipFull": "{0} paquetes con versión nueva · {1} para descargar",
@@ -411,6 +429,9 @@ var STORE_I18N = {
     "err.load": "Error al cargar la tienda",
     "err.checkServer": "Comprueba que el servidor local esté en ejecución.",
     "toast.loadFail": "No se pudo cargar la tienda.",
+
+
+
   },
 
   fr: {
@@ -464,15 +485,19 @@ var STORE_I18N = {
     "chip.repoOfficial": "Dépôt officiel",
     "chip.repoCore": "Core",
     "chip.repoExtra": "Extra",
+    "chip.repoMultilib": "Multilib",
     "chip.pkgMissing": "Paquet indisponible",
     "chip.pkgRenamed": "Paquet renommé",
     "tip.sizeOnly": "Occupe {0} installé",
     "tip.sizeBoth": "Occupe {0} installé · {1} de téléchargement",
+    "tip.sizeDownload": "{0} de téléchargement seulement",
     "tip.pkgMissing": "Le paquet « {0} » n'existe plus dans les dépôts Arch, l'installation échouera.",
+    "tip.aurMissing": "Le paquet « {0} » n’existe plus dans l’AUR, l’installation échouera.",
     "tip.pkgRenamed": "Arch a renommé ce paquet en « {0} ».",
     "tip.repoAUR": "AUR : maintenue par la communauté, sans revue ni signature d'Arch.",
     "modal.size": "Taille",
     "modal.sizeFull": "{0} installé · {1} de téléchargement",
+    "modal.sizeOnly": "{0} installé",
     "modal.sizeDownloadOnly": "{0} de téléchargement",
     "sysupd.tip": "Mises à jour du système disponibles",
     "sysupd.tipFull": "{0} paquets avec une nouvelle version · {1} à télécharger",
@@ -547,6 +572,9 @@ var STORE_I18N = {
     "err.load": "Erreur lors du chargement de la boutique",
     "err.checkServer": "Vérifiez que le serveur local est actif.",
     "toast.loadFail": "Impossible de charger la boutique.",
+
+
+
   },
 
   de: {
@@ -600,16 +628,20 @@ var STORE_I18N = {
     "chip.repoOfficial": "Offizielles Repository",
     "chip.repoCore": "Core",
     "chip.repoExtra": "Extra",
+    "chip.repoMultilib": "Multilib",
     "chip.pkgMissing": "Paket nicht verfügbar",
     "chip.pkgRenamed": "Paket umbenannt",
     "tip.sizeOnly": "Belegt {0} installiert",
     "tip.sizeBoth": "Belegt {0} installiert · {1} Download",
+    "tip.sizeDownload": "Nur {0} Download",
     "tip.pkgMissing": "Das Paket „{0}“ gibt es in den Arch-Repositorien nicht mehr, die Installation schlägt fehl.",
+    "tip.aurMissing": "Das Paket „{0}“ gibt es in der AUR nicht mehr, die Installation schlägt fehl.",
     "tip.pkgRenamed": "Arch hat dieses Paket in „{0}“ umbenannt.",
     "tip.repoAUR": "AUR: von der Community gepflegt, ohne Prüfung oder Signatur von Arch.",
     "modal.size": "Größe",
     "modal.sizeFull": "{0} installiert · {1} Download",
-    "modal.sizeDownloadOnly": "{1} Download",
+    "modal.sizeOnly": "{0} installiert",
+    "modal.sizeDownloadOnly": "{0} Download",
     "sysupd.tip": "Systemaktualisierungen verfügbar",
     "sysupd.tipFull": "{0} Pakete mit neuer Version · {1} zum Herunterladen",
     "sysupd.tipPartial": "{0} Pakete mit neuer Version ({1} mit bekannter Größe)",
@@ -683,6 +715,9 @@ var STORE_I18N = {
     "err.load": "Fehler beim Laden des Shops",
     "err.checkServer": "Prüfen Sie, ob der lokale Server läuft.",
     "toast.loadFail": "Der Shop konnte nicht geladen werden.",
+
+
+
   },
 
   it: {
@@ -736,19 +771,23 @@ var STORE_I18N = {
     "chip.repoOfficial": "Repository ufficiale",
     "chip.repoCore": "Core",
     "chip.repoExtra": "Extra",
-    "chip.pkgMissing": "パッケージなし",
-    "chip.pkgRenamed": "パッケージ名変更",
-    "tip.sizeOnly": "インストール後のサイズ {0}",
-    "tip.sizeBoth": "インストール後のサイズ {0} · ダウンロード {1}",
-    "tip.pkgMissing": "パッケージ「{0}」は Arch のリポジトリに存在しないため、インストールは失敗します。",
-    "tip.pkgRenamed": "Arch はこのパッケージを「{0}」に改名しました。",
-    "tip.repoAUR": "AUR：コミュニティ運営。Arch のレビューも署名もありません。",
-    "modal.size": "サイズ",
-    "modal.sizeFull": "インストール後 {0} · ダウンロード {1}",
-    "modal.sizeDownloadOnly": "ダウンロード {0}",
-    "sysupd.tip": "システムの更新があります",
-    "sysupd.tipFull": "新バージョンのパッケージ {0} 件 · ダウンロード {1}",
-    "sysupd.tipPartial": "新バージョンのパッケージ {0} 件（うち {1} 件はサイズ判明）",
+    "chip.repoMultilib": "Multilib",
+    "chip.pkgMissing": "Pacchetto non disponibile",
+    "chip.pkgRenamed": "Pacchetto rinominato",
+    "tip.sizeOnly": "Occupa {0} installato",
+    "tip.sizeBoth": "Occupa {0} installato · {1} di download",
+    "tip.sizeDownload": "Solo {0} di download",
+    "tip.pkgMissing": "Il pacchetto «{0}» non esiste più nei repository di Arch, quindi l’installazione fallirà.",
+    "tip.aurMissing": "Il pacchetto «{0}» non esiste più nella AUR, quindi l’installazione fallirà.",
+    "tip.pkgRenamed": "Arch ha rinominato questo pacchetto in «{0}».",
+    "tip.repoAUR": "AUR: mantenuto dalla comunità, senza revisione né firma di Arch.",
+    "modal.size": "Dimensione",
+    "modal.sizeFull": "{0} installato · {1} di download",
+    "modal.sizeOnly": "{0} installato",
+    "modal.sizeDownloadOnly": "{0} di download",
+    "sysupd.tip": "Aggiornamenti di sistema disponibili",
+    "sysupd.tipFull": "{0} pacchetti con versione nuova · {1} da scaricare",
+    "sysupd.tipPartial": "{0} pacchetti con versione nuova ({1} con dimensione nota)",
     "results.count": "Visualizzazione di {0} su {1} applicazioni",
     "foot.apps": "NLinux-Software · {0} applicazioni",
     "upd.badge": "Aggiornato: {0}",
@@ -819,6 +858,9 @@ var STORE_I18N = {
     "err.load": "Errore durante il caricamento del negozio",
     "err.checkServer": "Controlla che il server locale sia in esecuzione.",
     "toast.loadFail": "Impossibile caricare il negozio.",
+
+
+
   },
 
   ja: {
@@ -872,15 +914,19 @@ var STORE_I18N = {
     "chip.repoOfficial": "公式リポジトリ",
     "chip.repoCore": "Core",
     "chip.repoExtra": "Extra",
+    "chip.repoMultilib": "Multilib",
     "chip.pkgMissing": "パッケージなし",
     "chip.pkgRenamed": "パッケージ名変更",
     "tip.sizeOnly": "インストール後のサイズ {0}",
     "tip.sizeBoth": "インストール後のサイズ {0} · ダウンロード {1}",
+    "tip.sizeDownload": "ダウンロード {0} のみ",
     "tip.pkgMissing": "パッケージ「{0}」は Arch のリポジトリに存在しないため、インストールは失敗します。",
+    "tip.aurMissing": "パッケージ「{0}」は AUR に存在しないため、インストールは失敗します。",
     "tip.pkgRenamed": "Arch はこのパッケージを「{0}」に改名しました。",
     "tip.repoAUR": "AUR：コミュニティ運営。Arch のレビューも署名もありません。",
     "modal.size": "サイズ",
     "modal.sizeFull": "インストール後 {0} · ダウンロード {1}",
+    "modal.sizeOnly": "インストール後のサイズ {0}",
     "modal.sizeDownloadOnly": "ダウンロード {0}",
     "sysupd.tip": "システムの更新があります",
     "sysupd.tipFull": "新バージョンのパッケージ {0} 件 · ダウンロード {1}",
@@ -955,5 +1001,8 @@ var STORE_I18N = {
     "err.load": "ストアの読み込みエラー",
     "err.checkServer": "ローカルサーバーが起動しているか確認してください。",
     "toast.loadFail": "ストアを読み込めませんでした。",
+
+
+
   },
 };
