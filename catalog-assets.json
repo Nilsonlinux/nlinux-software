@@ -47,8 +47,6 @@
     "assets/libreoffice-1.jpg": "3fb637c4c75f32a61e0dcc0305dc6a0b6b880c84d12ba5973c967733e899b7c7",
     "assets/libreoffice-2.jpg": "60a56669d857a4768e93ccfb61c6ff1b8a266a08ce3682f00fed089f4973f89a",
     "assets/libreoffice-3.jpg": "26f3ce18ce2f96391a040e5dcb2a39ff05356d5a10d06043c9d31fc8a7aa41f0",
-    "assets/libreoffice-base-1.jpg": "26f3ce18ce2f96391a040e5dcb2a39ff05356d5a10d06043c9d31fc8a7aa41f0",
-    "assets/libreoffice-base.png": "d915303bc269b15bb45fdb0eb9ba26c417003e1df7b13abecbf5cdc61b763be1",
     "assets/libreoffice-math-1.png": "6d67c6a1a716245df5ff56159334a4973d4b3e4ce17138023f1122ddbba229eb",
     "assets/libreoffice-math.png": "ade6b1e782d3ec3ac18a212fd368555c92163ca1895df347592940e3cb74da39",
     "assets/libreoffice.png": "d3d73227fa0b1f94da129dc088978ac660564aad592802606be4f2e9f7df7b21",
@@ -98,5 +96,5 @@
     "assets/zenmap-1.jpg": "136b7f268bd14d829843cb878c4f57db3fae8b4f551b392823e50d27d83efaa8",
     "assets/zenmap.png": "a18cd769f13f92d7ee70983893c977eaac5cce11f418314d337bf468ee745c17"
   },
-  "revision": 310
+  "revision": 319
 }

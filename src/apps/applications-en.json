@@ -1005,57 +1005,6 @@
       "alternate-to": "Adobe&reg; After Effects, Autodesk 3ds Max",
       "listed": true
     },
-    "gimp": {
-      "name": "GIMP",
-      "summary": "GNU Image Manipulation Program - an advanced graphic editor.",
-      "description": "GIMP can edit, enhance, and retouch photos and scans, create drawings, and make your own images. It has a large collection of professional-level editing tools and filters, similar to the ones you might find in Photoshop. Numerous fine-control settings and features like layers, paths, masks, and scripting give you total control over your images. Many image file formats are supported, including JPEG, Photoshop (.psd), and Paint Shop Pro (.psp) files. It can also be used to scan and print photos. <u>The CMYK plug-ins are also included.</u> ",
-      "icon": "assets/gimp.png",
-      "screenshots": [
-        "assets/gimp-1.jpg",
-        "assets/gimp-2.jpg"
-      ],
-      "developer-name": "The GIMP Team",
-      "developer-url": "https://www.gimp.org/about/authors.html",
-      "urls": {
-        "info": "http://www.gimp.org/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "gimp",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "gimp",
-          "install-packages": [
-            "gimp",
-            "gimp-data-extras",
-            "gimp-gap",
-            "gimp-plugin-registry"
-          ],
-          "remove-packages": [
-            "gimp",
-            "gimp-data-extras",
-            "gimp-gap",
-            "gimp-plugin-registry"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": "Adobe&reg; Photoshop",
-      "listed": true
-    },
     "inkscape": {
       "name": "Inkscape",
       "summary": "SVG Editor",
@@ -1099,30 +1048,26 @@
       "proprietary": false,
       "alternate-to": "Adobe&reg; Illustrator",
       "listed": true
-    }
-  },
-  "internet": {
-    "thunderbird": {
-      "name": "Thunderbird",
-      "summary": "Full-featured email, RSS and newsgroup client",
-      "description": "Thunderbird is a full-featured email, RSS and newsgroup client that makes emailing safer, faster and easier than ever before. It supports different mail accounts (POP, IMAP, Gmail), has a simple mail account setup wizard, one-click address book, tabbed interface, an integrated learning spam filter, advanced search and indexing capabilities, and offers easy organization of mails with tagging and virtual folders. It also features unrivalled extensibility. ",
-      "icon": "assets/thunderbird.png",
+    },
+    "gimp": {
+      "name": "GIMP",
+      "summary": "GNU Image Manipulation Program - an advanced graphic editor.",
+      "description": "GIMP can edit, enhance, and retouch photos and scans, create drawings, and make your own images. It has a large collection of professional-level editing tools and filters, similar to the ones you might find in Photoshop. Numerous fine-control settings and features like layers, paths, masks, and scripting give you total control over your images. Many image file formats are supported, including JPEG, Photoshop (.psd), and Paint Shop Pro (.psp) files. It can also be used to scan and print photos. <u>The CMYK plug-ins are also included.</u>",
+      "icon": "assets/gimp.png",
       "screenshots": [
-        "assets/thunderbird-1.jpg"
+        "assets/gimp-1.jpg",
+        "assets/gimp-2.jpg"
       ],
-      "developer-name": "Mozilla",
-      "developer-url": "https://www.mozilla.org/",
+      "developer-name": "The GIMP Team",
+      "developer-url": "https://www.gimp.org/about/authors.html",
       "urls": {
-        "info": "https://www.mozilla.org/en-US/thunderbird/",
-        "android-app": null,
-        "ios-app": null
+        "info": "http://www.gimp.org/",
+        "android-app": "",
+        "ios-app": ""
       },
-      "launch-cmd": "thunderbird",
+      "launch-cmd": "gimp",
       "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
+        "x86_64"
       ],
       "releases": [
         "rolling"
@@ -1133,19 +1078,21 @@
       "pacman": {
         "default": {
           "source": "arch",
-          "main-package": "thunderbird",
+          "main-package": "gimp",
           "install-packages": [
-            "thunderbird"
+            "gimp"
           ],
           "remove-packages": [
-            "thunderbird"
+            "gimp"
           ]
         }
       },
       "proprietary": false,
-      "alternate-to": "Microsoft&reg; Outlook",
+      "alternate-to": null,
       "listed": true
-    },
+    }
+  },
+  "internet": {
     "telegram": {
       "name": "Telegram",
       "summary": "Messaging app with focus on speed and security",
@@ -1269,50 +1216,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "firefox": {
-      "name": "Firefox",
-      "summary": "Safe and easy web browsing",
-      "description": "Firefox delivers safe, easy web browsing. A familiar user interface, enhanced security features including protection from online identity theft, and integrated search let you get the most out of the web.  If you are a <b>Netflix</b> subscriber then Firefox fully supports Netflix.",
-      "icon": "assets/firefox.png",
-      "screenshots": [
-        "assets/firefox-1.png"
-      ],
-      "developer-name": "Mozilla",
-      "developer-url": "https://www.mozilla.org",
-      "urls": {
-        "info": "https://www.mozilla.org/firefox",
-        "android-app": "",
-        "ios-app": ""
-      },
-      "launch-cmd": "firefox",
-      "arch": [
-        "x86_64",
-        "i686",
-        "aarch64",
-        "armv7h"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "firefox",
-          "install-packages": [
-            "firefox"
-          ],
-          "remove-packages": [
-            "firefox"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "whatsapp-desktop": {
       "name": "Whatsapp Desktop",
       "summary": "An unofficial WhatsApp Linux Desktop application",
@@ -1391,48 +1294,6 @@
           ],
           "remove-packages": [
             "zenmap"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
-    "hexchat": {
-      "name": "Hexchat",
-      "summary": "Graphical IRC client",
-      "description": "HexChat is a graphical IRC client with a GTK+ GUI. Features include Python and Perl scripting support, a plugin API, multiple server/channel windows, spell checking, multiple authentication methods including SASL, and customizable notifications. ",
-      "icon": "assets/hexchat.png",
-      "screenshots": [],
-      "developer-name": "Various Contributors",
-      "developer-url": "https://github.com/hexchat/hexchat/graphs/contributors",
-      "urls": {
-        "info": "https://hexchat.github.io/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "hexchat",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "aur",
-          "main-package": "hexchat",
-          "install-packages": [
-            "hexchat"
-          ],
-          "remove-packages": [
-            "hexchat"
           ]
         }
       },
@@ -1601,27 +1462,24 @@
       "proprietary": true,
       "alternate-to": null,
       "listed": false
-    }
-  },
-  "multimedia": {
-    "kodi": {
-      "name": "Kodi",
-      "summary": "Media player perfect for HTPCs and home theatres",
-      "description": "A media player application for your computer, it has been designed to be the perfect companion for your HTPC. Supporting an almost endless range of remote controls, and combined with its beautiful interface and powerful skinning engine, Kodi feels very natural to use from the couch and is the ideal solution for your home theater. Once installed, your computer will become a fully functional multimedia jukebox. ",
-      "icon": "assets/kodi.png",
+    },
+    "thunderbird": {
+      "name": "Thunderbird",
+      "summary": "Full-featured email, RSS and newsgroup client",
+      "description": "Thunderbird is a full-featured email, RSS and newsgroup client that makes emailing safer, faster and easier than ever before. It supports different mail accounts (POP, IMAP, Gmail), has a simple mail account setup wizard, one-click address book, tabbed interface, an integrated learning spam filter, advanced search and indexing capabilities, and offers easy organization of mails with tagging and virtual folders. It also features unrivalled extensibility.",
+      "icon": "assets/thunderbird.png",
       "screenshots": [
-        "assets/kodi-1.jpg"
+        "assets/thunderbird-1.jpg"
       ],
-      "developer-name": "Kodi Team",
-      "developer-url": "https://kodi.tv/kodi-team",
+      "developer-name": "Mozilla",
+      "developer-url": "https://www.mozilla.org/",
       "urls": {
-        "info": "https://kodi.tv/",
-        "android-app": "https://play.google.com/store/apps/details?id=org.xbmc.kodi",
-        "ios-app": null
+        "info": "https://www.mozilla.org/en-US/thunderbird/",
+        "android-app": "",
+        "ios-app": ""
       },
-      "launch-cmd": "kodi",
+      "launch-cmd": "thunderbird",
       "arch": [
-        "i686",
         "x86_64"
       ],
       "releases": [
@@ -1633,12 +1491,12 @@
       "pacman": {
         "default": {
           "source": "arch",
-          "main-package": "kodi",
+          "main-package": "thunderbird",
           "install-packages": [
-            "kodi"
+            "thunderbird"
           ],
           "remove-packages": [
-            "kodi"
+            "thunderbird"
           ]
         }
       },
@@ -1646,6 +1504,88 @@
       "alternate-to": null,
       "listed": true
     },
+    "firefox": {
+      "name": "Firefox",
+      "summary": "Safe and easy web browsing",
+      "description": "Firefox delivers safe, easy web browsing. A familiar user interface, enhanced security features including protection from online identity theft, and integrated search let you get the most out of the web.  If you are a <b>Netflix</b> subscriber then Firefox fully supports Netflix.",
+      "icon": "assets/firefox.png",
+      "screenshots": [
+        "assets/firefox-1.png"
+      ],
+      "developer-name": "Mozilla",
+      "developer-url": "https://www.mozilla.org",
+      "urls": {
+        "info": "https://www.mozilla.org/firefox",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "firefox",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "firefox",
+          "install-packages": [
+            "firefox"
+          ],
+          "remove-packages": [
+            "firefox"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "hexchat": {
+      "name": "Hexchat",
+      "summary": "Graphical IRC client",
+      "description": "HexChat is a graphical IRC client with a GTK+ GUI. Features include Python and Perl scripting support, a plugin API, multiple server/channel windows, spell checking, multiple authentication methods including SASL, and customizable notifications.",
+      "icon": "assets/hexchat.png",
+      "screenshots": [],
+      "developer-name": "Various Contributors",
+      "developer-url": "https://github.com/hexchat/hexchat/graphs/contributors",
+      "urls": {
+        "info": "https://hexchat.github.io/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "hexchat",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "hexchat",
+          "install-packages": [
+            "hexchat"
+          ],
+          "remove-packages": [
+            "hexchat"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    }
+  },
+  "multimedia": {
     "vlc": {
       "name": "VLC",
       "summary": "Popular libre and open source media player and multimedia engine",
@@ -1730,90 +1670,6 @@
       },
       "proprietary": false,
       "alternate-to": null,
-      "listed": true
-    },
-    "simplescreenrecorder": {
-      "name": "SimpleScreenRecorder",
-      "summary": "Feature rich screen recorder",
-      "description": "A feature-rich screen recorder that can record the entire screen or part of it, or record OpenGL applications directly. The recording can be paused and resumed at any time. Many different file formats and codecs are supported. ",
-      "icon": "assets/simplescreenrecorder.png",
-      "screenshots": [
-        "assets/simplescreenrecorder-1.jpg"
-      ],
-      "developer-name": "Maarten Baert and Contributors",
-      "developer-url": "https://github.com/MaartenBaert/ssr/blob/master/AUTHORS.md",
-      "urls": {
-        "info": "http://www.maartenbaert.be/simplescreenrecorder/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "simplescreenrecorder",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "aur",
-          "main-package": "simplescreenrecorder",
-          "install-packages": [
-            "simplescreenrecorder"
-          ],
-          "remove-packages": [
-            "simplescreenrecorder"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
-    "obs-studio": {
-      "name": "OBS Studio",
-      "summary": "Record and produce a live stream",
-      "description": "Free and Open Source software for video recording and live streaming. Supported features include, encoding using H264 (x264) and AAC, support for Intel Quick Sync Video (QSV) and NVENC, unlimited number of scenes and sources. Live RTMP streaming to Twitch, YouTube, DailyMotion, Hitbox and more. File output to MP4 or FLV, GPU-based game capture for high performance game streaming, capture device support (webcams, capture cards, etc), bi-linear or lanczos3 resampling. ",
-      "icon": "assets/obs-studio.png",
-      "screenshots": [
-        "assets/obs-studio-1.jpg"
-      ],
-      "developer-name": "Various Contributors",
-      "developer-url": "https://github.com/jp9000/obs-studio/blob/master/AUTHORS",
-      "urls": {
-        "info": "https://obsproject.com",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "obs",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "obs-studio",
-          "install-packages": [
-            "obs-studio"
-          ],
-          "remove-packages": [
-            "obs-studio"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": "telestream Wirecast",
       "listed": true
     },
     "kdenlive": {
@@ -1945,30 +1801,26 @@
       "proprietary": true,
       "alternate-to": null,
       "listed": true
-    }
-  },
-  "office": {
-    "calibre": {
-      "name": "Calibre",
-      "summary": "Easy and powerful e-book manager",
-      "description": "A complete e-library solution. It includes library management, format conversion, news feeds to e-book conversion as well as e-book reader sync features. Calibre is primarily an e-book cataloging program. It manages your e-book collection for you. Calibre can convert from a huge number of formats to a huge number of formats. It supports all the major e-book formats. Calibre supports syncing to a large number of e-reader device. Syncing supports updating metadata on the device from metadata in the library and creation of collections on the device based on the tags defined in the library. Calibre automatically chooses the best format when uploading to the device, auto-converting if required. Calibre has also a built-in e-book viewer that can display all the major e-book formats. ",
-      "icon": "assets/calibre.png",
+    },
+    "kodi": {
+      "name": "Kodi",
+      "summary": "Media player perfect for HTPCs and home theatres",
+      "description": "A media player application for your computer, it has been designed to be the perfect companion for your HTPC. Supporting an almost endless range of remote controls, and combined with its beautiful interface and powerful skinning engine, Kodi feels very natural to use from the couch and is the ideal solution for your home theater. Once installed, your computer will become a fully functional multimedia jukebox.",
+      "icon": "assets/kodi.png",
       "screenshots": [
-        "assets/calibre-1.jpg"
+        "assets/kodi-1.jpg"
       ],
-      "developer-name": "Various Contributors",
-      "developer-url": "https://calibre-ebook.com/about#contributors",
+      "developer-name": "Kodi Team",
+      "developer-url": "https://kodi.tv/kodi-team",
       "urls": {
-        "info": "http://calibre-ebook.com/",
-        "android-app": null,
-        "ios-app": null
+        "info": "https://kodi.tv/",
+        "android-app": "",
+        "ios-app": ""
       },
-      "launch-cmd": "calibre",
+      "launch-cmd": "kodi",
       "arch": [
-        "i686",
         "x86_64",
-        "armv7h",
-        "aarch64"
+        "i686"
       ],
       "releases": [
         "rolling"
@@ -1979,12 +1831,12 @@
       "pacman": {
         "default": {
           "source": "arch",
-          "main-package": "calibre",
+          "main-package": "kodi",
           "install-packages": [
-            "calibre"
+            "kodi"
           ],
           "remove-packages": [
-            "calibre"
+            "kodi"
           ]
         }
       },
@@ -1992,6 +1844,91 @@
       "alternate-to": null,
       "listed": true
     },
+    "simplescreenrecorder": {
+      "name": "SimpleScreenRecorder",
+      "summary": "Feature rich screen recorder",
+      "description": "A feature-rich screen recorder that can record the entire screen or part of it, or record OpenGL applications directly. The recording can be paused and resumed at any time. Many different file formats and codecs are supported.",
+      "icon": "assets/simplescreenrecorder.png",
+      "screenshots": [
+        "assets/simplescreenrecorder-1.jpg"
+      ],
+      "developer-name": "Maarten Baert and Contributors",
+      "developer-url": "https://github.com/MaartenBaert/ssr/blob/master/AUTHORS.md",
+      "urls": {
+        "info": "http://www.maartenbaert.be/simplescreenrecorder/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "simplescreenrecorder",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "simplescreenrecorder",
+          "install-packages": [
+            "simplescreenrecorder"
+          ],
+          "remove-packages": [
+            "simplescreenrecorder"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "obs-studio": {
+      "name": "OBS Studio",
+      "summary": "Record and produce a live stream",
+      "description": "Free and Open Source software for video recording and live streaming. Supported features include, encoding using H264 (x264) and AAC, support for Intel Quick Sync Video (QSV) and NVENC, unlimited number of scenes and sources. Live RTMP streaming to Twitch, YouTube, DailyMotion, Hitbox and more. File output to MP4 or FLV, GPU-based game capture for high performance game streaming, capture device support (webcams, capture cards, etc), bi-linear or lanczos3 resampling.",
+      "icon": "assets/obs-studio.png",
+      "screenshots": [
+        "assets/obs-studio-1.jpg"
+      ],
+      "developer-name": "Various Contributors",
+      "developer-url": "https://github.com/jp9000/obs-studio/blob/master/AUTHORS",
+      "urls": {
+        "info": "https://obsproject.com",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "obs",
+      "arch": [
+        "x86_64",
+        "i686"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "obs-studio",
+          "install-packages": [
+            "obs-studio"
+          ],
+          "remove-packages": [
+            "obs-studio"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    }
+  },
+  "office": {
     "libreoffice": {
       "name": "LibreOffice",
       "summary": "Full-featured office productivity suite",
@@ -2036,27 +1973,27 @@
       "alternate-to": null,
       "listed": true
     },
-    "libreoffice-base": {
-      "name": "LibreOffice Base",
-      "summary": "Database management application",
-      "description": "A database management program that provides a frontend to creating and modifying tables, forms and reports as well as connecting to a variety of databases, including MySQL, OOBC and JDBC. ",
-      "icon": "assets/libreoffice-base.png",
+    "calibre": {
+      "name": "Calibre",
+      "summary": "Easy and powerful e-book manager",
+      "description": "A complete e-library solution. It includes library management, format conversion, news feeds to e-book conversion as well as e-book reader sync features. Calibre is primarily an e-book cataloging program. It manages your e-book collection for you. Calibre can convert from a huge number of formats to a huge number of formats. It supports all the major e-book formats. Calibre supports syncing to a large number of e-reader device. Syncing supports updating metadata on the device from metadata in the library and creation of collections on the device based on the tags defined in the library. Calibre automatically chooses the best format when uploading to the device, auto-converting if required. Calibre has also a built-in e-book viewer that can display all the major e-book formats.",
+      "icon": "assets/calibre.png",
       "screenshots": [
-        "assets/libreoffice-base-1.jpg"
+        "assets/calibre-1.jpg"
       ],
-      "developer-name": "The Document Foundation",
-      "developer-url": "https://www.documentfoundation.org/",
+      "developer-name": "Various Contributors",
+      "developer-url": "https://calibre-ebook.com/about#contributors",
       "urls": {
-        "info": "https://www.libreoffice.org/discover/base/",
-        "android-app": null,
-        "ios-app": null
+        "info": "http://calibre-ebook.com/",
+        "android-app": "",
+        "ios-app": ""
       },
-      "launch-cmd": "libreoffice --base",
+      "launch-cmd": "calibre",
       "arch": [
-        "i686",
         "x86_64",
-        "armv7h",
-        "aarch64"
+        "i686",
+        "aarch64",
+        "armv7h"
       ],
       "releases": [
         "rolling"
@@ -2067,17 +2004,17 @@
       "pacman": {
         "default": {
           "source": "arch",
-          "main-package": "libreoffice-fresh",
+          "main-package": "calibre",
           "install-packages": [
-            "libreoffice-fresh"
+            "calibre"
           ],
           "remove-packages": [
-            "libreoffice-fresh"
+            "calibre"
           ]
         }
       },
       "proprietary": false,
-      "alternate-to": "Microsoft&reg; Access",
+      "alternate-to": null,
       "listed": true
     }
   },
@@ -2209,9 +2146,9 @@
   },
   "stats": {
     "version": 7,
-    "revision": 310,
-    "compiled": 1790896920,
-    "apps": 52,
+    "revision": 319,
+    "compiled": 1790897331,
+    "apps": 51,
     "categories": 10
   },
   "distro": {
