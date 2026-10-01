@@ -2,6 +2,9 @@
   "files": {
     "assets/0ad.png": "da799baf953ea8dcac1a708016ae010723da9c9c331c9a83815084dc2ad9e99e",
     "assets/aisleriot.png": "ca4af0f1fd98bfa5f0810e1f16ccab28617a185412967cf87eee95181a24a70c",
+    "assets/amberol-1.png": "5f9450d3944ae5d7be592cdbec11846b93b2344e1790367b6f977a41450decb7",
+    "assets/amberol.png": "5f8cbd485f4f6247ca39f28f9ec8365a0b025d3bb00d3820e48417c4195ac085",
+    "assets/anydesk.png": "790185e0502cc4d7e7fcdac9ff153d44cc39db1a82503f60d80a6a176019c216",
     "assets/audacity-1.jpg": "70aa0d01f23692049a500ad1d75b439c028677d76822a50de1254775a3eb6211",
     "assets/audacity.png": "0bee9ba2e8547b9eb23a1a5c78ba9f2739e39e60df45e79cf2bbf9727647e0e9",
     "assets/blender-1.jpg": "afe5851fc25693b3e86a1c2c6f7541acb743728fea050731aa9814d29d51de69",
@@ -35,8 +38,7 @@
     "assets/gimp-2.jpg": "2729f9d1e4414e2975e8f3b9315cf1176ef1e71149f8fc195bebae86968a3dcc",
     "assets/gimp.png": "858b5821cae40a40acf99db86a8f677c157c15c86f45ad044a3a0f3e8499c98d",
     "assets/gnome-software.png": "f2f36fa70a6a9541fbf3a3f3a46ec06535c812ff5e0957f8940ac658c8651e93",
-    "assets/google-chrome-1.jpg": "d20a9ebe8925da7bd7b00516502de545469daacb6c1e59f8b5d8dabf7b451a72",
-    "assets/google-chrome.png": "bb6179bc163f20fafafa10580df95b0ab720ec637265f0dd0a7277ac7ad320ae",
+    "assets/google-chrome.png": "c0e62b9671b6186283074a91e262f26ca70714208f2390e00dc438e733931c8e",
     "assets/hexchat.png": "c751788d48986e7283621e98f051b066ca7772a605b41d0a0b9fcc49e2b05d36",
     "assets/inkscape-1.jpg": "38fcd7027cdd5593ed57bb0020a58628794dd20e2b6411af860ace11adec3b27",
     "assets/inkscape.png": "85d8f7e51959acbe77e641f6be4e40961a25b947e6d361a21ddd92932db30ef6",
@@ -44,12 +46,8 @@
     "assets/kdenlive.png": "e4057bb64d2042dfbd9f785d6cd4629a882541f5bc4cc149a691f32c9167cbfa",
     "assets/kodi-1.jpg": "c6fd0c9cfd21dfd9a0590e4f7257b0930086ad552dd1f532d35981c9d9cef3b1",
     "assets/kodi.png": "a41d12c99a80cfa607e4a51ffc9ec8a9f1b8fb01d366a046e9fe47007e457f47",
-    "assets/libreoffice-1.jpg": "3fb637c4c75f32a61e0dcc0305dc6a0b6b880c84d12ba5973c967733e899b7c7",
-    "assets/libreoffice-2.jpg": "60a56669d857a4768e93ccfb61c6ff1b8a266a08ce3682f00fed089f4973f89a",
-    "assets/libreoffice-3.jpg": "26f3ce18ce2f96391a040e5dcb2a39ff05356d5a10d06043c9d31fc8a7aa41f0",
     "assets/libreoffice-math-1.png": "6d67c6a1a716245df5ff56159334a4973d4b3e4ce17138023f1122ddbba229eb",
     "assets/libreoffice-math.png": "ade6b1e782d3ec3ac18a212fd368555c92163ca1895df347592940e3cb74da39",
-    "assets/libreoffice.png": "d3d73227fa0b1f94da129dc088978ac660564aad592802606be4f2e9f7df7b21",
     "assets/lutris-1.jpg": "b167723ac1c0a35ee86743266a7150e316bf9468db0f9461811f7e1b72e1cbf1",
     "assets/lutris.png": "423a94160a7109ab67f0b7e3ec0fb7381e44d905a7dee8d35dd3266a736d410b",
     "assets/neverball.png": "1c95dd7719451972e8c675f088a72ca01dc07efa1eed29a725a927bb0b9bd823",
@@ -96,5 +94,5 @@
     "assets/zenmap-1.jpg": "136b7f268bd14d829843cb878c4f57db3fae8b4f551b392823e50d27d83efaa8",
     "assets/zenmap.png": "a18cd769f13f92d7ee70983893c977eaac5cce11f418314d337bf468ee745c17"
   },
-  "revision": 319
+  "revision": 328
 }

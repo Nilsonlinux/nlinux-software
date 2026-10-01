@@ -40,6 +40,47 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
+    },
+    "amberol": {
+      "name": "Amberol",
+      "summary": "Small and simple sound and music player that is well integrated with GNOME",
+      "description": "Small and simple sound and music player that is well integrated with GNOME",
+      "icon": "assets/amberol.png",
+      "screenshots": [
+        "assets/amberol-1.png"
+      ],
+      "developer-name": "Balló György",
+      "developer-url": "https://apps.gnome.org/Amberol/",
+      "urls": {
+        "info": "https://apps.gnome.org/Amberol/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "amberol",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "amberol",
+          "install-packages": [
+            "amberol"
+          ],
+          "remove-packages": [
+            "amberol"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
     }
   },
   "development": {
@@ -250,47 +291,6 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
-    },
-    "libreoffice-math": {
-      "name": "LibreOffice Math",
-      "summary": "LibreOffice branch which contains new features and program enhancements",
-      "description": "The formula editor for the LibreOffice suite. Mathmatical formatting can be invoked in your text documents, spreadsheets, presentations and drawings, to enable you to insert perfectly-formatted mathematical and scientific formulas. Your formulas can include a wide range of elements, from fractions, terms with exponents and indices, integrals, and mathematical functions, to inequalities, systems of equations, and matrices.",
-      "icon": "assets/libreoffice-math.png",
-      "screenshots": [
-        "assets/libreoffice-math-1.png"
-      ],
-      "developer-name": "LibreOffice Team",
-      "developer-url": "https://www.libreoffice.org/",
-      "urls": {
-        "info": "https://www.libreoffice.org/",
-        "android-app": "",
-        "ios-app": ""
-      },
-      "launch-cmd": "libreoffice --math",
-      "arch": [
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "libreoffice-fresh",
-          "install-packages": [
-            "libreoffice-fresh"
-          ],
-          "remove-packages": [
-            "libreoffice-fresh"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
     }
   },
   "games": {
@@ -410,50 +410,6 @@
           ],
           "remove-packages": [
             "pysolfc"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
-    "chromiumbsu": {
-      "name": "Chromium B.S.U",
-      "summary": "Top down fast paced high action scrolling space shooter",
-      "description": "In this game you are the captain of the cargo ship Chromium B.S.U. and are responsible for delivering supplies to the troops on the front line. Your ship has a small fleet of robotic fighters which you control from the relative safety of the Chromium vessel.",
-      "icon": "assets/chromiumbsu.png",
-      "screenshots": [
-        "assets/chromiumbsu-1.jpg"
-      ],
-      "developer-name": "Mark B. Allan",
-      "developer-url": "http://chromium-bsu.sourceforge.net/about.html",
-      "urls": {
-        "info": "http://chromium-bsu.sourceforge.net/",
-        "android-app": "",
-        "ios-app": ""
-      },
-      "launch-cmd": "chromium-bsu",
-      "arch": [
-        "x86_64",
-        "i686",
-        "aarch64",
-        "armv7h"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "chromium-bsu",
-          "install-packages": [
-            "chromium-bsu"
-          ],
-          "remove-packages": [
-            "chromium-bsu"
           ]
         }
       },
@@ -959,6 +915,47 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
+    },
+    "chromiumbsu": {
+      "name": "Chromium B.S.U",
+      "summary": "Top down fast paced high action scrolling space shooter",
+      "description": "In this game you are the captain of the cargo ship Chromium B.S.U. and are responsible for delivering supplies to the troops on the front line. Your ship has a small fleet of robotic fighters which you control from the relative safety of the Chromium vessel.",
+      "icon": "assets/chromiumbsu.png",
+      "screenshots": [
+        "assets/chromiumbsu-1.jpg"
+      ],
+      "developer-name": "Mark B. Allan",
+      "developer-url": "http://chromium-bsu.sourceforge.net/about.html",
+      "urls": {
+        "info": "http://chromium-bsu.sourceforge.net/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "chromium-bsu",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "chromium-bsu",
+          "install-packages": [
+            "chromium-bsu"
+          ],
+          "remove-packages": [
+            "chromium-bsu"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
     }
   },
   "graphics": {
@@ -1257,91 +1254,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "zenmap": {
-      "name": "Zenmap",
-      "summary": "Frontend for Nmap, for network discovery and security auditing",
-      "description": "A frontend for Nmap, a utility for network discovery and security auditing, that is meant to be useful for advanced users and to make Nmap easy to use by beginners.",
-      "icon": "assets/zenmap.png",
-      "screenshots": [
-        "assets/zenmap-1.jpg"
-      ],
-      "developer-name": "Levente Polyak Carl Smedstad Hyacinthe Cartiaux",
-      "developer-url": "https://nmap.org/",
-      "urls": {
-        "info": "https://nmap.org/",
-        "android-app": "",
-        "ios-app": ""
-      },
-      "launch-cmd": "zenmap",
-      "arch": [
-        "x86_64",
-        "i686",
-        "aarch64",
-        "armv7h"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "zenmap",
-          "install-packages": [
-            "zenmap"
-          ],
-          "remove-packages": [
-            "zenmap"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
-    "google-chrome": {
-      "name": "Google Chrome",
-      "summary": "A fast, secure, and free web browser built for the modern web.",
-      "description": "The web browser from Google that combines a minimal design with sophisticated technology to make the web faster, safer, and easier. If you are a <b>Netflix</b> subscriber then Google Chrome fully supports Netflix.",
-      "icon": "assets/google-chrome.png",
-      "screenshots": [
-        "assets/google-chrome-1.jpg"
-      ],
-      "developer-name": "Google",
-      "developer-url": "https://www.google.com/about/",
-      "urls": {
-        "info": "http://www.google.com/chrome/",
-        "android-app": "",
-        "ios-app": ""
-      },
-      "launch-cmd": "google-chrome-stable",
-      "arch": [
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "aur",
-          "main-package": "google-chrome",
-          "install-packages": [
-            "google-chrome"
-          ],
-          "remove-packages": [
-            "google-chrome"
-          ]
-        }
-      },
-      "proprietary": true,
-      "alternate-to": null,
-      "listed": true
-    },
     "filezilla": {
       "name": "FileZilla",
       "summary": "File transfer tool for FTP, FTPS and SFTP (SSH).",
@@ -1577,6 +1489,86 @@
           ],
           "remove-packages": [
             "hexchat"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "zenmap": {
+      "name": "Zenmap",
+      "summary": "Frontend for Nmap, for network discovery and security auditing",
+      "description": "A frontend for Nmap, a utility for network discovery and security auditing, that is meant to be useful for advanced users and to make Nmap easy to use by beginners.",
+      "icon": "assets/zenmap.png",
+      "screenshots": [
+        "assets/zenmap-1.jpg"
+      ],
+      "developer-name": "Levente Polyak, Carl Smedstad, Hyacinthe Cartiaux",
+      "developer-url": "https://nmap.org/",
+      "urls": {
+        "info": "https://nmap.org/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "zenmap",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "zenmap",
+          "install-packages": [
+            "zenmap"
+          ],
+          "remove-packages": [
+            "zenmap"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "google-chrome": {
+      "name": "Google Chrome",
+      "summary": "The popular web browser by Google (Stable Channel)",
+      "description": "The popular web browser by Google (Stable Channel)",
+      "icon": "assets/google-chrome.png",
+      "screenshots": [],
+      "developer-name": "gromit",
+      "developer-url": "gromit",
+      "urls": {
+        "info": "https://www.google.com/chrome",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "google-chrome",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "google-chrome",
+          "install-packages": [
+            "google-chrome"
+          ],
+          "remove-packages": [
+            "google-chrome"
           ]
         }
       },
@@ -1929,50 +1921,6 @@
     }
   },
   "office": {
-    "libreoffice": {
-      "name": "LibreOffice",
-      "summary": "Full-featured office productivity suite",
-      "description": "The full-featured office productivity suite that provides a near drop-in replacement for Microsoft&reg; Office <b>pre-installed</b> as standard in Ubuntu MATE. <br><br>Clicking &#8217;Upgrade&#8217; will ensure LibreOffice always stays up-to-date with the latest stable release. ",
-      "icon": "assets/libreoffice.png",
-      "screenshots": [
-        "assets/libreoffice-1.jpg",
-        "assets/libreoffice-2.jpg",
-        "assets/libreoffice-3.jpg"
-      ],
-      "developer-name": "The Document Foundation",
-      "developer-url": "https://www.documentfoundation.org/",
-      "urls": {
-        "info": "https://www.libreoffice.org/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "libreoffice",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "libreoffice-fresh",
-          "install-packages": [
-            "libreoffice-fresh"
-          ],
-          "remove-packages": [
-            "libreoffice-fresh"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "calibre": {
       "name": "Calibre",
       "summary": "Easy and powerful e-book manager",
@@ -2010,6 +1958,47 @@
           ],
           "remove-packages": [
             "calibre"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "libreoffice-math": {
+      "name": "LibreOffice Math",
+      "summary": "LibreOffice branch which contains new features and program enhancements",
+      "description": "The formula editor for the LibreOffice suite. Mathmatical formatting can be invoked in your text documents, spreadsheets, presentations and drawings, to enable you to insert perfectly-formatted mathematical and scientific formulas. Your formulas can include a wide range of elements, from fractions, terms with exponents and indices, integrals, and mathematical functions, to inequalities, systems of equations, and matrices.",
+      "icon": "assets/libreoffice-math.png",
+      "screenshots": [
+        "assets/libreoffice-math-1.png"
+      ],
+      "developer-name": "LibreOffice Team",
+      "developer-url": "https://www.libreoffice.org/",
+      "urls": {
+        "info": "https://www.libreoffice.org/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "libreoffice --math",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "libreoffice-fresh",
+          "install-packages": [
+            "libreoffice-fresh"
+          ],
+          "remove-packages": [
+            "libreoffice-fresh"
           ]
         }
       },
@@ -2144,12 +2133,53 @@
       "listed": true
     }
   },
+  "connectivity": {
+    "anydesk": {
+      "name": "AnyDesk",
+      "summary": "The Fast Remote Desktop Application",
+      "description": "The Fast Remote Desktop Application",
+      "icon": "assets/anydesk.png",
+      "screenshots": [],
+      "developer-name": "D3SOX (severach)",
+      "developer-url": "",
+      "urls": {
+        "info": "https://anydesk.com",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "anydesk-bin",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "anydesk-bin",
+          "install-packages": [
+            "anydesk-bin"
+          ],
+          "remove-packages": [
+            "anydesk-bin"
+          ]
+        }
+      },
+      "proprietary": true,
+      "alternate-to": null,
+      "listed": true
+    }
+  },
   "stats": {
     "version": 7,
-    "revision": 319,
-    "compiled": 1790897331,
-    "apps": 51,
-    "categories": 10
+    "revision": 328,
+    "compiled": 1790898923,
+    "apps": 52,
+    "categories": 11
   },
   "distro": {
     "name": "NLinux",
