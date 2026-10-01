@@ -782,13 +782,6 @@ function renderSysUpdatesModal(showProgress) {
         </div>
         <h4>${tr("sysupd.modal.logs")}</h4>
         <pre id="sysupd-log" class="sysupd-log"></pre>
-        <form id="sysupd-answer-form" class="sysupd-answer" hidden>
-          <label for="sysupd-answer">${tr("sysupd.modal.reply")}</label>
-          <div>
-            <input id="sysupd-answer" name="answer" autocomplete="off" required>
-            <button class="btn btn-primary" type="submit">${tr("sysupd.modal.send")}</button>
-          </div>
-        </form>
       </section>`
     : "";
   const buttonLabel = sysUpdate
@@ -827,8 +820,6 @@ function renderSysUpdatesModal(showProgress) {
   if (sysUpdate) updateSysUpdateModal();
   const installBtn = $("#sysupd-install-btn");
   if (installBtn && !sysUpdate) installBtn.addEventListener("click", startSysUpdate);
-  const answerForm = $("#sysupd-answer-form");
-  if (answerForm) answerForm.addEventListener("submit", answerSysUpdatePrompt);
 }
 
 function updateSysUpdateModal() {
@@ -840,8 +831,6 @@ function updateSysUpdateModal() {
     log.scrollTop = log.scrollHeight;
   }
   paintSysUpdateRing(Number.isFinite(job.ringPct) ? job.ringPct : 0);
-  const answerForm = $("#sysupd-answer-form");
-  if (answerForm) answerForm.hidden = !(job.active && job.waitingForAnswer);
   const button = $("#sysupd-install-btn");
   if (button && !job.active) {
     button.disabled = false;
@@ -882,30 +871,6 @@ function tweenSysUpdateRing(progress) {
     paintSysUpdateRing(current);
   };
   frame();
-}
-
-async function answerSysUpdatePrompt(ev) {
-  ev.preventDefault();
-  const job = state.sysUpdate;
-  const input = $("#sysupd-answer");
-  const submit = $("#sysupd-answer-form button[type=submit]");
-  const text = input.value.trim();
-  if (!job?.id || !text) return;
-  submit.disabled = true;
-  try {
-    await api("/api/answer", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: job.id, text }),
-    });
-    input.value = "";
-    job.waitingForAnswer = false;
-    updateSysUpdateModal();
-  } catch (e) {
-    toast(e.message || tr("toast.failUpdate"), "err");
-  } finally {
-    submit.disabled = !job.active;
-  }
 }
 
 async function startSysUpdate() {
@@ -956,7 +921,6 @@ async function startSysUpdate() {
         : null;
       state.sysUpdate.lines = st.lines || [];
       state.sysUpdate.progress = currentProgress;
-      state.sysUpdate.waitingForAnswer = !!st.esperando_resposta;
       updateSysUpdateModal();
       renderSysUpdateProgress(currentProgress);
       const waiting = st.lines.length <= 1;

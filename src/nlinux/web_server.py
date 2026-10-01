@@ -462,12 +462,7 @@ class InstallJob:
         está testando.
         """
         if self.mode == "sysupdate":
-            # Sem `--noconfirm`, de propósito. É o `--noconfirm` que faz o
-            # pacman responder sozinho "sim, sobrescrever" quando um arquivo
-            # conflita — e o arquivo em conflito é justamente a configuração
-            # que alguém editou à mão. Aqui a pergunta chega na janela e a
-            # pessoa decide.
-            return ["pkexec", "pacman", "-Syu"], []
+            return ["pkexec", "pacman", "-Syu", "--noconfirm"], []
         if self.mode == "remove":
             return ["pkexec", "pacman", "-Rns", "--noconfirm"] + self.packages, []
         if self.source == "aur":
@@ -556,7 +551,7 @@ class InstallJob:
                         # nada para responder, que é o pior dos dois mundos.
                         # A barra de progresso também deixa linha pela metade,
                         # mas ela é encerrada por \r e chega aqui esvaziada.
-                        if PROMPT_RE.search(pending):
+                        if self.mode != "sysupdate" and PROMPT_RE.search(pending):
                             self.esperando_resposta = True
                             self._espera_desde = time.time()
                             self._record_output(pending)

@@ -640,20 +640,6 @@ a.m-link:hover { border-bottom-style: solid; }
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
-.sysupd-answer { margin-top: 12px; }
-.sysupd-answer[hidden] { display: none; }
-.sysupd-answer label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 13px; }
-.sysupd-answer > div { display: flex; gap: 8px; }
-.sysupd-answer input {
-  flex: 1;
-  min-width: 0;
-  padding: 10px 12px;
-  border: 1px solid var(--line-strong);
-  border-radius: 6px;
-  background: var(--panel);
-  color: var(--text);
-  font: inherit;
-}
 #sysupd-install-btn[disabled] i { animation: spin 1.2s linear infinite; }
 @keyframes sysupdRingGlow {
   0%, 100% { filter: drop-shadow(0 0 3px rgba(23, 162, 211, .35)); }
