@@ -744,9 +744,124 @@ function bindModalActions() {
     }));
 }
 
+function openSysUpdatesModal() {
+  const updates = state.updates || {};
+  const pacotes = updates.pacotes || [];
+  
+  if (pacotes.length === 0) return;
+  
+  $("#modal").hidden = false;
+  
+  const sizeInfo = updates.sized === updates.total && updates.total_bytes
+    ? `<div><dt>${tr("sysupd.modal.size")}</dt><dd>${esc(fmtBytes(updates.total_bytes))}</dd></div>`
+    : "";
+  
+  const pacotesList = pacotes
+    .map((p) => `<li><span class="ver-from">${esc(p.pacote)}</span><span class="ver-arrow">→</span><span class="ver-to">${esc(p.para)}</span></li>`)
+    .join("");
+  
+  $("#modal-content").innerHTML = `
+    <div class="m-head">
+      <div class="m-titles">
+        <h2><i class="ti ti-refresh"></i> ${tr("sysupd.modal.title")}</h2>
+        <p class="m-sum">${tr("sysupd.tipFull", updates.total, fmtBytes(updates.total_bytes || 0))}</p>
+      </div>
+    </div>
+    <div class="m-body">
+      <div class="meta">
+        <div><dt>${tr("results.count", updates.total, updates.total)}</dt></div>
+        ${sizeInfo}
+      </div>
+      <div class="packages-list">
+        <h4>Pacotes</h4>
+        <ul class="pkg-list">
+          ${pacotesList}
+        </ul>
+      </div>
+    </div>
+    <div class="m-actions">
+      <button class="btn btn-primary" id="sysupd-install-btn"><i class="ti ti-download"></i> ${tr("sysupd.modal.button")}</button>
+    </div>`;
+  
+  const installBtn = $("#sysupd-install-btn");
+  if (installBtn) {
+    installBtn.addEventListener("click", startSysUpdate);
+  }
+}
+
+async function startSysUpdate() {
+  if (state.busy) { toast(tr("toast.busyInstall"), "info"); return; }
+  
+  state.busy = true;
+  setBusy(true);
+  
+  statusCard(`${tr("status.updating").replace(/…$/, "")}…`, tr("status.waiting"), "");
+  
+  let job;
+  try {
+    job = await api("/api/sysupdate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({}),
+    });
+  } catch (e) {
+    state.busy = false;
+    setBusy(false);
+    toast(tr("toast.startFailUpdate"), "err");
+    return;
+  }
+  
+  let currentProgress = null;
+  (async function poll() {
+    const st = await api("/api/status?id=" + job.id).catch(() => null);
+    if (!st) {
+      statusCard(`${tr("status.updating").replace(/…$/, "")}…`, tr("status.checking"), "", currentProgress);
+      setTimeout(poll, 1400);
+    }
+    else if (st.state === "pending") {
+      currentProgress = Number.isFinite(st.progress)
+        ? Math.max(currentProgress ?? 0, Math.min(99, st.progress))
+        : null;
+      const waiting = st.lines.length <= 1;
+      const last = waiting
+        ? tr("status.waiting")
+        : st.lines[st.lines.length - 1];
+      statusCard(`${tr("status.updating").replace(/…$/, "")}…`, last, "", currentProgress);
+      setTimeout(poll, 1400);
+    } else {
+      const ok = st.done && st.success;
+      state.busy = false;
+      setBusy(false);
+      if (ok) {
+        const last = st.lines[st.lines.length - 1] || "";
+        statusCard(tr("status.updated"), last, "done");
+        toast(tr("toast.successUpdate"), "succ");
+        setTimeout(() => { 
+          $("#install-status").hidden = true;
+          $("#modal").hidden = true;
+          // Atualizar a lista de atualizações
+          checkSystemUpdates();
+        }, 4200);
+      } else {
+        const last = st.lines[st.lines.length - 1] || "";
+        statusCard(tr("status.failUpdate"), last, "error");
+        toast(tr("toast.failUpdate"), "err");
+        setTimeout(() => { $("#install-status").hidden = true; }, 4200);
+      }
+    }
+  })();
+}
+
 function bindGlobal() {
   blockContextMenu();
   $("#store-info").addEventListener("click", openStoreInfo);
+  
+  const sysUpdBadge = $("#sysupd-badge");
+  if (sysUpdBadge) {
+    sysUpdBadge.addEventListener("click", openSysUpdatesModal);
+    sysUpdBadge.style.cursor = "pointer";
+  }
+  
   window.addEventListener("online", renderNet);
   window.addEventListener("offline", renderNet);
   renderNet();
@@ -1057,7 +1172,6 @@ function renderSysUpdates(d) {
     `<i class="ti ti-refresh"></i><span class="su-n">${total}</span>` +
     (completo ? `<span class="su-b">${esc(fmtBytes(d.total_bytes))}</span>` : "");
   el.dataset.tip = tip;
-  el.title = tip;
   el.hidden = false;
 }
 
@@ -1104,6 +1218,17 @@ async function checkBrokenAUR() {
    quando faz o aviso aparecer sem precisar recarregar a loja inteira. */
 function watchBrokenAUR() {
   setInterval(() => { checkBrokenAUR(); }, 15 * 60 * 1000);
+}
+
+async function checkSystemUpdates() {
+  try {
+    const resp = await fetch("/api/updates", { cache: "no-store" });
+    if (!resp.ok) return;
+    const d = await resp.json();
+    state.updates = d;
+    const total = d.total || 0;
+    renderSysUpdates(d);
+  } catch (e) { /* sem endpoint ou offline: não é motivo para incomodar */ }
 }
 
 function watchUpdates() {

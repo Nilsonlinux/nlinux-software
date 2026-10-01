@@ -563,3 +563,79 @@ a.m-link:hover { border-bottom-style: solid; }
 /* Notificação de atualização (canto superior direito, junto das demais) */
 .toast.upd { border-color: var(--accent-strong); }
 .toast.upd::before { content: "\f0663"; font-family: "tabler-icons"; color: var(--accent-strong); font-weight: 800; }
+
+/* Estilos para o modal de atualizações do sistema */
+.packages-list {
+  margin-top: 16px;
+}
+
+.packages-list h4 {
+  margin-bottom: 12px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--faint);
+  font-weight: 700;
+}
+
+.pkg-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 300px;
+  overflow-y: auto;
+  background: var(--panel-2);
+  border-radius: 6px;
+  padding: 8px 0;
+}
+
+.pkg-list li {
+  padding: 8px 16px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+}
+
+.pkg-list li:last-child {
+  border-bottom: none;
+}
+
+.ver-arrow {
+  color: var(--faint);
+  font-size: 11px;
+  justify-self: center;
+}
+
+.ver-from, .ver-to { min-width: 0; overflow-wrap: anywhere; }
+.ver-to { text-align: right; }
+
+#sysupd-badge {
+  cursor: pointer;
+}
+
+#sysupd-badge:hover {
+  opacity: 0.8;
+}
+
+.alert {
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.alert-warning {
+  background: var(--warning-light, rgba(255, 193, 7, 0.1));
+  border: 1px solid var(--warning, #ffc107);
+  color: var(--warning-dark, #ff6f00);
+}
+
+.alert i {
+  flex-shrink: 0;
+}
