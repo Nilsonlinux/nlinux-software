@@ -1508,47 +1508,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "vivaldi": {
-      "name": "Vivaldi",
-      "summary": "An advanced browser made with the power user in mind.",
-      "description": "Vivaldi browser is made with power users in mind by people who love the Web.",
-      "icon": "assets/vivaldi.png",
-      "screenshots": [
-        "assets/vivaldi-1.jpg"
-      ],
-      "developer-name": "Ike Devolder",
-      "developer-url": "https://vivaldi.com",
-      "urls": {
-        "info": "https://vivaldi.com",
-        "android-app": "",
-        "ios-app": ""
-      },
-      "launch-cmd": "vivaldi",
-      "arch": [
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "vivaldi",
-          "install-packages": [
-            "vivaldi"
-          ],
-          "remove-packages": [
-            "vivaldi"
-          ]
-        }
-      },
-      "proprietary": true,
-      "alternate-to": null,
-      "listed": false
-    },
     "hexchat": {
       "name": "Hexchat",
       "summary": "Graphical IRC client",
@@ -1711,6 +1670,47 @@
       "proprietary": true,
       "alternate-to": null,
       "listed": true
+    },
+    "vivaldi": {
+      "name": "Vivaldi",
+      "summary": "An advanced browser made with the power user in mind.",
+      "description": "Vivaldi browser is made with power users in mind by people who love the Web.",
+      "icon": "assets/vivaldi.png",
+      "screenshots": [
+        "assets/vivaldi-1.jpg"
+      ],
+      "developer-name": "Ike Devolder",
+      "developer-url": "https://vivaldi.com",
+      "urls": {
+        "info": "https://vivaldi.com",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "vivaldi",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "vivaldi",
+          "install-packages": [
+            "vivaldi"
+          ],
+          "remove-packages": [
+            "vivaldi"
+          ]
+        }
+      },
+      "proprietary": true,
+      "alternate-to": null,
+      "listed": false
     }
   },
   "multimedia": {
@@ -2319,8 +2319,8 @@
   },
   "stats": {
     "version": 7,
-    "revision": 285,
-    "compiled": 1790888082,
+    "revision": 286,
+    "compiled": 1790888790,
     "apps": 54,
     "categories": 10
   },
