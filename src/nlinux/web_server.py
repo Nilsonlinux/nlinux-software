@@ -133,9 +133,9 @@ ISO_STORE_DIRNAME = "nlinux-software"
 # A imagem é montada a partir do que está commitado: deixar a pasta da loja
 # modificada faria o build da ISO usar uma loja diferente da do repositório.
 # Por isso o espelho fecha com commit. Desligue com NLINUX_ISO_COMMIT=0; o
-# push é opt-in com NLINUX_ISO_PUSH=1, para não escrever no remoto sem querer.
+# push é automático por padrão; desligue com NLINUX_ISO_PUSH=0.
 ISO_COMMIT_ENABLED = os.environ.get("NLINUX_ISO_COMMIT", "1") not in ("0", "false", "no")
-ISO_PUSH_ENABLED = os.environ.get("NLINUX_ISO_PUSH", "0") not in ("0", "false", "no")
+ISO_PUSH_ENABLED = os.environ.get("NLINUX_ISO_PUSH", "1") not in ("0", "false", "no")
 PACKAGE_DEPS = [
     "python",
     "python-gobject",
@@ -457,7 +457,12 @@ class InstallJob:
         está testando.
         """
         if self.mode == "sysupdate":
-            return ["pkexec", "pacman", "-Syu", "--noconfirm"], []
+            # Sem `--noconfirm`, de propósito. É o `--noconfirm` que faz o
+            # pacman responder sozinho "sim, sobrescrever" quando um arquivo
+            # conflita — e o arquivo em conflito é justamente a configuração
+            # que alguém editou à mão. Aqui a pergunta chega na janela e a
+            # pessoa decide.
+            return ["pkexec", "pacman", "-Syu"], []
         if self.mode == "remove":
             return ["pkexec", "pacman", "-Rns", "--noconfirm"] + self.packages, []
         if self.source == "aur":
@@ -546,7 +551,7 @@ class InstallJob:
                         # nada para responder, que é o pior dos dois mundos.
                         # A barra de progresso também deixa linha pela metade,
                         # mas ela é encerrada por \r e chega aqui esvaziada.
-                        if self.mode != "sysupdate" and PROMPT_RE.search(pending):
+                        if PROMPT_RE.search(pending):
                             self.esperando_resposta = True
                             self._espera_desde = time.time()
                             self._record_output(pending)
@@ -2319,7 +2324,7 @@ def sync_iso_store(build_dir: str, rev: int) -> dict:
     print(f"[nlinux] loja do iso-build sincronizada: {dest} (v{rev})", flush=True)
     result = {"synced": True, "path": dest, "revision": rev}
     result["commit"] = _iso_commit(ISO_STORE_DIRNAME, rev)
-    if ISO_PUSH_ENABLED and result["commit"].get("committed"):
+    if ISO_PUSH_ENABLED:
         result["push"] = _iso_push()
     return result
 

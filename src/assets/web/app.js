@@ -757,6 +757,9 @@ function renderSysUpdatesModal(showProgress) {
   const sizeInfo = updates.sized === updates.total && updates.total_bytes
     ? `<div><dt>${tr("sysupd.modal.size")}</dt><dd>${esc(fmtBytes(updates.total_bytes))}</dd></div>`
     : "";
+  const restartInfo = updates.reiniciar
+    ? `<div class="alert alert-warning"><i class="ti ti-alert-circle"></i> ${tr("sysupd.modal.restart")}</div>`
+    : "";
   const pacotesList = pacotes
     .map((p) => `<li><span class="ver-from">${esc(p.pacote)}</span><span class="ver-arrow">→</span><span class="ver-to">${esc(p.para)}</span></li>`)
     .join("");
@@ -801,6 +804,7 @@ function renderSysUpdatesModal(showProgress) {
       </div>
     </div>
     <div class="m-body">
+      ${restartInfo}
       <div class="meta">
         <div><dt>${tr("results.count", updates.total, updates.total)}</dt></div>
         ${sizeInfo}
@@ -941,7 +945,10 @@ async function startSysUpdate() {
         const last = st.lines[st.lines.length - 1] || "";
         statusCard(tr("status.updated"), last, "done");
         toast(tr("toast.successUpdate"), "succ");
-        setTimeout(() => { $("#install-status").hidden = true; }, 4200);
+        setTimeout(() => {
+          $("#install-status").hidden = true;
+          $("#modal").hidden = true;
+        }, 4200);
         checkSystemUpdates();
       } else {
         const last = st.lines[st.lines.length - 1] || "";
