@@ -46,6 +46,7 @@
     "assets/filezilla-1.jpg": "89f156dd243f86eea79e29324e85cd9b32776b1a953f1a4b09a0cedaf8bde187",
     "assets/filezilla.png": "0fae833f0a90ef6042bb6841566d851d0549a9e82bbb8b8e0497b9c5d778bd46",
     "assets/firefox-1.jpg": "545457ba8031b2d475b037a8fbbf8566d9ed6af667752d6e3136c3ea73648453",
+    "assets/firefox-1.png": "def3f3196a5ea0df910e5c85f7c3368d1712f5fc0dc9dfeac1dec7bb7065e1d0",
     "assets/firefox.png": "3589aae850b32774c9fb667fb36efd4ef3dce0a67ce0ab011943b14ec565945b",
     "assets/flightgear.png": "ab81ded432994bd19edfe690fd19937445b29187e13f6792352b684c3a40e56a",
     "assets/focuswriter-1.jpg": "31f4d8259ab79889e49b6dbdeb2c884ef9026d70181bde9717a2bb0003e4a7a9",
@@ -160,7 +161,9 @@
     "assets/virt-manager-1.jpg": "b4dd7a5cd04e04ddaa907051972a83d322e35189b0516b267c3ef11b4da810ed",
     "assets/virt-manager.png": "41d4a7a9b59d5d919ca0c2aaeadccac98ce6720385f578b8e8d1be4dad4b543e",
     "assets/virtualbox-1.jpg": "64a5cd1d500b23d37029f6704990cc17b0c27b59b867f2e31bf2988e6313c3bb",
+    "assets/virtualbox-1.png": "3d3a55b22a5809677d434c57fc1d875cdaf0716b0d6c84ab829986fce8263a06",
     "assets/virtualbox-2.jpg": "c70f8809b587f2fde9c4987165ca188f5a773050be3ed6ba857b68d207584902",
+    "assets/virtualbox-2.png": "d57d4b8d4e46739a8a724a335108c452d2d9d51df5b95326157cae532bbbe946",
     "assets/virtualbox.png": "21dcee61946ac741dd42c5cd8504d355dbcb1c50cfaa302a28ae0240c01c7eec",
     "assets/vivaldi-1.jpg": "231aa6cd7df6e566d04306c6df4630a78f3c9ab8503f9bf5bf0a0fb199e3f996",
     "assets/vivaldi.png": "1b407644d2951784e953e7146cb260923893a8a1323b010cf8a0217f4fa402e0",
@@ -169,11 +172,12 @@
     "assets/vscode.png": "da67596a81cb75c9e1b4cb1a6b8282ca5f97c5296bc23aada03225bc3f068b8a",
     "assets/warzone2100.png": "a8f6fdcfb8f8ba6ede95252a2e8108b31c2ac9ecd8b3bbab04a470c6a5b13a87",
     "assets/wesnoth.png": "4989853079999fc680f572683bb9f2ba26b09bda556f8ea26ba1f8772d5eeead",
+    "assets/whatsapp-desktop-1.png": "8ab0f05d3193d1478c037fc0c46219d2a89c3c5551a96997aa20dc249692fa55",
     "assets/whatsapp-desktop.png": "77fcc9dbaf4dd949f654f9d391f699c1e8beff7efc149aa26571fddfd88e0108",
     "assets/wine-devel.png": "30dff4a059610317ecb1ca69ad7caab1b748cf861ab26416642df4ff3519d9aa",
     "assets/youtube-dlg.png": "b93ce7ea28de24de03fd194fe31ddc598c097cd4caf0c210e3a435b709a4b892",
     "assets/zenmap-1.jpg": "136b7f268bd14d829843cb878c4f57db3fae8b4f551b392823e50d27d83efaa8",
     "assets/zenmap.png": "a18cd769f13f92d7ee70983893c977eaac5cce11f418314d337bf468ee745c17"
   },
-  "revision": 242
+  "revision": 251
 }

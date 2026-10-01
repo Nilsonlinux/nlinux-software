@@ -1374,90 +1374,6 @@
     }
   },
   "internet": {
-    "brave": {
-      "name": "Brave",
-      "summary": "Web browser that blocks ads and trackers",
-      "description": "Browse faster and safer with Brave. The new Brave browser automatically blocks ads and trackers, making it faster and safer than your current browser. Start supporting publishers today with our new Brave Payments system. ",
-      "icon": "assets/brave.png",
-      "screenshots": [],
-      "developer-name": "Brave Software Inc.",
-      "developer-url": "https://brave.com/about/",
-      "urls": {
-        "info": "https://brave.com/",
-        "android-app": "https://play.google.com/store/apps/details?id=com.brave.browser",
-        "ios-app": "https://itunes.apple.com/us/app/brave-web-browser-fast-with-built-in-adblock/id1052879175"
-      },
-      "launch-cmd": "brave",
-      "arch": [
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "manual",
-          "main-package": "brave",
-          "install-packages": [
-            "brave"
-          ],
-          "remove-packages": [
-            "brave"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
-    "chromium": {
-      "name": "Chromium",
-      "summary": "The open source version of Google Chrome",
-      "description": "The project aims to build a safer, faster, and more stable way for all Internet users to experience the web. ",
-      "icon": "assets/chromium.png",
-      "screenshots": [
-        "assets/chromium-1.jpg"
-      ],
-      "developer-name": "Various Contributors",
-      "developer-url": "https://chromium.googlesource.com/chromium/src/+/master/AUTHORS",
-      "urls": {
-        "info": "https://www.chromium.org/Home",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "chromium-browser",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "chromium-browser",
-          "install-packages": [
-            "chromium-browser",
-            "chromium-codecs-ffmpeg-extra"
-          ],
-          "remove-packages": [
-            "chromium-browser",
-            "chromium-codecs-ffmpeg-extra"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "corebird": {
       "name": "Corebird",
       "summary": "A modern and lightweight Twitter client.",
@@ -1752,175 +1668,6 @@
       "alternate-to": "Microsoft&reg; Outlook",
       "listed": true
     },
-    "vivaldi": {
-      "name": "Vivaldi",
-      "summary": "Web browser built with power users in mind",
-      "description": "Vivaldi browser is made with power users in mind by people who love the Web. ",
-      "icon": "assets/vivaldi.png",
-      "screenshots": [
-        "assets/vivaldi-1.jpg"
-      ],
-      "developer-name": "Vivaldi Technologies",
-      "developer-url": "https://vivaldi.com/",
-      "urls": {
-        "info": "https://vivaldi.net",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "vivaldi",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "manual",
-          "main-package": "vivaldi-stable",
-          "install-packages": [
-            "vivaldi-stable"
-          ],
-          "remove-packages": [
-            "vivaldi-stable"
-          ]
-        }
-      },
-      "proprietary": true,
-      "alternate-to": null,
-      "listed": true
-    },
-    "zenmap": {
-      "name": "Zenmap",
-      "summary": "Frontend for Nmap, for network discovery and security auditing",
-      "description": "A frontend for Nmap, a utility for network discovery and security auditing, that is meant to be useful for advanced users and to make Nmap easy to use by beginners. ",
-      "icon": "assets/zenmap.png",
-      "screenshots": [
-        "assets/zenmap-1.jpg"
-      ],
-      "developer-name": "Luis MartinGarcia and Fyodor",
-      "developer-url": "https://nmap.org/book/nping-man-author.html",
-      "urls": {
-        "info": "https://nmap.org/zenmap/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "zenmap",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "zenmap",
-          "install-packages": [
-            "zenmap"
-          ],
-          "remove-packages": [
-            "zenmap"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
-    "whatsapp-desktop": {
-      "name": "Whatsapp Desktop",
-      "summary": "An unofficial WhatsApp Linux Desktop application",
-      "description": "An unofficial WhatsApp Linux Desktop application",
-      "icon": "assets/whatsapp-desktop.png",
-      "screenshots": [],
-      "developer-name": "sayedulsayem",
-      "developer-url": "",
-      "urls": {
-        "info": "https://github.com/sayedulsayem/whatsapp-linux-desktop",
-        "android-app": "",
-        "ios-app": ""
-      },
-      "launch-cmd": "",
-      "arch": [
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "whatsapp-linux-desktop-bin",
-          "install-packages": [
-            "whatsapp-linux-desktop-bin"
-          ],
-          "remove-packages": [
-            "whatsapp-linux-desktop-bin"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
-    "firefox": {
-      "name": "Firefox",
-      "summary": "Safe and easy web browsing",
-      "description": "Firefox delivers safe, easy web browsing. A familiar user interface, enhanced security features including protection from online identity theft, and integrated search let you get the most out of the web.  If you are a <b>Netflix</b> subscriber then Firefox fully supports Netflix.",
-      "icon": "assets/firefox.png",
-      "screenshots": [
-        "assets/firefox-1.jpg"
-      ],
-      "developer-name": "Mozilla",
-      "developer-url": "https://www.mozilla.org",
-      "urls": {
-        "info": "https://www.mozilla.org/firefox",
-        "android-app": "",
-        "ios-app": ""
-      },
-      "launch-cmd": "firefox",
-      "arch": [
-        "x86_64",
-        "i686",
-        "aarch64",
-        "armv7h"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "firefox",
-          "install-packages": [
-            "firefox"
-          ],
-          "remove-packages": [
-            "firefox"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "telegram": {
       "name": "Telegram",
       "summary": "Messaging app with focus on speed and security",
@@ -1961,6 +1708,258 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
+    },
+    "brave": {
+      "name": "Brave",
+      "summary": "Web browser that blocks ads and trackers",
+      "description": "Browse faster and safer with Brave. The new Brave browser automatically blocks ads and trackers, making it faster and safer than your current browser. Start supporting publishers today with our new Brave Payments system.",
+      "icon": "assets/brave.png",
+      "screenshots": [],
+      "developer-name": "Brave Software Inc.",
+      "developer-url": "https://brave.com/about/",
+      "urls": {
+        "info": "https://brave.com",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "brave-bin",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "brave-bin",
+          "install-packages": [
+            "brave-bin"
+          ],
+          "remove-packages": [
+            "brave-bin"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "chromium": {
+      "name": "Chromium",
+      "summary": "The open source version of Google Chrome",
+      "description": "The project aims to build a safer, faster, and more stable way for all Internet users to experience the web.",
+      "icon": "assets/chromium.png",
+      "screenshots": [
+        "assets/chromium-1.jpg"
+      ],
+      "developer-name": "Christian Heusel, Jonathan Grotelüschen",
+      "developer-url": "https://chromium.googlesource.com/chromium/src/+/master/AUTHORS",
+      "urls": {
+        "info": "https://www.chromium.org/Home",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "chromium",
+      "arch": [
+        "x86_64",
+        "i686",
+        "armv7h"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "chromium",
+          "install-packages": [
+            "chromium"
+          ],
+          "remove-packages": [
+            "chromium"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "firefox": {
+      "name": "Firefox",
+      "summary": "Safe and easy web browsing",
+      "description": "Firefox delivers safe, easy web browsing. A familiar user interface, enhanced security features including protection from online identity theft, and integrated search let you get the most out of the web.  If you are a <b>Netflix</b> subscriber then Firefox fully supports Netflix.",
+      "icon": "assets/firefox.png",
+      "screenshots": [
+        "assets/firefox-1.png"
+      ],
+      "developer-name": "Mozilla",
+      "developer-url": "https://www.mozilla.org",
+      "urls": {
+        "info": "https://www.mozilla.org/firefox",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "firefox",
+      "arch": [
+        "x86_64",
+        "i686",
+        "aarch64",
+        "armv7h"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "firefox",
+          "install-packages": [
+            "firefox"
+          ],
+          "remove-packages": [
+            "firefox"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "whatsapp-desktop": {
+      "name": "Whatsapp Desktop",
+      "summary": "An unofficial WhatsApp Linux Desktop application",
+      "description": "An unofficial WhatsApp Linux Desktop application",
+      "icon": "assets/whatsapp-desktop.png",
+      "screenshots": [
+        "assets/whatsapp-desktop-1.png"
+      ],
+      "developer-name": "sayedulsayem",
+      "developer-url": "",
+      "urls": {
+        "info": "https://github.com/sayedulsayem/whatsapp-linux-desktop",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "whatsapp-linux-desktop-bin",
+          "install-packages": [
+            "whatsapp-linux-desktop-bin"
+          ],
+          "remove-packages": [
+            "whatsapp-linux-desktop-bin"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "zenmap": {
+      "name": "Zenmap",
+      "summary": "Frontend for Nmap, for network discovery and security auditing",
+      "description": "A frontend for Nmap, a utility for network discovery and security auditing, that is meant to be useful for advanced users and to make Nmap easy to use by beginners.",
+      "icon": "assets/zenmap.png",
+      "screenshots": [
+        "assets/zenmap-1.jpg"
+      ],
+      "developer-name": "Levente Polyak Carl Smedstad Hyacinthe Cartiaux",
+      "developer-url": "https://nmap.org/",
+      "urls": {
+        "info": "https://nmap.org/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "zenmap",
+      "arch": [
+        "x86_64",
+        "i686",
+        "aarch64",
+        "armv7h"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "zenmap",
+          "install-packages": [
+            "zenmap"
+          ],
+          "remove-packages": [
+            "zenmap"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "vivaldi": {
+      "name": "Vivaldi",
+      "summary": "An advanced browser made with the power user in mind.",
+      "description": "Vivaldi browser is made with power users in mind by people who love the Web.",
+      "icon": "assets/vivaldi.png",
+      "screenshots": [
+        "assets/vivaldi-1.jpg"
+      ],
+      "developer-name": "Ike Devolder",
+      "developer-url": "https://vivaldi.com",
+      "urls": {
+        "info": "https://vivaldi.com",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "vivaldi",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "vivaldi",
+          "install-packages": [
+            "vivaldi"
+          ],
+          "remove-packages": [
+            "vivaldi"
+          ]
+        }
+      },
+      "proprietary": true,
+      "alternate-to": null,
+      "listed": false
     }
   },
   "multimedia": {
@@ -2498,49 +2497,6 @@
     }
   },
   "system": {
-    "virtualbox": {
-      "name": "Oracle VirtualBox",
-      "summary": "Virtualize another computer within your computer.",
-      "description": "A powerful PC virtualization solution allowing you to run a wide range of PC operating systems on your Linux system. This includes Windows, Linux, FreeBSD, DOS, OpenBSD and others. VirtualBox comes with a broad feature set and excellent performance, making it the premier virtualization software solution on the market. ",
-      "icon": "assets/virtualbox.png",
-      "screenshots": [
-        "assets/virtualbox-1.jpg",
-        "assets/virtualbox-2.jpg"
-      ],
-      "developer-name": "Oracle Corporation",
-      "developer-url": "https://www.virtualbox.org/wiki/Contributor_information",
-      "urls": {
-        "info": "https://www.virtualbox.org/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "virtualbox",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "manual",
-          "main-package": "virtualbox-5.1",
-          "install-packages": [
-            "virtualbox-5.1"
-          ],
-          "remove-packages": [
-            "virtualbox-5.1"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": "VMware Workstation",
-      "listed": true
-    },
     "btop": {
       "name": "btop",
       "summary": "A monitor of system resources, bpytop ported to C++",
@@ -2575,6 +2531,48 @@
           ],
           "remove-packages": [
             "btop"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "virtualbox": {
+      "name": "Oracle VirtualBox",
+      "summary": "Powerful x86 virtualization for enterprise as well as home use",
+      "description": "A powerful PC virtualization solution allowing you to run a wide range of PC operating systems on your Linux system. This includes Windows, Linux, FreeBSD, DOS, OpenBSD and others. VirtualBox comes with a broad feature set and excellent performance, making it the premier virtualization software solution on the market.",
+      "icon": "assets/virtualbox.png",
+      "screenshots": [
+        "assets/virtualbox-1.png",
+        "assets/virtualbox-2.png"
+      ],
+      "developer-name": "Christian Hesse",
+      "developer-url": "https://virtualbox.org/",
+      "urls": {
+        "info": "https://virtualbox.org/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "virtualbox",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "virtualbox",
+          "install-packages": [
+            "virtualbox"
+          ],
+          "remove-packages": [
+            "virtualbox"
           ]
         }
       },
@@ -2626,8 +2624,8 @@
   },
   "stats": {
     "version": 7,
-    "revision": 242,
-    "compiled": 1790855532,
+    "revision": 251,
+    "compiled": 1790856489,
     "apps": 60,
     "categories": 11
   },
