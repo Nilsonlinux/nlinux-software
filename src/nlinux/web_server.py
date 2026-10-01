@@ -101,9 +101,23 @@ GIT_PUSH_URL = os.environ.get("NLINUX_GIT_URL") or \
     "https://github.com/Nilsonlinux/nlinux-software.git"
 GIT_PUSH_BRANCH = os.environ.get("NLINUX_GIT_BRANCH") or "main"
 GIT_PUSH_DIR = os.environ.get("NLINUX_GIT_DIR") or \
-    os.path.join(os.path.expanduser("~"), "nlinux-repo")
+    os.path.join(os.path.expanduser("~"), "nlinux-software")
 GIT_PUSH_USER = os.environ.get("NLINUX_GIT_USER") or "Nilsonlinux"
 GIT_PUSH_EMAIL = os.environ.get("NLINUX_GIT_EMAIL") or "nilsonlinux@users.noreply.github.com"
+# Projeto que constrói a ISO da distro. A subpasta <ISO_BUILD_DIR>/nlinux-software
+# é a fonte que o build-iso.sh embute em /opt/nlinux-software na imagem, e ela é
+# versionada no repositório do iso-build: sem espelhar o build para lá, a ISO
+# continua embarcando a revisão que ficou commitada — uma loja velha, às vezes
+# com programas que você já removeu do catálogo.
+ISO_BUILD_DIR = os.environ.get("NLINUX_ISO_DIR") or \
+    os.path.join(os.path.expanduser("~"), "nlinux-iso-build")
+ISO_STORE_DIRNAME = "nlinux-software"
+# A imagem é montada a partir do que está commitado: deixar a pasta da loja
+# modificada faria o build da ISO usar uma loja diferente da do repositório.
+# Por isso o espelho fecha com commit. Desligue com NLINUX_ISO_COMMIT=0; o
+# push é opt-in com NLINUX_ISO_PUSH=1, para não escrever no remoto sem querer.
+ISO_COMMIT_ENABLED = os.environ.get("NLINUX_ISO_COMMIT", "1") not in ("0", "false", "no")
+ISO_PUSH_ENABLED = os.environ.get("NLINUX_ISO_PUSH", "0") not in ("0", "false", "no")
 PACKAGE_DEPS = [
     "python",
     "python-gobject",
@@ -1680,15 +1694,119 @@ def admin_build(progress=None):
             publish = git_publish(pkg_root, tar_path, rev)
             _step("publicação concluída" if publish.get("pushed")
                   else f"publicação falhou: {publish.get('reason', '?')}")
+
+            _step("sincronizando a loja do iso-build")
+            iso = sync_iso_store(pkg_root, rev)
+            _iso_note = iso.get("commit", {})
+            if not iso.get("synced"):
+                _step(f"iso-build não sincronizado: {iso.get('reason', '?')}")
+            elif not _iso_note.get("committed"):
+                _step(f"iso-build copiado, sem commit: {_iso_note.get('reason', '?')}")
+            else:
+                _step("loja do iso-build commitada em " + _iso_note["head"])
+                if iso.get("push", {}).get("pushed"):
+                    _step("iso-build publicado no GitHub")
+                elif "push" in iso:
+                    _step(f"iso-build não publicado: {iso['push'].get('reason', '?')}")
         except OSError as e:
             return {"error": f"falha ao gerar o pacote: {e}"}, 500
 
     return {"ok": True, "revision": rev, "path": tar_path, "run": pkg_root,
-            "size": size, "publish": publish}, 200
+            "size": size, "publish": publish, "iso": iso}, 200
+
+
+_ISO_IGNORE = shutil.ignore_patterns("__pycache__", "*.pyc", ".git")
+
+
+def sync_iso_store(build_dir: str, rev: int) -> dict:
+    """Espelha o build em `<iso-build>/nlinux-software/` e commita.
+
+    É a pasta que o `build-iso.sh` copia para `/opt/nlinux-software` dentro da
+    imagem, e ela é versionada no repositório do iso-build. Sem este espelho
+    ela congela na revisão commitada: a imagem sai com a loja antiga, com o
+    catálogo antigo e sem as correções do build.
+
+    O commit é o que fecha o ciclo: a imagem é construída a partir do que está
+    commitado, então deixar a pasta modificada faria a ISO montar uma loja
+    diferente da que está no repositório — irreprodutível. Só a subpasta da loja
+    entra no commit, para não varrer junto o que estiver em edição no projeto
+    da ISO.
+
+    Não propaga erro — falhar aqui não invalida o pacote já gerado e
+    publicado, que é a parte importante.
+    """
+    dest = os.path.join(ISO_BUILD_DIR, ISO_STORE_DIRNAME)
+    if not os.path.isdir(ISO_BUILD_DIR):
+        return {"synced": False,
+                "reason": f"{ISO_BUILD_DIR} não existe (ajuste com NLINUX_ISO_DIR)"}
+    try:
+        if os.path.isdir(dest):
+            shutil.rmtree(dest)
+        shutil.copytree(build_dir, dest, ignore=_ISO_IGNORE)
+        launcher = os.path.join(dest, "nlinux-software")
+        if os.path.exists(launcher):
+            os.chmod(launcher, 0o755)
+    except OSError as exc:
+        return {"synced": False, "reason": str(exc)}
+    print(f"[nlinux] loja do iso-build sincronizada: {dest} (v{rev})", flush=True)
+    result = {"synced": True, "path": dest, "revision": rev}
+    result["commit"] = _iso_commit(ISO_STORE_DIRNAME, rev)
+    if ISO_PUSH_ENABLED and result["commit"].get("committed"):
+        result["push"] = _iso_push()
+    return result
+
+
+def _git(repo: str, *args: str, timeout: int = 60) -> subprocess.CompletedProcess:
+    return subprocess.run(["git", "-C", repo, *args],
+                          capture_output=True, text=True, timeout=timeout)
+
+
+def _iso_commit(subdir: str, rev: int) -> dict:
+    """Commita a subpasta da loja no repositório da ISO.
+
+    Versionado=False deixa só a cópia no disco. O `add` é restrito à subpasta
+    da loja: o resto do projeto da ISO pode estar com edição em andamento, e
+    isso não é da conta da curadoria.
+    """
+    if not ISO_COMMIT_ENABLED:
+        return {"committed": False, "reason": "desligado (NLINUX_ISO_COMMIT=0)"}
+    if not os.path.isdir(os.path.join(ISO_BUILD_DIR, ".git")):
+        return {"committed": False, "reason": f"{ISO_BUILD_DIR} não é um repositório git"}
+    try:
+        if _git(ISO_BUILD_DIR, "add", "-A", "--", subdir).returncode != 0:
+            raise OSError("git add falhou")
+        if _git(ISO_BUILD_DIR, "diff", "--cached", "--quiet",
+                "--", subdir).returncode == 0:
+            return {"committed": False, "reason": "nada a commitar (já no repositório)"}
+        msg = (f"Loja embarcada: revisão {rev}\n\n"
+               f"Espelhado de {ISO_STORE_DIRNAME} pela curadoria ao gerar a versão "
+               f"da loja (revisão {rev}). Esta pasta é o que o build-iso.sh "
+               f"embute em /opt/nlinux-software na imagem.")
+        res = _git(ISO_BUILD_DIR, "commit", "-m", msg)
+        if res.returncode != 0:
+            return {"committed": False, "reason": res.stderr.strip() or "git commit falhou"}
+    except (OSError, subprocess.SubprocessError) as exc:
+        return {"committed": False, "reason": str(exc)}
+    head = _git(ISO_BUILD_DIR, "rev-parse", "--short", "HEAD").stdout.strip()
+    print(f"[nlinux] loja do iso-build commitada: {head}", flush=True)
+    return {"committed": True, "head": head}
+
+
+def _iso_push() -> dict:
+    """Sobe o commit da loja para o repositório da ISO. Nunca levanta."""
+    try:
+        res = _git(ISO_BUILD_DIR, "push")
+    except (OSError, subprocess.SubprocessError) as exc:
+        return {"pushed": False, "reason": str(exc)}
+    if res.returncode != 0:
+        reason = (res.stderr or res.stdout).strip().splitlines()
+        return {"pushed": False, "reason": reason[-1] if reason else "git push falhou"}
+    print("[nlinux] iso-build publicado no GitHub", flush=True)
+    return {"pushed": True}
 
 
 def _prepare_git_clone() -> str:
-    """Garante o repositório local (~/nlinux-repo) clonado do GitHub e o retorna."""
+    """Garante o repositório local (~/nlinux-software) clonado do GitHub e o retorna."""
     clone_dir = GIT_PUSH_DIR
     if os.path.isdir(os.path.join(clone_dir, ".git")):
         return clone_dir

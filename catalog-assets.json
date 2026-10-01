@@ -101,7 +101,6 @@
     "assets/murmur.png": "4e788405f461efda66a5c71d79af0e9a51b12838ce8512abc3c0dd3b015c5f13",
     "assets/musescore-1.jpg": "ddf3e62a02c41c8585dc0699cb8b7e9dff98316401cc66f68299884b7571b4fa",
     "assets/musescore.png": "569ee29a8d9c3a0e509dacf2a49f8a349c1d988a3bffe10e7a136fa10ea21211",
-    "assets/mypaint.png": "8696c0ecf7bf6282750186e7e87378665f527e9c261ef0891c4a65d3a736fc2f",
     "assets/neverball.png": "1c95dd7719451972e8c675f088a72ca01dc07efa1eed29a725a927bb0b9bd823",
     "assets/neverputt.png": "c2f52127c18effcdd82ec809a2d3a04941d75fb69082336f40743e165c98cd96",
     "assets/nextcloud-client.png": "ce11e72c251daf5816af103fe1a4fbef875afc693cd0eb97aa8d7248f0aef012",
@@ -181,5 +180,5 @@
     "assets/zenmap-1.jpg": "136b7f268bd14d829843cb878c4f57db3fae8b4f551b392823e50d27d83efaa8",
     "assets/zenmap.png": "a18cd769f13f92d7ee70983893c977eaac5cce11f418314d337bf468ee745c17"
   },
-  "revision": 211
+  "revision": 212
 }
