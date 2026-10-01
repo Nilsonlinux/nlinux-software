@@ -171,8 +171,8 @@
   "education": {
     "stellarium": {
       "name": "Stellarium",
-      "summary": "A planetarium that renders 3D photo-realistic skies in real-time.",
-      "description": "A planetarium for your computer that renders 3D photo-realistic skies in real-time so you really see what you can see with your eyes, binoculars or a small telescope. It features a default star catalogue with over 600 thousand stars, information about the brightest stars (spectral type, distance, etc.), downloadable star catalogue extensions, for up to 210 million stars, all New General Catalogue (NGC) objects, images of almost all Messier objects and the Milky Way, real time positions of the planets and their satellites, 13 different cultures with their constellations, artistic illustrations of the 88 Western constellations, very realistic atmosphere, sunrise and sunset, and 7 panoramic landscapes (more can be made or downloaded from the website). Stellarium should not be used for very high accurate calculation or ephemerids like eclipse predictions. However, it is the ideal program to prepare an observation evening with naked eye, binocular, or small telescope. ",
+      "summary": "Software which renders realistic skies in real time with OpenGL",
+      "description": "A planetarium for your computer that renders 3D photo-realistic skies in real-time so you really see what you can see with your eyes, binoculars or a small telescope. It features a default star catalogue with over 600 thousand stars, information about the brightest stars (spectral type, distance, etc.), downloadable star catalogue extensions, for up to 210 million stars, all New General Catalogue (NGC) objects, images of almost all Messier objects and the Milky Way, real time positions of the planets and their satellites, 13 different cultures with their constellations, artistic illustrations of the 88 Western constellations, very realistic atmosphere, sunrise and sunset, and 7 panoramic landscapes (more can be made or downloaded from the website). Stellarium should not be used for very high accurate calculation or ephemerids like eclipse predictions. However, it is the ideal program to prepare an observation evening with naked eye, binocular, or small telescope.",
       "icon": "assets/stellarium.png",
       "screenshots": [
         "assets/stellarium-1.jpg"
@@ -180,16 +180,13 @@
       "developer-name": "Various Contributors",
       "developer-url": "https://github.com/Stellarium/stellarium/blob/master/AUTHORS",
       "urls": {
-        "info": "http://www.stellarium.org/",
-        "android-app": null,
-        "ios-app": null
+        "info": "https://stellarium.org",
+        "android-app": "",
+        "ios-app": ""
       },
       "launch-cmd": "stellarium",
       "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
+        "x86_64"
       ],
       "releases": [
         "rolling"
@@ -213,27 +210,65 @@
       "alternate-to": null,
       "listed": true
     },
+    "tuxpaint": {
+      "name": "Tux Paint",
+      "summary": "Drawing program designed for young children",
+      "description": "An award-winning drawing program designed for children aged 3 to 12. It provides an easy to use interface, fun sound effects and Tux as the cartoon mascot to guide the children throughout the program.",
+      "icon": "assets/tuxpaint.png",
+      "screenshots": [
+        "assets/tuxpaint-1.png"
+      ],
+      "developer-name": "eugene",
+      "developer-url": "https://tuxpaint.org/",
+      "urls": {
+        "info": "https://tuxpaint.org/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "tuxpaint",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "tuxpaint",
+          "install-packages": [
+            "tuxpaint"
+          ],
+          "remove-packages": [
+            "tuxpaint"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
     "libreoffice-math": {
       "name": "LibreOffice Math",
-      "summary": "The formula editor for the LibreOffice suite.",
-      "description": "The formula editor for the LibreOffice suite. Mathmatical formatting can be invoked in your text documents, spreadsheets, presentations and drawings, to enable you to insert perfectly-formatted mathematical and scientific formulas. Your formulas can include a wide range of elements, from fractions, terms with exponents and indices, integrals, and mathematical functions, to inequalities, systems of equations, and matrices. ",
+      "summary": "LibreOffice branch which contains new features and program enhancements",
+      "description": "The formula editor for the LibreOffice suite. Mathmatical formatting can be invoked in your text documents, spreadsheets, presentations and drawings, to enable you to insert perfectly-formatted mathematical and scientific formulas. Your formulas can include a wide range of elements, from fractions, terms with exponents and indices, integrals, and mathematical functions, to inequalities, systems of equations, and matrices.",
       "icon": "assets/libreoffice-math.png",
       "screenshots": [
-        "assets/libreoffice-math-1.jpg"
+        "assets/libreoffice-math-1.png"
       ],
       "developer-name": "LibreOffice Team",
-      "developer-url": "https://www.libreoffice.org/community/developers/",
+      "developer-url": "https://www.libreoffice.org/",
       "urls": {
-        "info": "https://www.libreoffice.org/discover/math/",
-        "android-app": null,
-        "ios-app": null
+        "info": "https://www.libreoffice.org/",
+        "android-app": "",
+        "ios-app": ""
       },
       "launch-cmd": "libreoffice --math",
       "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
+        "x86_64"
       ],
       "releases": [
         "rolling"
@@ -256,28 +291,25 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
-    },
-    "tuxpaint": {
-      "name": "Tux Paint",
-      "summary": "Creative drawing tool aimed at children.",
-      "description": "An award-winning drawing program designed for children aged 3 to 12. It provides an easy to use interface, fun sound effects and Tux as the cartoon mascot to guide the children throughout the program. ",
-      "icon": "assets/tuxpaint.png",
-      "screenshots": [
-        "assets/tuxpaint-1.jpg"
-      ],
-      "developer-name": "Bill Kendrick and Contributors",
-      "developer-url": "http://www.tuxpaint.org/developers/",
+    }
+  },
+  "games": {
+    "steam": {
+      "name": "Steam",
+      "summary": "Valve's digital software delivery system",
+      "description": "The ultimate entertainment platform. Play games, connect with friends, even create and share content of your own. Join 50 million of your closest friends on Steam. Enjoy exclusive deals, automatic game updates, and cross-platform multiplayer. Plus, now you take advantage of Big Picture mode, designed for use with your TV and game controller.",
+      "icon": "assets/steam.webp",
+      "screenshots": [],
+      "developer-name": "Levente Polyakm, Giancarlo Razzolini, Christian Heusel",
+      "developer-url": "http://www.valvesoftware.com/",
       "urls": {
-        "info": "http://www.tuxpaint.org/",
-        "android-app": null,
-        "ios-app": null
+        "info": "http://store.steampowered.com/",
+        "android-app": "",
+        "ios-app": ""
       },
-      "launch-cmd": "tuxpaint",
+      "launch-cmd": "steam",
       "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
+        "x86_64"
       ],
       "releases": [
         "rolling"
@@ -287,40 +319,37 @@
       ],
       "pacman": {
         "default": {
-          "source": "aur",
-          "main-package": "tuxpaint",
+          "source": "arch",
+          "main-package": "steam",
           "install-packages": [
-            "tuxpaint"
+            "steam"
           ],
           "remove-packages": [
-            "tuxpaint",
-            "tuxpaint-config"
+            "steam"
           ]
         }
       },
       "proprietary": false,
       "alternate-to": null,
       "listed": true
-    }
-  },
-  "games": {
+    },
     "0ad": {
       "name": "0 A.D",
       "summary": "Cross-platform real-time strategy (RTS) game of ancient warfare",
-      "description": "A free, open-source,  In short, it is a historically-based war/economy game that allows players to relive or rewrite the history of Western civilisations, focusing on the years between 500 B.C. and 500 A.D. The project is highly ambitious, involving state-of-the-art 3D graphics, detailed artwork, sound, and a flexible and powerful custom-built game engine. ",
+      "description": "A free, open-source,  In short, it is a historically-based war/economy game that allows players to relive or rewrite the history of Western civilisations, focusing on the years between 500 B.C. and 500 A.D. The project is highly ambitious, involving state-of-the-art 3D graphics, detailed artwork, sound, and a flexible and powerful custom-built game engine.",
       "icon": "assets/0ad.png",
       "screenshots": [],
       "developer-name": "Wildfire Games",
       "developer-url": "https://trac.wildfiregames.com/",
       "urls": {
         "info": "http://play0ad.com/",
-        "android-app": null,
-        "ios-app": null
+        "android-app": "",
+        "ios-app": ""
       },
       "launch-cmd": "0ad",
       "arch": [
-        "i686",
-        "x86_64"
+        "x86_64",
+        "i686"
       ],
       "releases": [
         "rolling"
@@ -336,8 +365,51 @@
             "0ad"
           ],
           "remove-packages": [
-            "0ad",
-            "0ad-data"
+            "0ad"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "pysolfc": {
+      "name": "PySolFC",
+      "summary": "A collection of more than 1000 solitaire card games",
+      "description": "There are games that use the 52 card International Pattern deck, games for the 78 card Tarock deck, eight and ten suit Ganjifa games, Hanafuda games, Matrix games, Mahjongg games, and games for an original hexadecimal-based deck. Its features include modern look and feel, multiple cardsets and tableau backgrounds, sound, unlimited undo, player statistics, a hint system, demo games, a solitaire wizard, support for user written plug-ins, an integrated HTML help browser, and lots of documentation.",
+      "icon": "assets/pysolfc.png",
+      "screenshots": [
+        "assets/pysolfc-1.jpg"
+      ],
+      "developer-name": "Various Contributors",
+      "developer-url": "https://github.com/shlomif/PySolFC/blob/master/AUTHORS",
+      "urls": {
+        "info": "http://pysolfc.sourceforge.net/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "pysolfc",
+      "arch": [
+        "x86_64",
+        "i686",
+        "aarch64",
+        "armv7h"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "pysolfc",
+          "install-packages": [
+            "pysolfc"
+          ],
+          "remove-packages": [
+            "pysolfc"
           ]
         }
       },
@@ -348,7 +420,7 @@
     "chromiumbsu": {
       "name": "Chromium B.S.U",
       "summary": "Top down fast paced high action scrolling space shooter",
-      "description": "In this game you are the captain of the cargo ship Chromium B.S.U. and are responsible for delivering supplies to the troops on the front line. Your ship has a small fleet of robotic fighters which you control from the relative safety of the Chromium vessel. ",
+      "description": "In this game you are the captain of the cargo ship Chromium B.S.U. and are responsible for delivering supplies to the troops on the front line. Your ship has a small fleet of robotic fighters which you control from the relative safety of the Chromium vessel.",
       "icon": "assets/chromiumbsu.png",
       "screenshots": [
         "assets/chromiumbsu-1.jpg"
@@ -357,15 +429,15 @@
       "developer-url": "http://chromium-bsu.sourceforge.net/about.html",
       "urls": {
         "info": "http://chromium-bsu.sourceforge.net/",
-        "android-app": null,
-        "ios-app": null
+        "android-app": "",
+        "ios-app": ""
       },
       "launch-cmd": "chromium-bsu",
       "arch": [
-        "i686",
         "x86_64",
-        "armv7h",
-        "aarch64"
+        "i686",
+        "aarch64",
+        "armv7h"
       ],
       "releases": [
         "rolling"
@@ -378,12 +450,10 @@
           "source": "arch",
           "main-package": "chromium-bsu",
           "install-packages": [
-            "chromium-bsu",
-            "chromium-bsu-data"
+            "chromium-bsu"
           ],
           "remove-packages": [
-            "chromium-bsu",
-            "chromium-bsu-data"
+            "chromium-bsu"
           ]
         }
       },
@@ -394,7 +464,7 @@
     "lutris": {
       "name": "Lutris",
       "summary": "Open gaming platform for organising games",
-      "description": "Lutris is an open gaming platform for Linux. It helps you install and manage your games in a unified interface. ",
+      "description": "Lutris is an open gaming platform for Linux. It helps you install and manage your games in a unified interface.",
       "icon": "assets/lutris.png",
       "screenshots": [
         "assets/lutris-1.jpg"
@@ -403,13 +473,13 @@
       "developer-url": "https://github.com/orgs/lutris/people",
       "urls": {
         "info": "http://lutris.net",
-        "android-app": null,
-        "ios-app": null
+        "android-app": "",
+        "ios-app": ""
       },
       "launch-cmd": "lutris",
       "arch": [
-        "i686",
-        "x86_64"
+        "x86_64",
+        "i686"
       ],
       "releases": [
         "rolling"
@@ -433,112 +503,25 @@
       "alternate-to": null,
       "listed": true
     },
-    "pysolfc": {
-      "name": "PySolFC",
-      "summary": "A collection of more than 1000 solitaire card games",
-      "description": "There are games that use the 52 card International Pattern deck, games for the 78 card Tarock deck, eight and ten suit Ganjifa games, Hanafuda games, Matrix games, Mahjongg games, and games for an original hexadecimal-based deck. Its features include modern look and feel, multiple cardsets and tableau backgrounds, sound, unlimited undo, player statistics, a hint system, demo games, a solitaire wizard, support for user written plug-ins, an integrated HTML help browser, and lots of documentation. ",
-      "icon": "assets/pysolfc.png",
-      "screenshots": [
-        "assets/pysolfc-1.jpg"
-      ],
-      "developer-name": "Various Contributors",
-      "developer-url": "https://github.com/shlomif/PySolFC/blob/master/AUTHORS",
-      "urls": {
-        "info": "http://pysolfc.sourceforge.net/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "pysolfc",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "pysolfc",
-          "install-packages": [
-            "pysolfc",
-            "pysolfc-cardsets"
-          ],
-          "remove-packages": [
-            "pysolfc",
-            "pysolfc-cardsets"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
-    "steam-devices": {
-      "name": "Steam Controller Support",
-      "summary": "Installs controller support in addition to Steam",
-      "description": "The ultimate entertainment platform. Play games, connect with friends, even create and share content of your own. Join 50 million of your closest friends on Steam. Enjoy exclusive deals, automatic game updates, and cross-platform multiplayer. Plus, now you take advantage of Big Picture mode, designed for use with your TV and game controller. ",
-      "icon": "assets/steam-devices.png",
-      "screenshots": [],
-      "developer-name": "Valve Corporation",
-      "developer-url": "http://www.valvesoftware.com/",
-      "urls": {
-        "info": "http://store.steampowered.com/",
-        "android-app": "https://play.google.com/store/apps/details?id=com.valvesoftware.android.steam.community&hl=en",
-        "ios-app": "https://itunes.apple.com/gb/app/steam-mobile/id495369748"
-      },
-      "launch-cmd": "steam",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "steam-devices",
-          "install-packages": [
-            "steam:i386",
-            "steam-devices"
-          ],
-          "remove-packages": [
-            "steam:i386"
-          ]
-        }
-      },
-      "proprietary": true,
-      "alternate-to": null,
-      "listed": true
-    },
     "supertuxkart": {
       "name": "SuperTuxKart",
       "summary": "3D kart racing game featuring Tux and other mascots",
-      "description": "A free 3D kart racing game, with a focus on having fun over realism. You can play with up to 4 friends on one PC, racing against each other or just trying to beat the computer; single-player mode is also available. See the great lighthouse or drive through the sand and visit the pyramids. Race underground or in space, watching the stars pass by. Or rest under the palm trees on the beach, watching the other karts overtake you. But don&#8217;t eat the bananas! Watch for bowling balls, plungers, bubble gum and cakes thrown by your opponents. You can do a single race against other karts, compete in one of several Grand Prix, try to beat the high score in time trials on your own, play battle mode against your friends, and more! ",
+      "description": "A free 3D kart racing game, with a focus on having fun over realism. You can play with up to 4 friends on one PC, racing against each other or just trying to beat the computer; single-player mode is also available. See the great lighthouse or drive through the sand and visit the pyramids. Race underground or in space, watching the stars pass by. Or rest under the palm trees on the beach, watching the other karts overtake you. But don&#8217;t eat the bananas! Watch for bowling balls, plungers, bubble gum and cakes thrown by your opponents. You can do a single race against other karts, compete in one of several Grand Prix, try to beat the high score in time trials on your own, play battle mode against your friends, and more!",
       "icon": "assets/supertuxkart.png",
       "screenshots": [],
       "developer-name": "SuperTuxKart Team",
       "developer-url": "https://supertuxkart.net/Team",
       "urls": {
         "info": "http://supertuxkart.sourceforge.net/",
-        "android-app": null,
-        "ios-app": null
+        "android-app": "",
+        "ios-app": ""
       },
       "launch-cmd": "supertuxkart",
       "arch": [
-        "i686",
         "x86_64",
-        "armv7h",
-        "aarch64"
+        "i686",
+        "aarch64",
+        "armv7h"
       ],
       "releases": [
         "rolling"
@@ -565,20 +548,20 @@
     "warzone2100": {
       "name": "Warzone 2100",
       "summary": "3D real-time strategy game",
-      "description": "Requires you to command the forces of &#8217;The Project&#8217; in a battle to rebuild the world after mankind has almost been destroyed by nuclear missiles. The game offers campaign, tutorial, multi-player and single-player skirmish modes. An extensive tech tree with over 400 different technologies, combined with the unit design system, allows for a wide variety of possible units and tactics. <u>The campaign video sequences are not yet distributed here, please see the Warzone 2100 website for details on downloading and installing them.</u> ",
+      "description": "Requires you to command the forces of &#8217;The Project&#8217; in a battle to rebuild the world after mankind has almost been destroyed by nuclear missiles. The game offers campaign, tutorial, multi-player and single-player skirmish modes. An extensive tech tree with over 400 different technologies, combined with the unit design system, allows for a wide variety of possible units and tactics. <u>The campaign video sequences are not yet distributed here, please see the Warzone 2100 website for details on downloading and installing them.</u>",
       "icon": "assets/warzone2100.png",
       "screenshots": [],
       "developer-name": "Pumpkin Studios and Contributors",
       "developer-url": "https://github.com/Warzone2100/warzone2100/blob/master/AUTHORS",
       "urls": {
         "info": "https://wz2100.net/",
-        "android-app": null,
-        "ios-app": null
+        "android-app": "",
+        "ios-app": ""
       },
       "launch-cmd": "warzone2100",
       "arch": [
-        "i686",
-        "x86_64"
+        "x86_64",
+        "i686"
       ],
       "releases": [
         "rolling"
@@ -591,14 +574,10 @@
           "source": "arch",
           "main-package": "warzone2100",
           "install-packages": [
-            "warzone2100",
-            "warzone2100-data",
-            "warzone2100-music"
+            "warzone2100"
           ],
           "remove-packages": [
-            "warzone2100",
-            "warzone2100-data",
-            "warzone2100-music"
+            "warzone2100"
           ]
         }
       },
@@ -609,20 +588,20 @@
     "wesnoth": {
       "name": "The Battle for Wesnoth",
       "summary": "Turn-based tactical strategy game with a high fantasy theme",
-      "description": "Build up a great army, gradually turning raw recruits into hardened veterans. In later games, recall your toughest warriors and form a deadly host that none can stand against! Choose units from a large pool of specialists, and hand-pick a force with the right strengths to fight well on different terrains against all manner of opposition. ",
+      "description": "Build up a great army, gradually turning raw recruits into hardened veterans. In later games, recall your toughest warriors and form a deadly host that none can stand against! Choose units from a large pool of specialists, and hand-pick a force with the right strengths to fight well on different terrains against all manner of opposition.",
       "icon": "assets/wesnoth.png",
       "screenshots": [],
       "developer-name": "Various Contributors",
       "developer-url": "https://github.com/wesnoth/wesnoth/graphs/contributors",
       "urls": {
         "info": "http://wesnoth.org/",
-        "android-app": null,
-        "ios-app": null
+        "android-app": "",
+        "ios-app": ""
       },
       "launch-cmd": "wesnoth",
       "arch": [
-        "i686",
-        "x86_64"
+        "x86_64",
+        "i686"
       ],
       "releases": [
         "rolling"
@@ -635,12 +614,10 @@
           "source": "arch",
           "main-package": "wesnoth",
           "install-packages": [
-            "wesnoth",
-            "wesnoth-music"
+            "wesnoth"
           ],
           "remove-packages": [
-            "wesnoth",
-            "wesnoth-music"
+            "wesnoth"
           ]
         }
       },
@@ -651,20 +628,20 @@
     "wine-devel": {
       "name": "Wine Development Builds",
       "summary": "Compatibility layer for running Windows games and applications",
-      "description": "The latest, official development builds of the Wine Compatibility Layer. These allow you to play a wider range of Windows games and software as soon as new versions of Wine are released. ",
+      "description": "The latest, official development builds of the Wine Compatibility Layer. These allow you to play a wider range of Windows games and software as soon as new versions of Wine are released.",
       "icon": "assets/wine-devel.png",
       "screenshots": [],
       "developer-name": "Wine Team and Many Contributors",
       "developer-url": "https://source.winehq.org/source/AUTHORS",
       "urls": {
         "info": "https://www.winehq.org/",
-        "android-app": null,
-        "ios-app": null
+        "android-app": "",
+        "ios-app": ""
       },
-      "launch-cmd": null,
+      "launch-cmd": "wine",
       "arch": [
-        "i686",
-        "x86_64"
+        "x86_64",
+        "i686"
       ],
       "releases": [
         "rolling"
@@ -674,13 +651,13 @@
       ],
       "pacman": {
         "default": {
-          "source": "manual",
-          "main-package": "winehq-devel",
+          "source": "arch",
+          "main-package": "wine",
           "install-packages": [
-            "winehq-devel"
+            "wine"
           ],
           "remove-packages": [
-            "winehq-devel"
+            "wine"
           ]
         }
       },
@@ -691,7 +668,7 @@
     "freeciv": {
       "name": "Freeciv",
       "summary": "Clone of the turn based strategy game Civilization",
-      "description": "In this game, each player becomes leader of a civilisation, fighting to obtain the ultimate goal: the extinction of all other civilisations. ",
+      "description": "In this game, each player becomes leader of a civilisation, fighting to obtain the ultimate goal: the extinction of all other civilisations.",
       "icon": "assets/freeciv.png",
       "screenshots": [
         "assets/freeciv-1.jpg"
@@ -700,15 +677,15 @@
       "developer-url": "http://freeciv.wikia.com/wiki/People",
       "urls": {
         "info": "http://www.freeciv.org/",
-        "android-app": null,
-        "ios-app": null
+        "android-app": "",
+        "ios-app": ""
       },
       "launch-cmd": "freeciv-gtk3.22",
       "arch": [
-        "i686",
         "x86_64",
-        "armv7h",
-        "aarch64"
+        "i686",
+        "aarch64",
+        "armv7h"
       ],
       "releases": [
         "rolling"
@@ -729,28 +706,28 @@
         }
       },
       "proprietary": false,
-      "alternate-to": "Sid Meier’s Civilization",
+      "alternate-to": null,
       "listed": true
     },
     "aisleriot": {
       "name": "Desktop Games Collection",
       "summary": "A variety of styles and genre games, such as Chess and Minesweeper",
-      "description": "A collection of more desktop games including 80 popular card games, Mahjongg, Mines and Sudoku. ",
+      "description": "A collection of more desktop games including 80 popular card games, Mahjongg, Mines and Sudoku.",
       "icon": "assets/aisleriot.png",
       "screenshots": [],
       "developer-name": "GNOME Team",
       "developer-url": "https://www.gnome.org/about/",
       "urls": {
         "info": "https://wiki.gnome.org/action/show/Attic/Games",
-        "android-app": null,
-        "ios-app": null
+        "android-app": "",
+        "ios-app": ""
       },
       "launch-cmd": "gnome-games",
       "arch": [
-        "i686",
         "x86_64",
-        "armv7h",
-        "aarch64"
+        "i686",
+        "aarch64",
+        "armv7h"
       ],
       "releases": [
         "rolling"
@@ -777,7 +754,7 @@
     "extremetuxracer": {
       "name": "Extreme Tux Racer",
       "summary": "Simple racing game featuring Tux",
-      "description": "A simple OpenGL racing game featuring Tux, the Linux mascot. The goal of the game is to slide down a snow- and ice-covered mountain as quickly as possible, avoiding the trees and rocks that will slow you down. Collect herrings and other goodies while sliding down the hill, but avoid fish bones. ",
+      "description": "A simple OpenGL racing game featuring Tux, the Linux mascot. The goal of the game is to slide down a snow- and ice-covered mountain as quickly as possible, avoiding the trees and rocks that will slow you down. Collect herrings and other goodies while sliding down the hill, but avoid fish bones.",
       "icon": "assets/extremetuxracer.png",
       "screenshots": [
         "assets/extremetuxracer-1.jpg"
@@ -786,15 +763,15 @@
       "developer-url": "https://launchpad.net/~etracer",
       "urls": {
         "info": "http://sourceforge.net/projects/extremetuxracer/",
-        "android-app": null,
-        "ios-app": null
+        "android-app": "",
+        "ios-app": ""
       },
       "launch-cmd": "extremetuxracer",
       "arch": [
-        "i686",
         "x86_64",
-        "armv7h",
-        "aarch64"
+        "i686",
+        "aarch64",
+        "armv7h"
       ],
       "releases": [
         "rolling"
@@ -818,50 +795,10 @@
       "alternate-to": null,
       "listed": true
     },
-    "flightgear": {
-      "name": "Flightgear",
-      "summary": "Open source flight simulator",
-      "description": "The goal of the FlightGear project is to create a sophisticated and open flight simulator framework for use in research, academic environments, pilot training, as an industry engineering tool and last but certainly not least, as a fun, realistic, and challenging desktop flight simulator. ",
-      "icon": "assets/flightgear.png",
-      "screenshots": [],
-      "developer-name": "Flightgear Team",
-      "developer-url": "http://www.flightgear.org/about/credits/",
-      "urls": {
-        "info": "http://www.flightgear.org/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "flightgear",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "aur",
-          "main-package": "flightgear",
-          "install-packages": [
-            "flightgear"
-          ],
-          "remove-packages": [
-            "flightgear"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "frozenbubble": {
       "name": "Frozen-Bubble",
       "summary": "Clone of Puzzle Bobble",
-      "description": "A clone of the popular <i>Puzzle Bobble</i> game, in which you attempt to shoot bubbles into groups of the same color to cause them to pop. Players compete as penguins and must use the arrow keys to aim a colored bubble at groups of bubbles. The objective is to clear all the bubbles off the screen before a bubble passes below a line at the bottom. It features 100 single-player levels, a two-player mode, music and striking graphics. A level editor is also included to allow players to create and play their own levels. ",
+      "description": "A clone of the popular <i>Puzzle Bobble</i> game, in which you attempt to shoot bubbles into groups of the same color to cause them to pop. Players compete as penguins and must use the arrow keys to aim a colored bubble at groups of bubbles. The objective is to clear all the bubbles off the screen before a bubble passes below a line at the bottom. It features 100 single-player levels, a two-player mode, music and striking graphics. A level editor is also included to allow players to create and play their own levels.",
       "icon": "assets/frozenbubble.png",
       "screenshots": [
         "assets/frozenbubble-1.jpg"
@@ -870,15 +807,12 @@
       "developer-url": "http://www.frozen-bubble.org/downloads/",
       "urls": {
         "info": "http://frozen-bubble.org/",
-        "android-app": null,
-        "ios-app": null
+        "android-app": "",
+        "ios-app": ""
       },
       "launch-cmd": "frozen-bubble",
       "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
+        "x86_64"
       ],
       "releases": [
         "rolling"
@@ -905,22 +839,19 @@
     "neverball": {
       "name": "Neverball",
       "summary": "Tilt the floor to roll a ball through an obstacle course before time runs out",
-      "description": "Guide a rolling ball through dangerous territory in the grand tradition of Marble Madness and Super Monkey Ball. Balance on narrow bridges, navigate mazes, ride moving platforms, and dodge pushers and shovers to get to the goal. Race against the clock to collect coins to earn extra balls. ",
+      "description": "Guide a rolling ball through dangerous territory in the grand tradition of Marble Madness and Super Monkey Ball. Balance on narrow bridges, navigate mazes, ride moving platforms, and dodge pushers and shovers to get to the goal. Race against the clock to collect coins to earn extra balls.",
       "icon": "assets/neverball.png",
       "screenshots": [],
       "developer-name": "Various Contributors",
       "developer-url": "http://neverball.org/contributors.php",
       "urls": {
         "info": "http://neverball.org/",
-        "android-app": null,
-        "ios-app": null
+        "android-app": "",
+        "ios-app": ""
       },
       "launch-cmd": "neverball",
       "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
+        "x86_64"
       ],
       "releases": [
         "rolling"
@@ -957,13 +888,13 @@
       "developer-url": "https://github.com/orgs/PlayOnLinux/people",
       "urls": {
         "info": "https://www.playonlinux.com/",
-        "android-app": null,
-        "ios-app": null
+        "android-app": "",
+        "ios-app": ""
       },
       "launch-cmd": "playonlinux",
       "arch": [
-        "i686",
-        "x86_64"
+        "x86_64",
+        "i686"
       ],
       "releases": [
         "rolling"
@@ -987,65 +918,24 @@
       "alternate-to": null,
       "listed": true
     },
-    "steam": {
-      "name": "Steam",
-      "summary": "Digital distribution platform for games and software",
-      "description": "The ultimate entertainment platform. Play games, connect with friends, even create and share content of your own. Join 50 million of your closest friends on Steam. Enjoy exclusive deals, automatic game updates, and cross-platform multiplayer. Plus, now you take advantage of Big Picture mode, designed for use with your TV and game controller. ",
-      "icon": "assets/steam.png",
-      "screenshots": [],
-      "developer-name": "Valve Corporation",
-      "developer-url": "http://www.valvesoftware.com/",
-      "urls": {
-        "info": "http://store.steampowered.com/",
-        "android-app": "https://play.google.com/store/apps/details?id=com.valvesoftware.android.steam.community&hl=en",
-        "ios-app": "https://itunes.apple.com/gb/app/steam-mobile/id495369748"
-      },
-      "launch-cmd": "steam",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "steam",
-          "install-packages": [
-            "steam"
-          ],
-          "remove-packages": [
-            "steam"
-          ]
-        }
-      },
-      "proprietary": true,
-      "alternate-to": null,
-      "listed": true
-    },
     "retroarch": {
       "name": "RetroArch",
       "summary": "Frontend for emulators for various systems",
-      "description": "RetroArch is an open source, multi-platform frontend for the libretro API. It is designed to be a fast, lightweight, and portable multi-system emulator. ",
+      "description": "RetroArch is an open source, multi-platform frontend for the libretro API. It is designed to be a fast, lightweight, and portable multi-system emulator.",
       "icon": "assets/retroarch.png",
       "screenshots": [
         "assets/retroarch-1.jpg",
         "assets/retroarch-2.jpg"
       ],
-      "developer-name": "RetroArch Team",
+      "developer-name": "Maxime Gauduin",
       "developer-url": "https://github.com/orgs/libretro/people",
       "urls": {
         "info": "http://retroarch.com",
-        "android-app": "https://play.google.com/store/apps/details?id=com.retroarch",
-        "ios-app": null
+        "android-app": "",
+        "ios-app": ""
       },
       "launch-cmd": "retroarch",
       "arch": [
-        "i686",
         "x86_64"
       ],
       "releases": [
@@ -2319,9 +2209,9 @@
   },
   "stats": {
     "version": 7,
-    "revision": 286,
-    "compiled": 1790888790,
-    "apps": 54,
+    "revision": 310,
+    "compiled": 1790896920,
+    "apps": 52,
     "categories": 10
   },
   "distro": {

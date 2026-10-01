@@ -25,7 +25,6 @@
     "assets/filezilla.png": "0fae833f0a90ef6042bb6841566d851d0549a9e82bbb8b8e0497b9c5d778bd46",
     "assets/firefox-1.png": "def3f3196a5ea0df910e5c85f7c3368d1712f5fc0dc9dfeac1dec7bb7065e1d0",
     "assets/firefox.png": "3589aae850b32774c9fb667fb36efd4ef3dce0a67ce0ab011943b14ec565945b",
-    "assets/flightgear.png": "ab81ded432994bd19edfe690fd19937445b29187e13f6792352b684c3a40e56a",
     "assets/freeciv-1.jpg": "42f76c5ed4673475f83f094cd77f15c23b5a0361de422278c472cc90bb57a694",
     "assets/freeciv.png": "ad2c7f03f6c056a5eb1b7a98d0a4c196464472d5c84b543c4d1ef9dd863435d3",
     "assets/frozenbubble-1.jpg": "e8addebcfae27f2c953c246e8b41c9a329c239cc1ce7e03ca16eb3f01b330394",
@@ -50,8 +49,8 @@
     "assets/libreoffice-3.jpg": "26f3ce18ce2f96391a040e5dcb2a39ff05356d5a10d06043c9d31fc8a7aa41f0",
     "assets/libreoffice-base-1.jpg": "26f3ce18ce2f96391a040e5dcb2a39ff05356d5a10d06043c9d31fc8a7aa41f0",
     "assets/libreoffice-base.png": "d915303bc269b15bb45fdb0eb9ba26c417003e1df7b13abecbf5cdc61b763be1",
-    "assets/libreoffice-math-1.jpg": "3fb637c4c75f32a61e0dcc0305dc6a0b6b880c84d12ba5973c967733e899b7c7",
-    "assets/libreoffice-math.png": "e0a7e859c6ba935392845a6d61a81516b88b25d4d2e7b6b4eb71362725a283a4",
+    "assets/libreoffice-math-1.png": "6d67c6a1a716245df5ff56159334a4973d4b3e4ce17138023f1122ddbba229eb",
+    "assets/libreoffice-math.png": "ade6b1e782d3ec3ac18a212fd368555c92163ca1895df347592940e3cb74da39",
     "assets/libreoffice.png": "d3d73227fa0b1f94da129dc088978ac660564aad592802606be4f2e9f7df7b21",
     "assets/lutris-1.jpg": "b167723ac1c0a35ee86743266a7150e316bf9468db0f9461811f7e1b72e1cbf1",
     "assets/lutris.png": "423a94160a7109ab67f0b7e3ec0fb7381e44d905a7dee8d35dd3266a736d410b",
@@ -73,8 +72,7 @@
     "assets/slack.png": "75a8e8c8b948e4cef4ccc3dc057af8fa8e8e2fbff3e4459046d4cccee2463b83",
     "assets/spotify-1.jpg": "004e08a6c23ed2083f5118e6d6c6a4a186da429c98a9d3fe62ee94821ecf1a8e",
     "assets/spotify.png": "7fb6433fd4be8c7a7cdef86d097b498dcadb77edad535e0438c15c1004ce440b",
-    "assets/steam-devices.png": "78f720b9e6cdd2bce379b7d519b0e57fe37dd69c68bb1e3f7b33feff35d56263",
-    "assets/steam.png": "78f720b9e6cdd2bce379b7d519b0e57fe37dd69c68bb1e3f7b33feff35d56263",
+    "assets/steam.webp": "eeb52baf81ab86fb67a5cbd89536388adcda3dd8d703f75f77d0ce39b3cf0aa8",
     "assets/stellarium-1.jpg": "7319bc47ded905081704b6922368b7bf913bb8c9ddcda6255bbb152026618534",
     "assets/stellarium.png": "9559c39ccb37e9f9dd1429e1e2cbeaa8cfa28f84a2a139bb4f64090b234761ab",
     "assets/supertuxkart.png": "e62cbc27857b4024baa68a4d1dc72d59f9115264c8186a1689585024e3a5377e",
@@ -82,7 +80,7 @@
     "assets/telegram.png": "9a1bffc1800c5fbfa8b7b6199667fc092a7456664e898a731539ae74d430b45d",
     "assets/thunderbird-1.jpg": "77d2c527955c29a02a038d67f1e523915fd93cad632a249ee483451635d23ae0",
     "assets/thunderbird.png": "df905ad6c1bf2f451eaeec8db63bc6e8bede4c6f1ff25cefe5e8987c095b57f6",
-    "assets/tuxpaint-1.jpg": "1f114f821e38ae2139a755c9a1e5e1d5b94a4dbadc49f2e5323b8ae5bec0f009",
+    "assets/tuxpaint-1.png": "74754b21282a6204659671d0fb2c9aacc750b73601cc8a4f2b07dc4b14166d22",
     "assets/tuxpaint.png": "e84ee8d5265adb4263c198b655d52cd2d07109a311eb855e6197093b725bdfc0",
     "assets/virtualbox-1.png": "3d3a55b22a5809677d434c57fc1d875cdaf0716b0d6c84ab829986fce8263a06",
     "assets/virtualbox-2.png": "d57d4b8d4e46739a8a724a335108c452d2d9d51df5b95326157cae532bbbe946",
@@ -100,5 +98,5 @@
     "assets/zenmap-1.jpg": "136b7f268bd14d829843cb878c4f57db3fae8b4f551b392823e50d27d83efaa8",
     "assets/zenmap.png": "a18cd769f13f92d7ee70983893c977eaac5cce11f418314d337bf468ee745c17"
   },
-  "revision": 286
+  "revision": 310
 }

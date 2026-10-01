@@ -1,4 +1,4 @@
-NLinux Software v286 - loja de aplicativos (distribuicao)
+NLinux Software v310 - loja de aplicativos (distribuicao)
 Sem opcao de administracao.
 
 Dependencias (veja DEPENDENCIES.txt):
