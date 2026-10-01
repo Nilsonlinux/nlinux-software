@@ -8,6 +8,7 @@ import os
 import pwd
 import re
 import pty
+import select
 import shlex
 import shutil
 import struct
@@ -242,6 +243,39 @@ class InstallJob:
         self._step_group = 0
         self._step_current = 0
         self._step_total = 0
+        # Extremidade de escrita do pty enquanto o processo roda. O pacman roda
+        # interativo, e sem isto toda pergunta dele ficava sem resposta: o
+        # processo esperava para sempre e a janela mostrava um travamento sem
+        # saída. Vale para a instalação também, não só para a atualização — a
+        # importação de uma chave PGP e a escolha de provedor acontecem nos dois.
+        self._master_fd = None
+        self.esperando_resposta = False
+        self.reiniciar = False
+        self.criticos: list = []
+        self._espera_desde = 0.0
+
+    def answer(self, text: str) -> bool:
+        """Manda uma resposta ao processo que está esperando.
+
+        Devolve False quando não há processo esperando: responder fora da hora
+        é erro do cliente, não motivo para fingir que deu certo — senão a
+        interface acreditaria que a resposta foi entregue e o pacman ficaria
+        parado.
+
+        A resposta **não** entra no log. O pty já devolve o que foi digitado,
+        como num terminal de verdade, e repetir aqui deixaria duas cópias da
+        mesma linha. Quem precisa do registro do que mandou é a janela, que
+        acabou de ver a pessoa digitar.
+        """
+        if self._master_fd is None or self.done:
+            return False
+        try:
+            os.write(self._master_fd, (text.rstrip("\n") + "\n").encode())
+        except OSError:
+            return False
+        self.esperando_resposta = False
+        self._espera_desde = 0.0
+        return True
 
     def _record_output(self, raw_line: str) -> None:
         line = re.sub(r"\x1b\[[0-9;]*[A-Za-z]", "", raw_line).strip()
@@ -414,27 +448,46 @@ class InstallJob:
             fh.write(script)
         return path, script, inner_path
 
+    def _command(self):
+        """(comando, arquivos temporários) a rodar neste job.
+
+        Fica separado do `start` para que o caminho interativo possa ser
+        testado de verdade, com um comando inofensivo que faz as mesmas
+        perguntas — rodar `pacman -Syu` num teste atualizaria a máquina de quem
+        está testando.
+        """
+        if self.mode == "sysupdate":
+            # Sem `--noconfirm`, de propósito. É o `--noconfirm` que faz o
+            # pacman responder sozinho "sim, sobrescrever" quando um arquivo
+            # conflita — e o arquivo em conflito é justamente a configuração
+            # que alguém editou à mão. Aqui a pergunta chega na janela e a
+            # pessoa decide.
+            return ["pkexec", "pacman", "-Syu"], []
+        if self.mode == "remove":
+            return ["pkexec", "pacman", "-Rns", "--noconfirm"] + self.packages, []
+        if self.source == "aur":
+            script_path, _, inner_path = self._aur_script()
+            return ["pkexec", "bash", script_path], [script_path, inner_path]
+        return (
+            ["pkexec", "pacman", "-Sy", "--noconfirm", "--needed"]
+            + self.packages
+        ), []
+
     def start(self) -> None:
         def work() -> None:
             names = ", ".join(self.packages)
             removing = self.mode == "remove"
-            self.lines.append(
-                f"{'Desinstalando' if removing else 'Instalando'} "
-                f"({self.source}): {names}")
+            if self.mode == "sysupdate":
+                self.lines.append(f"Atualizando o sistema: {names} pacotes")
+            else:
+                self.lines.append(
+                    f"{'Desinstalando' if removing else 'Instalando'} "
+                    f"({self.source}): {names}")
             artifacts = []
             try:
-                if removing:
-                    cmd = ["pkexec", "pacman", "-Rns", "--noconfirm"] + self.packages
-                elif self.source == "aur":
-                    script_path, _, inner_path = self._aur_script()
-                    artifacts = [script_path, inner_path]
-                    cmd = ["pkexec", "bash", script_path]
-                else:
-                    cmd = (
-                        ["pkexec", "pacman", "-Sy", "--noconfirm", "--needed"]
-                        + self.packages
-                    )
+                cmd, artifacts = self._command()
                 master_fd, slave_fd = pty.openpty()
+                self._master_fd = master_fd
                 try:
                     fcntl.ioctl(
                         slave_fd,
@@ -444,7 +497,12 @@ class InstallJob:
                     try:
                         process = subprocess.Popen(
                             cmd,
-                            stdin=subprocess.DEVNULL,
+                            # O pty também como entrada, e não /dev/null. Com
+                            # /dev/null qualquer pergunta do pacman recebia EOF
+                            # e o processo abortava sozinho; sem canal de
+                            # resposta, uma atualização parada numa pergunta
+                            # ficava esperando para sempre.
+                            stdin=slave_fd,
                             stdout=slave_fd,
                             stderr=slave_fd,
                             close_fds=True,
@@ -452,7 +510,30 @@ class InstallJob:
                     finally:
                         os.close(slave_fd)
                     pending = ""
+                    self._espera_desde = 0.0
                     while True:
+                        # `select` em vez de leitura bloqueante: sem um tempo
+                        # limite na espera, um pacman parado numa pergunta que
+                        # ninguém responde ficaria segurando a root em
+                        # silêncio, para sempre. O prazo abaixo fecha o pty,
+                        # e o pacman recebe EOF e desiste sozinho — que é a
+                        # forma limpa de abortar, sem `kill` em um processo que
+                        # está no meio de uma transação.
+                        pronto, _, _ = select.select([master_fd], [], [], 1.0)
+                        if not pronto:
+                            if (self.esperando_resposta
+                                    and time.time() - self._espera_desde
+                                    > LIMITE_ESPERA):
+                                self.lines.append(
+                                    f"Sem resposta por {LIMITE_ESPERA // 60} "
+                                    "minutos: a atualização foi cancelada. "
+                                    "O pacman não desfez nada do que já "
+                                    "instalou.")
+                                self.esperando_resposta = False
+                                os.close(master_fd)
+                                master_fd = None
+                                break
+                            continue
                         try:
                             chunk = os.read(master_fd, 4096)
                         except OSError as exc:
@@ -462,6 +543,19 @@ class InstallJob:
                         if not chunk:
                             break
                         pending += chunk.decode("utf-8", "replace")
+                        # Uma pergunta do pacman é uma linha **incompleta**: ela
+                        # não fecha com \n nem com \r porque está esperando o que
+                        # a pessoa digitar. Sem este passo, a pergunta ficava
+                        # presa no acumulador e nunca aparecia no log — a
+                        # janela acenderia a caixa de resposta sem mostrar
+                        # nada para responder, que é o pior dos dois mundos.
+                        # A barra de progresso também deixa linha pela metade,
+                        # mas ela é encerrada por \r e chega aqui esvaziada.
+                        if PROMPT_RE.search(pending):
+                            self.esperando_resposta = True
+                            self._espera_desde = time.time()
+                            self._record_output(pending)
+                            pending = ""
                         while True:
                             delimiter = min(
                                 (position for position in (
@@ -475,18 +569,60 @@ class InstallJob:
                             pending = pending[delimiter + 1:]
                     self._record_output(pending)
                 finally:
-                    os.close(master_fd)
+                    # Fecha a escrita antes de esperar o processo: sem isto, um
+                    # pacman parado numa pergunta ficaria com o pty aberto e o
+                    # `wait()` não teria como notar que a resposta nunca vem.
+                    # Pode já estar fechado, quando o prazo de espera estourou
+                    # dentro do laço — fechar duas vezes levanta EBADF e
+                    # engoliria a falha real do comando.
+                    if master_fd is not None:
+                        os.close(master_fd)
+                        master_fd = None
+                    self._master_fd = None
                 self.success = process.wait() == 0
             except Exception as e:
                 self.success = False
                 self.lines.append(f"Falha ao iniciar o instalador: {e}")
             finally:
+                self._master_fd = None
                 for a in artifacts:
                     try:
                         os.unlink(a)
                     except OSError:
                         pass
             self.state = "success" if self.success else "failed"
+            if self.mode == "sysupdate":
+                if self.success:
+                    self.progress = 100
+                    # Quem precisa reiniciar é decidido pelos pacotes que
+                    # entraram, não por adivinhação: a lista foi montada antes do
+                    # `pacman -Syu`, então é ela que diz o que mudou.
+                    criticos = sorted(
+                        p for p in self.packages
+                        if p in REINICIO_PACOTES or
+                        any(p.startswith(c + "-") for c in REINICIO_PACOTES))
+                    self.reiniciar = bool(criticos)
+                    self.criticos = criticos
+                    self.lines.append(f"Sistema atualizado: {names} pacotes")
+                    if self.reiniciar:
+                        self.lines.append(
+                            "Reinicie para que a atualização entre em vigor: "
+                            + ", ".join(criticos))
+                else:
+                    self.lines.append(
+                        "A atualização não foi concluída. O pacman não desfaz o "
+                        "que já instalou, então o sistema continua íntegro — "
+                        "mas confira o que ficou faltando na lista acima.")
+                # O payload registra as versões instaladas. Sem invalidar, o
+                # badge continuaria mostrando os mesmos pacotes por até
+                # `ATUALIZACOES_TTL`, e a janela abriria sem nada para fazer.
+                try:
+                    invalidate_updates()
+                except Exception as exc:
+                    print(f"[nlinux] falha ao invalidar a lista de "
+                          f"atualizações: {exc}")
+                self.done = True
+                return
             if self.success:
                 self.progress = 100
                 self.lines.append(f"{'Removido' if removing else 'Instalado'}: {names}")
@@ -507,6 +643,9 @@ class InstallJob:
 
     def status(self) -> dict:
         return {
+            "esperando_resposta": self.esperando_resposta,
+            "reiniciar": self.reiniciar,
+            "criticos": self.criticos,
             "id": self.id,
             "packages": self.packages,
             "mode": self.mode,
@@ -624,6 +763,61 @@ class BuildJob:
 ATUALIZACOES_TTL = 90.0
 _atualizacoes_lock = threading.Lock()
 _atualizacoes_cache: dict = {"quando": 0.0, "pacotes": [], "erro": None}
+
+# Perguntas que o pacman faz em modo interativo. Serve para acender a caixa de
+# resposta, não para decidir o que é pergunta: por isso o padrão é largo e o
+# pior erro possível — não reconhecer uma — não trava nada, porque a caixa
+# fica disponível durante a execução inteira.
+PROMPT_RE = re.compile(
+    r"(\[\?\]|\[[Yy]/[Nn]\]|do you want|would you like|\[y/N\]|enter |"
+    r"proceed with|import pgp|replacing|choose |select )",
+    re.IGNORECASE,
+)
+
+# Quanto tempo uma pergunta pode ficar sem resposta antes de o pacman desistir.
+# A janela é respondida por uma pessoa que está olhando para ela, então 15
+# minutos é folgado; o que importa é não haver um `pacman` de root esperando
+# para sempre caso a janela seja fechada sem responder.
+LIMITE_ESPERA = 900.0
+
+# Pacotes cuja atualização só entra em vigor depois de reiniciar. Sem este
+# aviso, a pessoa acha que a atualização terminou, o serviço antigo continua em
+# memória, e a causa do comportamento estranho vira um mistério. Não é uma
+# lista oficial do Arch: é o conjunto que costuma mudar o que já está em
+# execução — kernel, init, biblioteca de C e os drivers de GPU, que trocam a
+# interface em uso.
+REINICIO_PACOTES = {
+    "linux", "linux-lts", "linux-zen", "linux-hardened", "linux-rt",
+    "linux-firmware", "linux-firmware-x86_64", "linux-firmware-intel",
+    "linux-firmware-nvidia", "systemd", "systemd-libs", "systemd-ukify",
+    "glibc", "nvidia", "nvidia-390xx", "nvidia-470xx", "nvidia-550xx",
+    "nvidia-dkms", "mesa", "lib32-mesa", "lib32-glibc", "gcc-libs",
+    "glib2", "dbus", "polkit",
+}
+
+
+def invalidate_updates() -> None:
+    """Joga fora a lista de atualizações em cache.
+
+    Depois de uma atualização, a lista consultada antes é história: sem isto o
+    badge continuaria mostrando os mesmos pacotes por até `ATUALIZACOES_TTL`, e
+    a pessoa iria clicar numa janela que não tem mais nada para fazer.
+    """
+    with _atualizacoes_lock:
+        _atualizacoes_cache.update(
+            {"quando": 0.0, "pacotes": None, "erro": None})
+
+
+def precisa_reiniciar(pacote: str) -> bool:
+    """Diz se a versão nova deste pacote só vale depois de reiniciar.
+
+    Casa o nome exato e o prefixo com hífen, para pegAR tanto `linux` quanto
+    `linux-zen` e `nvidia-550xx`, sem confundir `glibc` com `glib2`.
+    """
+    if not pacote:
+        return False
+    return (pacote in REINICIO_PACOTES
+            or any(pacote.startswith(c + "-") for c in REINICIO_PACOTES))
 
 
 def _tamanhos_de_download(nomes) -> dict:
@@ -933,6 +1127,8 @@ class BoutiqueHandler(BaseHTTPRequestHandler):
         if path == "/api/updates":
             pacotes, erro = pacotes_com_atualizacao()
             conhecidos = [p["download"] for p in pacotes if p.get("download")]
+            criticos = [p["pacote"] for p in pacotes
+                        if precisa_reiniciar(p["pacote"])]
             self._send_json({
                 "pacotes": pacotes,
                 "total": len(pacotes),
@@ -941,6 +1137,11 @@ class BoutiqueHandler(BaseHTTPRequestHandler):
                 # ficam sem número e a soma seria enganosa.
                 "total_bytes": sum(conhecidos) or None,
                 "sized": len(conhecidos),
+                # Dizido antes de atualizar, e não só depois: quem decide
+                # atualizar já consegue ver que vai ter de reiniciar, e não
+                # descobre isso quando a janela já está fechada.
+                "reiniciar": bool(criticos),
+                "criticos": criticos,
                 "erro": erro,
             })
             return
@@ -990,6 +1191,14 @@ class BoutiqueHandler(BaseHTTPRequestHandler):
             except Exception:
                 pass
             self._send_json({"ok": True})
+            return
+
+        if path == "/api/sysupdate":
+            self._start_sysupdate()
+            return
+
+        if path == "/api/answer":
+            self._answer_job()
             return
 
         if path == "/api/admin/save":
@@ -1058,6 +1267,79 @@ class BoutiqueHandler(BaseHTTPRequestHandler):
             self.jobs[job_id] = job
         job.start()
         self._send_json({"id": job_id})
+
+    def _start_sysupdate(self) -> None:
+        """Atualiza o sistema inteiro com `pacman -Syu`.
+
+        A lista de pacotes vai no job pelo mesmo motivo do aviso de reinício:
+        quem decide precisa saber o que entrou, e o pacman não devolve a lista do
+        que atualizou — só o que ele tinha para atualizar, que é o que foi lido
+        antes. Sem isso, o aviso de reinício seria adivinhação.
+
+        Recusa começar se já houver um job de sistema em andamento: dois
+        `pacman` com o lock do banco ao mesmo tempo não terminam, e a segunda
+        janela ficaria olhando um processo que só espera.
+        """
+        try:
+            length = int(self.headers.get("Content-Length", 0))
+            body = json.loads(self.rfile.read(length) or b"{}")
+        except (ValueError, TypeError):
+            self._send_json({"error": "corpo inválido"}, 400)
+            return
+
+        pacotes, erro = pacotes_com_atualizacao(agora=True)
+        if not pacotes:
+            # Recusa de verdade, e não uma janela vazia: o pedido veio da
+            # janela, que já mostrou a lista, e ela some entre o clique e
+            # aqui. Sem esta conferência a pessoa veria "nada a fazer" sem
+            # entender por quê.
+            self._send_json(
+                {"error": "não há pacotes para atualizar",
+                 "detalhe": erro}, 409)
+            return
+
+        with self.jobs_lock:
+            for job in self.jobs.values():
+                if getattr(job, "mode", None) == "sysupdate" and not job.done:
+                    self._send_json(
+                        {"error": "já há uma atualização em andamento",
+                         "id": job.id}, 409)
+                    return
+            job_id = uuid4().hex[:12]
+            job = InstallJob(job_id, [p["pacote"] for p in pacotes],
+                             "arch", "sysupdate")
+            self.jobs[job_id] = job
+        job.start()
+        self._send_json({"id": job_id, "total": len(pacotes)})
+
+    def _answer_job(self) -> None:
+        """Entrega uma resposta ao processo que está esperando por ela.
+
+        Vale 409 quando não há ninguém esperando: assim o campo de resposta não
+        fica fingindo que enviou, e a pessoa percebe que precisa rolar o log
+        para ver a pergunta.
+        """
+        try:
+            length = int(self.headers.get("Content-Length", 0))
+            body = json.loads(self.rfile.read(length) or b"{}")
+        except (ValueError, TypeError):
+            self._send_json({"error": "corpo inválido"}, 400)
+            return
+        job_id = str(body.get("id") or "")
+        texto = str(body.get("text") or "")
+        if not job_id or not texto.strip():
+            self._send_json({"error": "falta id ou texto"}, 400)
+            return
+        with self.jobs_lock:
+            job = self.jobs.get(job_id)
+        if job is None or not hasattr(job, "answer"):
+            self._send_json({"error": "job desconhecido"}, 404)
+            return
+        if not job.answer(texto):
+            self._send_json(
+                {"error": "nenhum processo esperando resposta"}, 409)
+            return
+        self._send_json({"ok": True})
 
     do_PUT = do_POST  # convenience
 
@@ -1753,7 +2035,20 @@ def admin_build(progress=None):
             src_ws = os.path.join(pkg_root, "src", "nlinux", "web_server.py")
             with open(src_ws, encoding="utf-8") as fh:
                 content = fh.read()
-            content = content.replace("ADMIN_ENABLED = True", "ADMIN_ENABLED = False", 1)
+            # Ancora no começo da linha, e não na primeira ocorrência do texto.
+            # Com `replace(..., 1)` o alvo era a primeira vez que a string
+            # aparecia no arquivo, e essa era a própria linha do `replace` —
+            # enquanto o `True` de verdade, na atribuição, continuava. Bastava
+            # um comentário ou docstring citando `ADMIN_ENABLED = True` antes
+            # dela para a distro passar a embarcar a curadoria, e o build não
+            # reclama de nada: ele só geraria um pacote com o `/admin` ligado.
+            content, trocou = re.subn(r"^(ADMIN_ENABLED\s*=\s*)True",
+                                      r"\1False", content, count=1,
+                                      flags=re.MULTILINE)
+            if not trocou:
+                raise RuntimeError(
+                    "a atribuição de ADMIN_ENABLED não foi encontrada em "
+                    f"{src_ws}; a distro sairia com a curadoria ligada")
             with open(src_ws, "w", encoding="utf-8") as fh:
                 fh.write(content)
 
