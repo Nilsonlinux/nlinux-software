@@ -86,6 +86,11 @@
         <strong id="status-title" data-i18n="status.installing">Instalando…</strong>
         <div class="progress"><i id="status-bar"></i></div>
         <code id="status-line"></code>
+        <form class="job-reply" id="install-reply" data-job-reply hidden>
+          <label for="install-reply-text" data-i18n="sysupd.modal.reply">Resposta solicitada pelo pacman</label>
+          <div><input id="install-reply-text" type="text" autocomplete="off" required>
+          <button class="btn btn-primary" type="submit"><i class="ti ti-send"></i> <span data-i18n="sysupd.modal.send">Enviar resposta</span></button></div>
+        </form>
       </div>
       <button class="icon-btn" id="status-close" aria-label="Ocultar" data-i18n-attr="aria-label:status.close"><i class="ti ti-x"></i></button>
     </div>

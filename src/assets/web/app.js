@@ -581,6 +581,38 @@ function statusCard(title, line, mode, progress = null) {
   }
 }
 
+function updateJobReply(formId, waiting, jobId) {
+  const form = $(formId);
+  if (!form) return;
+  const wasHidden = form.hidden;
+  form.dataset.jobId = jobId || "";
+  form.hidden = !waiting;
+  if (waiting && wasHidden) form.querySelector("input")?.focus();
+}
+
+async function sendJobReply(event) {
+  event.preventDefault();
+  const form = event.target.closest("[data-job-reply]");
+  const input = form?.querySelector("input");
+  const button = form?.querySelector("button");
+  const text = input?.value.trim();
+  if (!form || !text || !form.dataset.jobId) return;
+  if (button) button.disabled = true;
+  try {
+    await api("/api/answer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: form.dataset.jobId, text }),
+    });
+    input.value = "";
+    form.hidden = true;
+  } catch (error) {
+    toast(error.message || tr("toast.failUpdate"), "err");
+  } finally {
+    if (button) button.disabled = false;
+  }
+}
+
 function updateInstallButtons(product, progress, mode, running = true) {
   const verb = (mode === "remove" ? tr("status.uninstalling") : tr("status.installing"))
     .replace(/…$/, "").trim();
@@ -669,10 +701,12 @@ async function startInstall(product, btn, mode = "install") {
       const last = waiting
         ? tr("status.waiting")
         : st.lines[st.lines.length - 1];
+      updateJobReply("#install-reply", !!st.esperando_resposta, job.id);
       updateInstallButtons(product, currentProgress, mode);
       statusCard(`${gerund} ${product.name}…`, last, "", currentProgress);
       setTimeout(poll, 1400);
     } else {
+      updateJobReply("#install-reply", false, job.id);
       const ok = st.done && st.success;
       finishInstall(ok, product, btn, card, mode);
       updateInstallButtons(product, 100, mode, false);
@@ -785,6 +819,11 @@ function renderSysUpdatesModal(showProgress) {
         </div>
         <h4>${tr("sysupd.modal.logs")}</h4>
         <pre id="sysupd-log" class="sysupd-log"></pre>
+        <form class="job-reply" id="sysupd-reply" data-job-reply hidden>
+          <label for="sysupd-reply-text">${tr("sysupd.modal.reply")}</label>
+          <div><input id="sysupd-reply-text" type="text" autocomplete="off" required>
+          <button class="btn btn-primary" type="submit"><i class="ti ti-send"></i> ${tr("sysupd.modal.send")}</button></div>
+        </form>
       </section>`
     : "";
   const buttonLabel = sysUpdate
@@ -829,6 +868,7 @@ function renderSysUpdatesModal(showProgress) {
 function updateSysUpdateModal() {
   const job = state.sysUpdate;
   if (!job) return;
+  updateJobReply("#sysupd-reply", !!job.waitingForAnswer, job.id);
   const log = $("#sysupd-log");
   if (log) {
     log.textContent = (job.lines || []).join("\n");
@@ -925,6 +965,7 @@ async function startSysUpdate() {
         : null;
       state.sysUpdate.lines = st.lines || [];
       state.sysUpdate.progress = currentProgress;
+      state.sysUpdate.waitingForAnswer = !!st.esperando_resposta;
       updateSysUpdateModal();
       renderSysUpdateProgress(currentProgress);
       const waiting = st.lines.length <= 1;
@@ -936,6 +977,7 @@ async function startSysUpdate() {
       state.sysUpdate.active = false;
       state.sysUpdate.success = ok;
       state.sysUpdate.lines = st.lines || [];
+      state.sysUpdate.waitingForAnswer = false;
       updateSysUpdateModal();
       if (ok) tweenSysUpdateRing(100);
       state.busy = false;
@@ -1007,6 +1049,9 @@ function bindGlobal() {
       ev.preventDefault();
       window.pywebview.api.open_external(a.href);
     }
+  });
+  document.addEventListener("submit", (ev) => {
+    if (ev.target.matches("[data-job-reply]")) sendJobReply(ev);
   });
 
   document.addEventListener("keydown", (ev) => {
