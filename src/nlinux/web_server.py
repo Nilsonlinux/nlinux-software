@@ -1713,9 +1713,14 @@ def _registered_source() -> str | None:
         with open(marker, encoding="utf-8") as fh:
             path = fh.read().strip()
     except OSError:
-        return None
-    if path and os.path.isdir(os.path.join(path, "src", "apps")):
+        path = ""
+    if path and os.path.isdir(os.path.join(path, "src", "apps")) \
+            and os.path.exists(os.path.join(path, ".git")):
         return path
+    fallback = os.path.join(os.path.expanduser("~"), "nlinux-software-admin")
+    if os.path.isdir(os.path.join(fallback, "src", "apps")) \
+            and os.path.exists(os.path.join(fallback, ".git")):
+        return fallback
     return None
 
 
