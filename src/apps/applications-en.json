@@ -43,52 +43,6 @@
     }
   },
   "development": {
-    "geany": {
-      "name": "Geany",
-      "summary": "Simple and lightweight IDE with powerful extensions",
-      "description": "Small and lightweight integrated development environment. It was developed to provide a small and fast IDE, which has only a few dependencies from other packages. The basic features of Geany are: syntax highlighting, code completion, auto completion,call tips, folding, symbol lists, embedded terminal emulation and many supported languages C/C++, HTML/CSS, Java. Markdown, Pascal, PHP, Python, Perl, Pascal. ",
-      "icon": "assets/geany.png",
-      "screenshots": [
-        "assets/geany-1.jpg"
-      ],
-      "developer-name": "Various Authors",
-      "developer-url": "https://www.geany.org/Main/Authors",
-      "urls": {
-        "info": "http://www.geany.org/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "geany",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "geany",
-          "install-packages": [
-            "geany",
-            "geany-plugins"
-          ],
-          "remove-packages": [
-            "geany",
-            "geany-plugins"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "vscode": {
       "name": "Visual Studio Code",
       "summary": "Cross-platform source code editor from Microsoft.",
@@ -121,7 +75,92 @@
           "install-packages": [
             "visual-studio-code-bin"
           ],
-          "remove-packages": []
+          "remove-packages": [
+            "visual-studio-code-bin"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "code": {
+      "name": "Code",
+      "summary": "The Open Source build of Visual Studio Code (vscode) editor",
+      "description": "The Open Source build of Visual Studio Code (vscode) editor",
+      "icon": "assets/code.png",
+      "screenshots": [],
+      "developer-name": "",
+      "developer-url": "https://github.com/microsoft/vscode",
+      "urls": {
+        "info": "https://github.com/microsoft/vscode",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "code",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "code",
+          "install-packages": [
+            "code"
+          ],
+          "remove-packages": [
+            "code"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "geany": {
+      "name": "Geany",
+      "summary": "Simple and lightweight IDE with powerful extensions",
+      "description": "Small and lightweight integrated development environment. It was developed to provide a small and fast IDE, which has only a few dependencies from other packages. The basic features of Geany are: syntax highlighting, code completion, auto completion,call tips, folding, symbol lists, embedded terminal emulation and many supported languages C/C++, HTML/CSS, Java. Markdown, Pascal, PHP, Python, Perl, Pascal.",
+      "icon": "assets/geany.png",
+      "screenshots": [
+        "assets/geany-1.jpg"
+      ],
+      "developer-name": "Alexander Rødseth",
+      "developer-url": "https://www.geany.org/Main/Authors",
+      "urls": {
+        "info": "http://www.geany.org/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "geany",
+      "arch": [
+        "x86_64",
+        "i686",
+        "aarch64",
+        "armv7h"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "geany",
+          "install-packages": [
+            "geany"
+          ],
+          "remove-packages": [
+            "geany"
+          ]
         }
       },
       "proprietary": false,
@@ -387,93 +426,6 @@
           ],
           "remove-packages": [
             "lutris"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
-    "minecraft": {
-      "name": "Minecraft",
-      "summary": "3D sandbox world for creating and exploring worlds",
-      "description": "A game about breaking and placing blocks. At first, people built structures to protect against nocturnal monsters, but as the game grew players worked together to create wonderful, imaginative things. It can also be about adventuring with friends or watching the sun rise over a blocky ocean. Brave players battle terrible things in The Nether, which is more scary than pretty. You can also visit a land of mushrooms if it sounds more like your cup of tea. <ul><li>Install the Official Minecraft Server as a <a onclick=jumpOneClickServers(1)>one-click installation.</a></li></ul> ",
-      "icon": "assets/minecraft.png",
-      "screenshots": [
-        "assets/minecraft-1.jpg",
-        "assets/minecraft-2.jpg"
-      ],
-      "developer-name": "Mojang",
-      "developer-url": "https://mojang.com/",
-      "urls": {
-        "info": "https://minecraft.net",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "minecraft",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "aur",
-          "main-package": "minecraft-installer",
-          "install-packages": [
-            "minecraft-installer"
-          ],
-          "remove-packages": [
-            "minecraft-installer"
-          ]
-        }
-      },
-      "proprietary": true,
-      "alternate-to": null,
-      "listed": true
-    },
-    "neverputt": {
-      "name": "Neverputt",
-      "summary": "Hot-seat multi-player miniature golf for 1-4 players",
-      "description": "A hot-seat multi-player miniature golf game for 1 to 4 players. The 18-hole course takes advantage of all the elements that challenge Neverball players, including moving platforms and barriers, teleporters, ramps, and drop-offs. A simple putting interface and golf scoring system have been added. ",
-      "icon": "assets/neverputt.png",
-      "screenshots": [],
-      "developer-name": "Various Contributors",
-      "developer-url": "http://neverball.org/contributors.php",
-      "urls": {
-        "info": "https://apps.ubuntu.com/cat/applications/neverputt/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "neverputt",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "neverputt",
-          "install-packages": [
-            "neverputt",
-            "neverputt-data"
-          ],
-          "remove-packages": [
-            "neverputt",
-            "neverputt-data"
           ]
         }
       },
@@ -1260,172 +1212,6 @@
     }
   },
   "internet": {
-    "filezilla": {
-      "name": "FileZilla",
-      "summary": "File transfer tool for FTP, FTPS and SFTP (SSH).",
-      "description": "A full-featured FTP client with an easy-to-use GUI. Supports FTP, FTP over SSL/TLS (FTPS) and SSH File Transfer Protocol (SFTP). IPv6 support. Available in more than 40 languages. Supports resume and transfer of large files >4GB. Easy to use Site Manager and transfer queue. Bookmarks. Drag & drop support. Speed limits. Filename filters. Directory comparison. Network configuration wizard. Remote file editing. Keep-alive. HTTP/1.1, SOCKS5 and FTP Proxy support. Logging to file. Synchronized directory browsing. Remote file search. Tabbed interface to connect to multiple servers. ",
-      "icon": "assets/filezilla.png",
-      "screenshots": [
-        "assets/filezilla-1.jpg"
-      ],
-      "developer-name": "Tim Kosse and Contributors",
-      "developer-url": "https://github.com/zedfoxus/filezilla-client/blob/master/AUTHORS",
-      "urls": {
-        "info": "https://filezilla-project.org/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "filezilla",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "filezilla",
-          "install-packages": [
-            "filezilla"
-          ],
-          "remove-packages": [
-            "filezilla"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
-    "google-chrome": {
-      "name": "Google Chrome",
-      "summary": "A fast, secure, and free web browser built for the modern web.",
-      "description": "The web browser from Google that combines a minimal design with sophisticated technology to make the web faster, safer, and easier. If you are a <b>Netflix</b> subscriber then Google Chrome fully supports Netflix.",
-      "icon": "assets/google-chrome.png",
-      "screenshots": [
-        "assets/google-chrome-1.jpg"
-      ],
-      "developer-name": "Google",
-      "developer-url": "https://www.google.com/about/",
-      "urls": {
-        "info": "http://www.google.com/chrome/",
-        "android-app": "https://play.google.com/store/apps/details?id=com.android.chrome",
-        "ios-app": "https://itunes.apple.com/gb/app/chrome-web-browser-by-google/id535886823"
-      },
-      "launch-cmd": "google-chrome-stable",
-      "arch": [
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "manual",
-          "main-package": "google-chrome-stable",
-          "install-packages": [
-            "google-chrome-stable"
-          ],
-          "remove-packages": [
-            "google-chrome-stable"
-          ]
-        }
-      },
-      "proprietary": true,
-      "alternate-to": null,
-      "listed": true
-    },
-    "opera-browser": {
-      "name": "Opera",
-      "summary": "Fast, secure, easy-to-use browser",
-      "description": "A fast, secure, and user-friendly web browser. It includes web developer tools, news aggregation, and the ability to compress data via Opera Turbo on congested networks. ",
-      "icon": "assets/opera-browser.png",
-      "screenshots": [
-        "assets/opera-browser-1.jpg"
-      ],
-      "developer-name": "Opera Software",
-      "developer-url": "https://www.opera.com/",
-      "urls": {
-        "info": "http://www.opera.com/",
-        "android-app": "https://play.google.com/store/apps/details?id=com.opera.browser",
-        "ios-app": "https://itunes.apple.com/gb/app/opera-mini-web-browser/id363729560"
-      },
-      "launch-cmd": "opera",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "manual",
-          "main-package": "opera-stable",
-          "install-packages": [
-            "opera-stable"
-          ],
-          "remove-packages": [
-            "opera-stable"
-          ]
-        }
-      },
-      "proprietary": true,
-      "alternate-to": null,
-      "listed": true
-    },
-    "slack": {
-      "name": "Slack",
-      "summary": "Team communication and collaboration",
-      "description": "Slack brings team communication and collaboration into one place so you can get more work done, whether you belong to a large enterprise or a small business. Check off your to-do list and move your projects forward by bringing the right people, conversations, tools, and information you need together. ",
-      "icon": "assets/slack.png",
-      "screenshots": [],
-      "developer-name": "Slack Technologies",
-      "developer-url": "https://slack.com/",
-      "urls": {
-        "info": "https://slack.com/",
-        "android-app": "https://play.google.com/store/apps/details?id=com.Slack&hl=en",
-        "ios-app": "https://itunes.apple.com/gb/app/slack/id803453959?mt=12"
-      },
-      "launch-cmd": "slack-desktop",
-      "arch": [
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "manual",
-          "main-package": "slack-desktop",
-          "install-packages": [
-            "slack-desktop"
-          ],
-          "remove-packages": [
-            "slack-desktop"
-          ]
-        }
-      },
-      "proprietary": true,
-      "alternate-to": null,
-      "listed": true
-    },
     "thunderbird": {
       "name": "Thunderbird",
       "summary": "Full-featured email, RSS and newsgroup client",
@@ -1804,30 +1590,66 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
-    }
-  },
-  "multimedia": {
-    "kdenlive": {
-      "name": "kdenlive",
-      "summary": "Non-linear video editing suite",
-      "description": "A non-linear video editing suite, which supports DV, HDV and many more formats. Its main features are: <ul><li>Guides and marker for organizing timelines</li> <li>Copy and paste support for clips, effects and transitions</li> <li>Real time changes</li> <li>FireWire and Video4Linux capture</li> <li>Screen grabbing</li> <li>Exporting to any by FFMPEG supported format</li> ",
-      "icon": "assets/kdenlive.png",
+    },
+    "google-chrome": {
+      "name": "Google Chrome",
+      "summary": "A fast, secure, and free web browser built for the modern web.",
+      "description": "The web browser from Google that combines a minimal design with sophisticated technology to make the web faster, safer, and easier. If you are a <b>Netflix</b> subscriber then Google Chrome fully supports Netflix.",
+      "icon": "assets/google-chrome.png",
       "screenshots": [
-        "assets/kdenlive-1.jpg"
+        "assets/google-chrome-1.jpg"
       ],
-      "developer-name": "Kdenlive Authors",
-      "developer-url": "https://cgit.kde.org/kdenlive.git/tree/AUTHORS",
+      "developer-name": "Google",
+      "developer-url": "https://www.google.com/about/",
       "urls": {
-        "info": "http://www.kdenlive.org/",
-        "android-app": null,
-        "ios-app": null
+        "info": "http://www.google.com/chrome/",
+        "android-app": "",
+        "ios-app": ""
       },
-      "launch-cmd": "kdenlive",
+      "launch-cmd": "google-chrome-stable",
       "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "google-chrome",
+          "install-packages": [
+            "google-chrome"
+          ],
+          "remove-packages": [
+            "google-chrome"
+          ]
+        }
+      },
+      "proprietary": true,
+      "alternate-to": null,
+      "listed": true
+    },
+    "filezilla": {
+      "name": "FileZilla",
+      "summary": "File transfer tool for FTP, FTPS and SFTP (SSH).",
+      "description": "A full-featured FTP client with an easy-to-use GUI. Supports FTP, FTP over SSL/TLS (FTPS) and SSH File Transfer Protocol (SFTP). IPv6 support. Available in more than 40 languages. Supports resume and transfer of large files >4GB. Easy to use Site Manager and transfer queue. Bookmarks. Drag & drop support. Speed limits. Filename filters. Directory comparison. Network configuration wizard. Remote file editing. Keep-alive. HTTP/1.1, SOCKS5 and FTP Proxy support. Logging to file. Synchronized directory browsing. Remote file search. Tabbed interface to connect to multiple servers.",
+      "icon": "assets/filezilla.png",
+      "screenshots": [
+        "assets/filezilla-1.jpg"
+      ],
+      "developer-name": "Tim Kosse and Contributors",
+      "developer-url": "https://github.com/zedfoxus/filezilla-client/blob/master/AUTHORS",
+      "urls": {
+        "info": "https://filezilla-project.org/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "filezilla",
+      "arch": [
+        "x86_64"
       ],
       "releases": [
         "rolling"
@@ -1838,20 +1660,60 @@
       "pacman": {
         "default": {
           "source": "arch",
-          "main-package": "kdenlive",
+          "main-package": "filezilla",
           "install-packages": [
-            "kdenlive",
-            "breeze-icon-theme"
+            "filezilla"
           ],
           "remove-packages": [
-            "kdenlive"
+            "filezilla"
           ]
         }
       },
       "proprietary": false,
-      "alternate-to": "Adobe&reg; Premiere Pro",
+      "alternate-to": null,
       "listed": true
     },
+    "slack": {
+      "name": "Slack",
+      "summary": "Team communication and collaboration",
+      "description": "Slack brings team communication and collaboration into one place so you can get more work done, whether you belong to a large enterprise or a small business. Check off your to-do list and move your projects forward by bringing the right people, conversations, tools, and information you need together.",
+      "icon": "assets/slack.png",
+      "screenshots": [],
+      "developer-name": "Slack Technologies",
+      "developer-url": "https://slack.com/",
+      "urls": {
+        "info": "https://slack.com/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "slack-desktop",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "slack-desktop",
+          "install-packages": [
+            "slack-desktop"
+          ],
+          "remove-packages": [
+            "slack-desktop"
+          ]
+        }
+      },
+      "proprietary": true,
+      "alternate-to": null,
+      "listed": true
+    }
+  },
+  "multimedia": {
     "kodi": {
       "name": "Kodi",
       "summary": "Media player perfect for HTPCs and home theatres",
@@ -1891,93 +1753,6 @@
         }
       },
       "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
-    "rhythmbox": {
-      "name": "Rhythmbox",
-      "summary": "Media player and music management application",
-      "description": "Rhythmbox is a very easy to use music playing and management program which supports a wide range of audio formats (including mp3 and ogg). Originally inspired by Apple&#8217;s iTunes, the current version also supports Internet Radio, iPod integration and generic portable audio player support, Audio CD burning, Audio CD playback, music sharing, and Podcasts. ",
-      "icon": "assets/rhythmbox.png",
-      "screenshots": [
-        "assets/rhythmbox-1.jpg"
-      ],
-      "developer-name": "GNOME Team and Contributors",
-      "developer-url": "https://github.com/GNOME/rhythmbox/blob/master/AUTHORS",
-      "urls": {
-        "info": "https://wiki.gnome.org/Apps/Rhythmbox",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "rhythmbox",
-      "arch": [
-        "i686",
-        "x86_64",
-        "aarch64",
-        "armv7h"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "rhythmbox",
-          "install-packages": [
-            "rhythmbox"
-          ],
-          "remove-packages": [
-            "rhythmbox",
-            "rhythmbox-data"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": "Apple iTunes",
-      "listed": true
-    },
-    "spotify": {
-      "name": "Spotify",
-      "summary": "Digital music service that gives access to millions of songs",
-      "description": "A digital music service that gives you access to millions of songs. ",
-      "icon": "assets/spotify.png",
-      "screenshots": [
-        "assets/spotify-1.jpg"
-      ],
-      "developer-name": "Spotify AB",
-      "developer-url": "https://www.spotify.com/uk/about-us/contact/",
-      "urls": {
-        "info": "https://www.spotify.com",
-        "android-app": "https://play.google.com/store/apps/details?id=com.spotify.music",
-        "ios-app": "https://itunes.apple.com/gb/app/spotify-music/id324684580"
-      },
-      "launch-cmd": "spotify",
-      "arch": [
-        "i686",
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "manual",
-          "main-package": "spotify-client",
-          "install-packages": [
-            "spotify-client"
-          ],
-          "remove-packages": [
-            "spotify-client"
-          ]
-        }
-      },
-      "proprietary": true,
       "alternate-to": null,
       "listed": true
     },
@@ -2149,6 +1924,136 @@
       },
       "proprietary": false,
       "alternate-to": "telestream Wirecast",
+      "listed": true
+    },
+    "kdenlive": {
+      "name": "kdenlive",
+      "summary": "Non-linear video editing suite",
+      "description": "A non-linear video editing suite, which supports DV, HDV and many more formats. Its main features are: <ul><li>Guides and marker for organizing timelines</li> <li>Copy and paste support for clips, effects and transitions</li> <li>Real time changes</li> <li>FireWire and Video4Linux capture</li> <li>Screen grabbing</li> <li>Exporting to any by FFMPEG supported format</li>",
+      "icon": "assets/kdenlive.png",
+      "screenshots": [
+        "assets/kdenlive-1.jpg"
+      ],
+      "developer-name": "Kdenlive Authors",
+      "developer-url": "https://cgit.kde.org/kdenlive.git/tree/AUTHORS",
+      "urls": {
+        "info": "http://www.kdenlive.org/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "kdenlive",
+      "arch": [
+        "x86_64",
+        "i686",
+        "aarch64",
+        "armv7h"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "kdenlive",
+          "install-packages": [
+            "kdenlive"
+          ],
+          "remove-packages": [
+            "kdenlive"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "rhythmbox": {
+      "name": "Rhythmbox",
+      "summary": "Media player and music management application",
+      "description": "Rhythmbox is a very easy to use music playing and management program which supports a wide range of audio formats (including mp3 and ogg). Originally inspired by Apple&#8217;s iTunes, the current version also supports Internet Radio, iPod integration and generic portable audio player support, Audio CD burning, Audio CD playback, music sharing, and Podcasts.",
+      "icon": "assets/rhythmbox.png",
+      "screenshots": [
+        "assets/rhythmbox-1.jpg"
+      ],
+      "developer-name": "GNOME Team and Contributors",
+      "developer-url": "https://github.com/GNOME/rhythmbox/blob/master/AUTHORS",
+      "urls": {
+        "info": "https://wiki.gnome.org/Apps/Rhythmbox",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "rhythmbox",
+      "arch": [
+        "x86_64",
+        "i686",
+        "aarch64",
+        "armv7h"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "rhythmbox",
+          "install-packages": [
+            "rhythmbox"
+          ],
+          "remove-packages": [
+            "rhythmbox"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "spotify": {
+      "name": "Spotify",
+      "summary": "Digital music service that gives access to millions of songs",
+      "description": "A digital music service that gives you access to millions of songs.",
+      "icon": "assets/spotify.png",
+      "screenshots": [
+        "assets/spotify-1.jpg"
+      ],
+      "developer-name": "Spotify AB",
+      "developer-url": "https://www.spotify.com/uk/about-us/contact/",
+      "urls": {
+        "info": "https://www.spotify.com",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "spotify",
+      "arch": [
+        "x86_64",
+        "i686"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "spotify-launcher",
+          "install-packages": [
+            "spotify-launcher"
+          ],
+          "remove-packages": [
+            "spotify-launcher"
+          ]
+        }
+      },
+      "proprietary": true,
+      "alternate-to": null,
       "listed": true
     }
   },
@@ -2414,9 +2319,9 @@
   },
   "stats": {
     "version": 7,
-    "revision": 271,
-    "compiled": 1790872818,
-    "apps": 56,
+    "revision": 285,
+    "compiled": 1790888082,
+    "apps": 54,
     "categories": 10
   },
   "distro": {

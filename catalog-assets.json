@@ -16,6 +16,7 @@
     "assets/chromium.png": "1c7327742bf29650fda354d35cb159f3927354cd7f880fbd1494d9cee689a07b",
     "assets/chromiumbsu-1.jpg": "78d6b4b92e4636754775dc1ecb2e03efd2e79320c2e0f986e97cf5aef8ac7e03",
     "assets/chromiumbsu.png": "583c43f1c9569893c62aa7132be2cea2f7c867c15a87c2b98033e0783f5dedf0",
+    "assets/code.png": "a805fa134cb5f6e46fe2456d8e6e210c3d7e861433eb71c49127958985cfe5c8",
     "assets/etcher-1.jpg": "0eeef21c82ddd93561a7896fdffef5d5f8eea2a394c2eb24aadf243657e9e7cd",
     "assets/etcher.png": "5209d3bfcc74ed0d6232e30df8100e1dbc288d6ab5f9f24f462b16c7b478155c",
     "assets/extremetuxracer-1.jpg": "e2427342a4d2a66d1e52089c57a2742aedc4f105811c5322dc64bf3a23e80651",
@@ -54,15 +55,9 @@
     "assets/libreoffice.png": "d3d73227fa0b1f94da129dc088978ac660564aad592802606be4f2e9f7df7b21",
     "assets/lutris-1.jpg": "b167723ac1c0a35ee86743266a7150e316bf9468db0f9461811f7e1b72e1cbf1",
     "assets/lutris.png": "423a94160a7109ab67f0b7e3ec0fb7381e44d905a7dee8d35dd3266a736d410b",
-    "assets/minecraft-1.jpg": "f6bfa7d38559cec896a0a3cbfd185d6165ead981e56eb91c087cdcb324bfc1cf",
-    "assets/minecraft-2.jpg": "189bd00190775e74a16a59fb6fcb89a510c420a5502ee0ce98a2fbb74321b226",
-    "assets/minecraft.png": "b00fa3e613bb984640c907b4e44a9d2bb6e41054c94614932a1c6b720be4a21b",
     "assets/neverball.png": "1c95dd7719451972e8c675f088a72ca01dc07efa1eed29a725a927bb0b9bd823",
-    "assets/neverputt.png": "c2f52127c18effcdd82ec809a2d3a04941d75fb69082336f40743e165c98cd96",
     "assets/obs-studio-1.jpg": "6d4ce3eb941e8de4594679ff949808f544de643ad6f2f489e4aaf4a0e4c44b9a",
     "assets/obs-studio.png": "3381a5840c3d12f1ef6b960176d3c1e8f5e604893c02b7c4004f85f7986d5ac8",
-    "assets/opera-browser-1.jpg": "67901bf2d9be348f65161344f5790a8a133120da9c4fe04f2c2c28aa2998fca2",
-    "assets/opera-browser.png": "64825c67b0e232d2d445f04db096e459195f956f471a23ab396f4f4861e277c7",
     "assets/playonlinux-1.jpg": "e8d94e1ccd67b42f8f1ffe93963a9720776b2c15589f74cfb5c1683358492c66",
     "assets/playonlinux-2.jpg": "92a74f3caa64317d786e01e03eb9329f03751fc14c870a379fbcaa7152a9b20c",
     "assets/playonlinux.png": "4db117e561f6b35cdb1ac0ab487732e80d8e840503755d636a627778c65c0ac4",
@@ -96,7 +91,7 @@
     "assets/vivaldi.png": "1b407644d2951784e953e7146cb260923893a8a1323b010cf8a0217f4fa402e0",
     "assets/vlc.png": "0ad5f8b452ad0ecf66bb0230d31bb24108b6c705bc0a0c12c1a504a191324b6e",
     "assets/vscode-1.png": "f54ccae9500a3598610b46a6d2ca85bae1f78a0bd292327327e9aa3ad2c901c6",
-    "assets/vscode.png": "da67596a81cb75c9e1b4cb1a6b8282ca5f97c5296bc23aada03225bc3f068b8a",
+    "assets/vscode.png": "a805fa134cb5f6e46fe2456d8e6e210c3d7e861433eb71c49127958985cfe5c8",
     "assets/warzone2100.png": "a8f6fdcfb8f8ba6ede95252a2e8108b31c2ac9ecd8b3bbab04a470c6a5b13a87",
     "assets/wesnoth.png": "4989853079999fc680f572683bb9f2ba26b09bda556f8ea26ba1f8772d5eeead",
     "assets/whatsapp-desktop-1.png": "8ab0f05d3193d1478c037fc0c46219d2a89c3c5551a96997aa20dc249692fa55",
@@ -105,5 +100,5 @@
     "assets/zenmap-1.jpg": "136b7f268bd14d829843cb878c4f57db3fae8b4f551b392823e50d27d83efaa8",
     "assets/zenmap.png": "a18cd769f13f92d7ee70983893c977eaac5cce11f418314d337bf468ee745c17"
   },
-  "revision": 271
+  "revision": 285
 }
