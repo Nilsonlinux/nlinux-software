@@ -292,7 +292,46 @@ img { display: block; }
   color: var(--success);
   background: var(--success-soft);
 }
+/* Repositório: core e extra são do Arch, AUR é da comunidade. A distinção
+   importa porque AUR não é revisado pelo Arch e não tem verificação de
+   assinatura — daí a cor diferente, não só o texto. */
+.chip-repo-core, .card .chip-repo-core { color: var(--success); background: var(--success-soft); }
+.chip-repo-extra, .card .chip-repo-extra { color: var(--accent-strong); background: var(--accent-soft); }
+.chip-repo-aur, .card .chip-repo-aur {
+  color: var(--warning, #d9a441); background: var(--warning-soft, rgba(217, 164, 65, .14));
+}
+/* Tamanho ao lado do repositório: informação, não etiqueta. Fica em texto
+   fraco para não competir com o badge, e some por completo se não houver
+   número em vez de mostrar "0 MB" ou "—". */
+.chip-size, .card .chip-size {
+  text-transform: none; letter-spacing: 0; font-weight: 600;
+  color: var(--faint); background: transparent;
+  border: 1px solid var(--line, rgba(255, 255, 255, .1)); padding: 3px 8px;
+}
+.chip-size .sz-i { margin-right: 4px; opacity: .75; }
+/* App cujo pacote saiu do Arch: o aviso precisa ser visível sem abrir nada. */
+.chip-missing, .card .chip-missing {
+  text-transform: none; letter-spacing: 0; font-weight: 600;
+  color: var(--danger, #e5534b); background: var(--danger-soft, rgba(229, 83, 75, .12));
+  border: 1px solid var(--danger-soft, rgba(229, 83, 75, .45));
+}
+.chip-renamed, .card .chip-renamed {
+  text-transform: none; letter-spacing: 0; font-weight: 600;
+  color: var(--warning, #d9a441); background: var(--warning-soft, rgba(217, 164, 65, .14));
+}
 .chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 10px; }
+/* Atualizações do sistema: só aparece quando há algo novo. Fica destacado do
+   badge do catálogo, que é só informativo. */
+.badge.badge-sysupd {
+  color: var(--warning, #d9a441);
+  background: var(--warning-soft, rgba(217, 164, 65, .14));
+  border-color: transparent;
+  text-transform: none; letter-spacing: .2px; font-weight: 700;
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.badge.badge-sysupd[hidden] { display: none; }
+.badge.badge-sysupd .su-n { font-variant-numeric: tabular-nums; }
+.m-ver { color: var(--faint); font-size: 12px; }
 .card .actions { margin-top: auto; display: flex; gap: 10px; justify-content: flex-end; padding-top: 8px; }
 
 mark { background: none; color: var(--accent-strong); font-weight: 700; }

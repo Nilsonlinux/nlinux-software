@@ -172,50 +172,6 @@
     }
   },
   "education": {
-    "libreoffice-math": {
-      "name": "LibreOffice Math",
-      "summary": "The formula editor for the LibreOffice suite.",
-      "description": "The formula editor for the LibreOffice suite. Mathmatical formatting can be invoked in your text documents, spreadsheets, presentations and drawings, to enable you to insert perfectly-formatted mathematical and scientific formulas. Your formulas can include a wide range of elements, from fractions, terms with exponents and indices, integrals, and mathematical functions, to inequalities, systems of equations, and matrices. ",
-      "icon": "assets/libreoffice-math.png",
-      "screenshots": [
-        "assets/libreoffice-math-1.jpg"
-      ],
-      "developer-name": "LibreOffice Team",
-      "developer-url": "https://www.libreoffice.org/community/developers/",
-      "urls": {
-        "info": "https://www.libreoffice.org/discover/math/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "libreoffice --math",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "libreoffice-math",
-          "install-packages": [
-            "libreoffice-math"
-          ],
-          "remove-packages": [
-            "libreoffice-math"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "stellarium": {
       "name": "Stellarium",
       "summary": "A planetarium that renders 3D photo-realistic skies in real-time.",
@@ -307,6 +263,50 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
+    },
+    "libreoffice-math": {
+      "name": "LibreOffice Math",
+      "summary": "The formula editor for the LibreOffice suite.",
+      "description": "The formula editor for the LibreOffice suite. Mathmatical formatting can be invoked in your text documents, spreadsheets, presentations and drawings, to enable you to insert perfectly-formatted mathematical and scientific formulas. Your formulas can include a wide range of elements, from fractions, terms with exponents and indices, integrals, and mathematical functions, to inequalities, systems of equations, and matrices. ",
+      "icon": "assets/libreoffice-math.png",
+      "screenshots": [
+        "assets/libreoffice-math-1.jpg"
+      ],
+      "developer-name": "LibreOffice Team",
+      "developer-url": "https://www.libreoffice.org/community/developers/",
+      "urls": {
+        "info": "https://www.libreoffice.org/discover/math/",
+        "android-app": null,
+        "ios-app": null
+      },
+      "launch-cmd": "libreoffice --math",
+      "arch": [
+        "i686",
+        "x86_64",
+        "armv7h",
+        "aarch64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "libreoffice-fresh",
+          "install-packages": [
+            "libreoffice-fresh"
+          ],
+          "remove-packages": [
+            "libreoffice-fresh"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
     }
   },
   "games": {
@@ -344,58 +344,6 @@
           "remove-packages": [
             "0ad",
             "0ad-data"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
-    "aisleriot": {
-      "name": "Desktop Games Collection",
-      "summary": "A variety of styles and genre games, such as Chess and Minesweeper",
-      "description": "A collection of more desktop games including 80 popular card games, Mahjongg, Mines and Sudoku. ",
-      "icon": "assets/aisleriot.png",
-      "screenshots": [],
-      "developer-name": "GNOME Team",
-      "developer-url": "https://www.gnome.org/about/",
-      "urls": {
-        "info": "https://wiki.gnome.org/action/show/Attic/Games",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": null,
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "gnome-cards-data",
-          "install-packages": [
-            "aisleriot",
-            "gnome-cards-data",
-            "gnome-mahjongg",
-            "gnome-mines",
-            "gnome-sudoku",
-            "branding-ubuntu"
-          ],
-          "remove-packages": [
-            "aisleriot",
-            "gnome-cards-data",
-            "gnome-mahjongg",
-            "gnome-mines",
-            "gnome-sudoku",
-            "branding-ubuntu"
           ]
         }
       },
@@ -533,58 +481,6 @@
       },
       "proprietary": false,
       "alternate-to": null,
-      "listed": true
-    },
-    "freeciv": {
-      "name": "Freeciv",
-      "summary": "Clone of the turn based strategy game Civilization",
-      "description": "In this game, each player becomes leader of a civilisation, fighting to obtain the ultimate goal: the extinction of all other civilisations. ",
-      "icon": "assets/freeciv.png",
-      "screenshots": [
-        "assets/freeciv-1.jpg"
-      ],
-      "developer-name": "Various Contributors",
-      "developer-url": "http://freeciv.wikia.com/wiki/People",
-      "urls": {
-        "info": "http://www.freeciv.org/",
-        "android-app": null,
-        "ios-app": null
-      },
-      "launch-cmd": "freeciv",
-      "arch": [
-        "i686",
-        "x86_64",
-        "armv7h",
-        "aarch64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "freeciv",
-          "install-packages": [
-            "freeciv",
-            "freeciv-client-extras",
-            "freeciv-client-gtk",
-            "freeciv-data",
-            "freeciv-sound-standard"
-          ],
-          "remove-packages": [
-            "freeciv",
-            "freeciv-client-extras",
-            "freeciv-client-gtk",
-            "freeciv-data",
-            "freeciv-sound-standard"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": "Sid Meier’s Civilization",
       "listed": true
     },
     "frozenbubble": {
@@ -1225,6 +1121,92 @@
           ],
           "remove-packages": [
             "winehq-devel"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "freeciv": {
+      "name": "Freeciv",
+      "summary": "Clone of the turn based strategy game Civilization",
+      "description": "In this game, each player becomes leader of a civilisation, fighting to obtain the ultimate goal: the extinction of all other civilisations. ",
+      "icon": "assets/freeciv.png",
+      "screenshots": [
+        "assets/freeciv-1.jpg"
+      ],
+      "developer-name": "Various Contributors",
+      "developer-url": "http://freeciv.wikia.com/wiki/People",
+      "urls": {
+        "info": "http://www.freeciv.org/",
+        "android-app": null,
+        "ios-app": null
+      },
+      "launch-cmd": "freeciv-gtk3.22",
+      "arch": [
+        "i686",
+        "x86_64",
+        "armv7h",
+        "aarch64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "freeciv-gtk3",
+          "install-packages": [
+            "freeciv-gtk3"
+          ],
+          "remove-packages": [
+            "freeciv-gtk3"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": "Sid Meier’s Civilization",
+      "listed": true
+    },
+    "aisleriot": {
+      "name": "Desktop Games Collection",
+      "summary": "A variety of styles and genre games, such as Chess and Minesweeper",
+      "description": "A collection of more desktop games including 80 popular card games, Mahjongg, Mines and Sudoku. ",
+      "icon": "assets/aisleriot.png",
+      "screenshots": [],
+      "developer-name": "GNOME Team",
+      "developer-url": "https://www.gnome.org/about/",
+      "urls": {
+        "info": "https://wiki.gnome.org/action/show/Attic/Games",
+        "android-app": null,
+        "ios-app": null
+      },
+      "launch-cmd": "gnome-games",
+      "arch": [
+        "i686",
+        "x86_64",
+        "armv7h",
+        "aarch64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "gnome-games",
+          "install-packages": [
+            "gnome-games"
+          ],
+          "remove-packages": [
+            "gnome-games"
           ]
         }
       },
@@ -2384,24 +2366,12 @@
       "pacman": {
         "default": {
           "source": "arch",
-          "main-package": "libreoffice-core",
+          "main-package": "libreoffice-fresh",
           "install-packages": [
-            "libreoffice-core",
-            "libreoffice-gtk2",
-            "libreoffice-calc",
-            "libreoffice-draw",
-            "libreoffice-gnome",
-            "libreoffice-impress",
-            "libreoffice-writer"
+            "libreoffice-fresh"
           ],
           "remove-packages": [
-            "libreoffice-core",
-            "libreoffice-gtk2",
-            "libreoffice-calc",
-            "libreoffice-draw",
-            "libreoffice-gnome",
-            "libreoffice-impress",
-            "libreoffice-writer"
+            "libreoffice-fresh"
           ]
         }
       },
@@ -2440,12 +2410,12 @@
       "pacman": {
         "default": {
           "source": "arch",
-          "main-package": "libreoffice-base",
+          "main-package": "libreoffice-fresh",
           "install-packages": [
-            "libreoffice-base"
+            "libreoffice-fresh"
           ],
           "remove-packages": [
-            "libreoffice-base"
+            "libreoffice-fresh"
           ]
         }
       },
@@ -2624,8 +2594,8 @@
   },
   "stats": {
     "version": 7,
-    "revision": 251,
-    "compiled": 1790856489,
+    "revision": 256,
+    "compiled": 1790865782,
     "apps": 60,
     "categories": 11
   },

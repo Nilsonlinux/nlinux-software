@@ -19,6 +19,7 @@ import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from uuid import uuid4
 
+from nlinux import pacman_db
 from nlinux import resources
 from nlinux.system_state import SystemState
 
@@ -597,6 +598,21 @@ _atualizacoes_lock = threading.Lock()
 _atualizacoes_cache: dict = {"quando": 0.0, "pacotes": [], "erro": None}
 
 
+def _tamanhos_de_download(nomes) -> dict:
+    """Tamanho de download de cada pacote, lido do banco do pacman.
+
+    O `.db` já tem o %CSIZE% de tudo, então não é preciso chamar o pacman: ler
+    o banco é o caminho mais rápido e não depende de a base estar sincronizada
+    com o momento da consulta.
+    """
+    out = {}
+    for nome in nomes:
+        info = pacman_db.lookup(nome)
+        if info and info.get("csize"):
+            out[nome] = info["csize"]
+    return out
+
+
 def pacotes_com_atualizacao(agora: bool = False) -> tuple:
     """Pacotes instalados com versão nova no repositório.
 
@@ -604,6 +620,9 @@ def pacotes_com_atualizacao(agora: bool = False) -> tuple:
     então serve para avisar na tela que há versões novas. O resultado fica em
     cache por `ATUALIZACOES_TTL`: a tela pergunta a cada minuto e não faz
     sentido repetir a consulta a cada 4 segundos. Com `agora`, ignora o cache.
+
+    Cada item leva também `download` (bytes) e `repo`, para a interface poder
+    dizer quanto vai ser baixado no total.
     """
     momento = time.time()
     with _atualizacoes_lock:
@@ -629,6 +648,18 @@ def pacotes_com_atualizacao(agora: bool = False) -> tuple:
             erro = proc.stderr.strip().splitlines()[-1] if proc.stderr.strip() else None
     except Exception as exc:  # sem pacman, sem permissão, tempo esgotado...
         erro = str(exc)
+
+    # Tamanho e repositório vêm do banco, que falha com elegância: sem ele, os
+    # pacotes continuam listados, só sem o número de download.
+    if pacotes:
+        try:
+            tamanhos = _tamanhos_de_download([p["pacote"] for p in pacotes])
+        except Exception:
+            tamanhos = {}
+        for item in pacotes:
+            info = pacman_db.lookup(item["pacote"]) or {}
+            item["download"] = tamanhos.get(item["pacote"])
+            item["repo"] = info.get("repo")
 
     with _atualizacoes_lock:
         _atualizacoes_cache.update({"quando": momento, "pacotes": pacotes, "erro": erro})
@@ -686,6 +717,70 @@ class BoutiqueHandler(BaseHTTPRequestHandler):
             return ""
         return os.path.join(APPS_DIR, rel)
 
+    def _broken_apps(self) -> tuple:
+        """Apps do catálogo cujo pacote sumiu dos repositórios oficiais.
+
+        Só faz sentido nos repositórios do Arch: um app de fonte `aur` é
+        instalado pelo auxiliar, que consulta a AUR — ela tem pacotes que o
+        Arch não tem, e vice-versa. Apps `manual` não usam pacote nenhum.
+        """
+        if not pacman_db.available():
+            return {"apps": [], "erro": "sem banco de sincronização do pacman "
+                                        "(rode pacman -Sy)"}, 200
+        try:
+            raw = _load_raw()
+        except Exception as exc:
+            return {"apps": [], "erro": str(exc)}, 200
+
+        quebrados = []
+        for categoria, items in raw.items():
+            if categoria in SPECIAL_KEYS or not isinstance(items, dict):
+                continue
+            for app_id, app in items.items():
+                if not isinstance(app, dict) or app.get("listed") is False:
+                    continue
+                details = (app.get("pacman") or {}).get("default") or {}
+                if details.get("source") != "arch":
+                    continue
+                pacotes = [p for p in (details.get("install-packages") or [])
+                           if is_pacman_package(p)]
+                principal = details.get("main-package")
+
+                # Nome que o pacman rejeita (`steam:i386`) também é quebra: o
+                # instalador nem chega a consultar o banco. Sem este caminho o
+                # app sumiria da lista, porque `is_pacman_package` descarta o
+                # nome antes de qualquer verificação — quebrado e invisível.
+                if not is_pacman_package(principal or ""):
+                    quebrados.append({
+                        "category": categoria,
+                        "id": app_id,
+                        "name": app.get("name") or app_id,
+                        "packages": [principal or ""],
+                        "hint": pacman_db.renamed_hint(principal or ""),
+                    })
+                    continue
+
+                if is_pacman_package(principal):
+                    pacotes = [principal] + [p for p in pacotes if p != principal]
+                if not pacotes:
+                    continue
+
+                # O app é quebrado quando o **pacote principal** não existe —
+                # é o que o botão instalar baixa. Pacotes extras que sumiram do
+                # Arch (um `-data`, um plugin) não impedem a instalação, e
+                # accuses por eles transformaria o aviso em ruído.
+                if pacman_db.lookup(principal or pacotes[0]):
+                    continue
+                alvo = principal or pacotes[0]
+                quebrados.append({
+                    "category": categoria,
+                    "id": app_id,
+                    "name": app.get("name") or app_id,
+                    "packages": [alvo],
+                    "hint": pacman_db.renamed_hint(alvo),
+                })
+        return {"apps": quebrados, "total": len(quebrados), "erro": None}, 200
+
     # ---- routes -----------------------------------------------------------
 
     def do_GET(self) -> None:
@@ -719,6 +814,25 @@ class BoutiqueHandler(BaseHTTPRequestHandler):
             self._send_json(admin_catalog())
             return
 
+        if path == "/api/admin/search":
+            if not ADMIN_ENABLED:
+                self._send_json({"error": "not found"}, 404)
+                return
+            from urllib.parse import parse_qs
+            query = parse_qs(urlparse(self.path).query).get("q", [""])[0]
+            if len(query.strip()) < 2:
+                self._send_json({"results": [], "error": None})
+                return
+            if not pacman_db.available():
+                self._send_json({
+                    "results": [],
+                    "error": "sem banco de sincronização do pacman "
+                             "(rode pacman -Sy para atualizar os repositórios)",
+                })
+                return
+            self._send_json({"results": pacman_db.search(query), "error": None})
+            return
+
         if path.startswith("/static/"):
             rel = path[len("/static/"):]
             if ".." in rel or rel.startswith("/"):
@@ -737,7 +851,24 @@ class BoutiqueHandler(BaseHTTPRequestHandler):
 
         if path == "/api/updates":
             pacotes, erro = pacotes_com_atualizacao()
-            self._send_json({"pacotes": pacotes, "total": len(pacotes), "erro": erro})
+            conhecidos = [p["download"] for p in pacotes if p.get("download")]
+            self._send_json({
+                "pacotes": pacotes,
+                "total": len(pacotes),
+                # Soma do que é possível medir. `total_bytes` só vale quando
+                # `sized` == `total`: sem o banco do pacman, alguns pacotes
+                # ficam sem número e a soma seria enganosa.
+                "total_bytes": sum(conhecidos) or None,
+                "sized": len(conhecidos),
+                "erro": erro,
+            })
+            return
+
+        if path == "/api/broken":
+            # Apps cujo pacote não existe mais nos repositórios: o botão
+            # instalar vai falhar, e a curadoria precisa saber para corrigir.
+            data, code = self._broken_apps()
+            self._send_json(data, code)
             return
 
         if path == "/api/index":
@@ -884,6 +1015,20 @@ def build_payload() -> dict:
                 else next(iter(install_packages), None)
             )
             source = details.get("source", "arch")
+            # Repositório e tamanho vêm do banco do pacman, que é a mesma fonte
+            # do instalador. `pacman_db.lookup` devolve None quando o pacote
+            # não existe mais no Arch — aí a loja mostra o aviso em vez de um
+            # número inventado, porque o botão instalar vai falhar.
+            #
+            # A consulta é feita pelo pacote **declarado**, e não pelo
+            # `primary_package`: um nome que o pacman rejeita (`steam:i386`)
+            # nunca chega a ser um `primary_package`, e consultando por ele o
+            # app apareceria saudável enquanto a instalação falha.
+            declarado = main_package if is_pacman_package(main_package) else (
+                next(iter(install_packages), None))
+            meta = None
+            if source == "arch":
+                meta = pacman_db.lookup(declarado)
             products.append(
                 {
                     "key": f"{key}/{name}",
@@ -899,6 +1044,16 @@ def build_payload() -> dict:
                     ],
                     "packages": install_packages,
                     "source": source,
+                    "repo": (meta or {}).get("repo"),
+                    "size": (meta or {}).get("isize"),
+                    "download": (meta or {}).get("csize"),
+                    "pkgversion": (meta or {}).get("version"),
+                    # Renomeado pelo Arch não é falha: o sucessor existe e o
+                    # app instala normalmente, então entra com a informação do
+                    # novo nome em vez do aviso de pacote quebrado.
+                    "missing": bool(source == "arch" and not meta),
+                    "renamed": (meta or {}).get("renamed_from"),
+                    "renamed_to": (meta or {}).get("renamed_to"),
                     "arches": package.get("arch", []),
                     "proprietary": bool(package.get("proprietary")),
                     "website": (package.get("urls") or {}).get("info"),

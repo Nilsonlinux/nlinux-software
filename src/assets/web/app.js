@@ -87,6 +87,18 @@ function esc(s) {
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
+/* Bytes -> texto curto. Base 1024, como o pacman mostra ("59.2 MiB"), mas em
+   MB/GB decimais de 1024 também: o número serve para comparar dois programas,
+   não para bater com a saída do pacman pacote a pacote. */
+function fmtBytes(n) {
+  if (!n || n < 0) return "";
+  const units = ["B", "KB", "MB", "GB", "TB"];
+  let v = Number(n), i = 0;
+  while (v >= 1024 && i < units.length - 1) { v /= 1024; i++; }
+  if (i === 0) return Math.round(v) + " B";
+  return (v < 10 ? v.toFixed(1) : Math.round(v)) + " " + units[i];
+}
+
 function stripTags(html) {
   const tpl = document.createElement("template");
   tpl.innerHTML = String(html ?? "");
@@ -341,10 +353,45 @@ function cardActionHtml(p) {
   return actionHtml(p);
 }
 
-function chipFor(p) {
-  if (p.source !== "arch") return `<span class="chip">${UI["src." + p.source] || p.source}</span>`;
-  if (p.proprietary) return `<span class="chip">${tr("chip.proprietary")}</span>`;
+/* Rótulo do repositório de origem. `core` e `extra` são o Arch oficial; `aur`
+   é a comunidade. Quando o repositório não veio (pacote manual, ou app de AUR
+   que não tem repo porque não é dos repositórios), cai no rótulo antigo. */
+function repoChip(p) {
+  if (p.source === "manual") return `<span class="chip">${UI["src.manual"] || "manual"}</span>`;
+  if (p.source === "aur") {
+    return `<span class="chip chip-repo-aur" data-tip="${esc(tr("tip.repoAUR"))}">${UI["src.aur"] || "AUR"}</span>`;
+  }
+  if (p.repo === "core") return `<span class="chip chip-repo-core">${tr("chip.repoCore")}</span>`;
+  if (p.repo === "extra") return `<span class="chip chip-repo-extra">${tr("chip.repoExtra")}</span>`;
   return `<span class="chip chip-official">${tr("chip.official")}</span>`;
+}
+
+/* Tamanho instalado, ao lado do repositório. Só aparece com número real: sem
+   dado do pacman, é melhor não mostrar nada do que mostrar "—" ou 0 MB. */
+function sizeChip(p) {
+  if (!p.size) return "";
+  const tip = p.download
+    ? tr("tip.sizeBoth", fmtBytes(p.size), fmtBytes(p.download))
+    : tr("tip.sizeOnly", fmtBytes(p.size));
+  return `<span class="chip chip-size tip" data-tip="${esc(tip)}">` +
+    `<i class="ti ti-package"></i>${esc(fmtBytes(p.size))}</span>`;
+}
+
+function missingChip(p) {
+  if (!p.missing) return "";
+  const what = (p.packages && p.packages[0]) || "";
+  return `<span class="chip chip-missing tip" data-tip="${esc(tr("tip.pkgMissing", what))}">` +
+    `${esc(tr("chip.pkgMissing"))}</span>`;
+}
+
+function renamedChip(p) {
+  if (!p.renamed || p.missing) return "";
+  return `<span class="chip chip-renamed tip" data-tip="${esc(tr("tip.pkgRenamed", p.renamed_to))}">` +
+    `${esc(tr("chip.pkgRenamed"))}</span>`;
+}
+
+function chipFor(p) {
+  return repoChip(p) + sizeChip(p) + renamedChip(p) + missingChip(p);
 }
 
 function cardHtml(p, i) {
@@ -392,9 +439,16 @@ function render(animate = true) {
 function openModal(product) {
   $("#modal").hidden = false;
   const desc = sanitize(product.description);
-  const srcChip = product.source === "arch"
-    ? `<span class="chip chip-official">${tr("chip.repoOfficial")}</span>`
-    : `<span class="chip">${esc(UI["src." + product.source] || product.source)}</span>`;
+  const srcChip = repoChip(product) + sizeChip(product) +
+    renamedChip(product) + missingChip(product);
+  // Linha de tamanho só quando há número: repetir "Pacote: firefox" sem
+  // versão e sem tamanho não acrescenta nada.
+  const sizeLine = (product.size || product.download)
+    ? `<div><dt>${tr("modal.size")}</dt><dd>${esc(
+        product.size ? tr("modal.sizeFull", fmtBytes(product.size), fmtBytes(product.download || 0))
+          : tr("modal.sizeDownloadOnly", fmtBytes(product.download))
+      )}${product.pkgversion ? ` <span class="m-ver">${esc(product.pkgversion)}</span>` : ""}</dd></div>`
+    : "";
   const meta = `
     <div class="meta">
       <div><dt>${tr("modal.license")}</dt><dd>${product.proprietary ? tr("modal.proprietaryLicense") : tr("modal.openSource")}</dd></div>
@@ -402,6 +456,7 @@ function openModal(product) {
         `<span class="${a === state.data.system.arch ? "arch-cur" : "arch-oth"}">${a}</span>`).join("")}</dd></div>
       <div><dt>${tr(product.packages.length > 1 ? "modal.packages" : "modal.package")}</dt><dd class="m-pkgs">${esc(product.packages.join(", "))}</dd></div>
       <div><dt>${tr("modal.source")}</dt><dd class="m-src">${srcChip}</dd></div>
+      ${sizeLine}
       <div><dt>${tr("modal.developer")}</dt><dd>${esc(product.developer || "—")}</dd></div>
     </div>`;
   const gallery = product.screenshots.length
@@ -939,6 +994,27 @@ function watchRevision() {
   }, 4000);
 }
 
+/* Badge de atualizações do sistema no cabeçalho. Diz quantos pacotes têm
+   versão nova e o total que seria baixado. O total só aparece quando todos os
+   pacotes da lista têm tamanho conhecido — somar só os que sabemos deixaria
+   o número abaixo do real, que é pior do que não mostrar. */
+function renderSysUpdates(d) {
+  const el = $("#sysupd-badge");
+  if (!el) return;
+  const total = (d && d.total) || 0;
+  if (!total) { el.hidden = true; el.textContent = ""; return; }
+  const completo = d.sized === total && d.total_bytes;
+  const tip = completo
+    ? tr("sysupd.tipFull", total, fmtBytes(d.total_bytes))
+    : tr("sysupd.tipPartial", total, d.sized || 0);
+  el.innerHTML =
+    `<i class="ti ti-refresh"></i><span class="su-n">${total}</span>` +
+    (completo ? `<span class="su-b">${esc(fmtBytes(d.total_bytes))}</span>` : "");
+  el.dataset.tip = tip;
+  el.title = tip;
+  el.hidden = false;
+}
+
 /* Versões dos programas: o servidor pergunta ao pacman (com cache, porque a
    consulta é mais cara que a do catálogo) e a tela avisa no canto quando
    aparece versão nova. Endpoint ausente em versões antigas: silêncio. */
@@ -952,6 +1028,7 @@ function watchUpdates() {
       const d = await resp.json();
       state.updates = d;
       const total = d.total || 0;
+      renderSysUpdates(d);
       if (anterior !== null && total > anterior) {
         toast(tr(total === 1 ? "upd.pkg.one" : "upd.pkg", total), "upd", 6000);
       }
