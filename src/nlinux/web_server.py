@@ -74,13 +74,8 @@ def resolve_store_lang() -> tuple:
 def _resolve_dist_dir() -> str:
     """Pasta dos pacotes gerados.
 
-    No projeto (ou via pkexec, rodando como root) fica em `<projeto>/dist`.
-    Se a curadoria estiver instalada em /opt e o processo for o usuário comum,
-    usa `~/.local/share/nlinux/dist` — /opt não é gravável por ele.
+    Sempre fica fora do checkout do projeto.
     """
-    padrao = os.path.join(os.path.dirname(SRC_ROOT), "dist")
-    if os.access(os.path.dirname(SRC_ROOT), os.W_OK):
-        return resources.writable(padrao)
     return resources.writable(os.path.join(resources.data_home(), "dist"))
 
 
@@ -1776,27 +1771,26 @@ def _export_to_source(raw: dict) -> list:
 
 
 def _gc_assets(raw: dict) -> None:
-    referenced = set()
-    for key, items in raw.items():
-        if not isinstance(items, dict) or key in SPECIAL_KEYS:
-            continue
-        for app in items.values():
-            if not isinstance(app, dict):
-                continue
-            if app.get("icon"):
-                referenced.add(os.path.basename(str(app.get("icon"))))
-            for shot in app.get("screenshots") or []:
-                referenced.add(os.path.basename(str(shot)))
+    referenced = _media_referenced(raw)
     assets_dir = _assets_dir()
     if not os.path.isdir(assets_dir):
         return
-    for fname in os.listdir(assets_dir):
-        if fname == "nlinux-logo.png" or fname in referenced:
-            continue
-        try:
-            os.remove(os.path.join(assets_dir, fname))
-        except OSError:
-            pass
+    for root, dirs, files in os.walk(assets_dir, topdown=False):
+        for fname in files:
+            path = os.path.join(root, fname)
+            rel = os.path.relpath(path, APPS_DIR)
+            if rel == os.path.join("assets", "nlinux-logo.png") or rel in referenced:
+                continue
+            try:
+                os.remove(path)
+            except OSError:
+                pass
+        for dirname in dirs:
+            path = os.path.join(root, dirname)
+            try:
+                os.rmdir(path)
+            except OSError:
+                pass
 
 
 def _admin_body(handler) -> dict:
@@ -2031,8 +2025,9 @@ def admin_build(progress=None):
             # levar o catálogo vivo, não o snapshot que veio no pacote.
             if os.path.realpath(APPS_DIR) != os.path.realpath(
                     os.path.join(SRC_ROOT, "apps")):
-                shutil.copytree(APPS_DIR, os.path.join(pkg_root, "src", "apps"),
-                                dirs_exist_ok=True)
+                    apps_target = os.path.join(pkg_root, "src", "apps")
+                    shutil.rmtree(apps_target)
+                    shutil.copytree(APPS_DIR, apps_target)
 
             src_ws = os.path.join(pkg_root, "src", "nlinux", "web_server.py")
             with open(src_ws, encoding="utf-8") as fh:
@@ -2265,11 +2260,17 @@ def admin_build(progress=None):
                     _step("iso-build publicado no GitHub")
                 elif "push" in iso:
                     _step(f"iso-build não publicado: {iso['push'].get('reason', '?')}")
+
+            _step("publicando alterações da curadoria no GitHub")
+            admin_source = git_publish_admin_source(rev)
+            _step("repositório da curadoria publicado" if admin_source.get("pushed")
+                  else f"repositório da curadoria não publicado: {admin_source.get('reason', '?')}")
         except OSError as e:
             return {"error": f"falha ao gerar o pacote: {e}"}, 500
 
     return {"ok": True, "revision": rev, "path": tar_path, "run": pkg_root,
             "size": size, "publish": publish, "iso": iso,
+            "admin_source": admin_source,
             # De qual catálogo o pacote saiu. O build roda em processo separado
             # (pkexec), que recalcula o caminho a partir do papel; sem este
             # campo, um caminho errado só apareceria quando a Loja mostrasse o
@@ -2321,6 +2322,54 @@ def sync_iso_store(build_dir: str, rev: int) -> dict:
 def _git(repo: str, *args: str, timeout: int = 60) -> subprocess.CompletedProcess:
     return subprocess.run(["git", "-C", repo, *args],
                           capture_output=True, text=True, timeout=timeout)
+
+
+def git_publish_admin_source(rev: int) -> dict:
+    """Commita e envia as alterações do checkout privado da curadoria."""
+    if os.environ.get("NLINUX_ADMIN_GIT_PUSH", "1") in ("0", "false", "no"):
+        return {"pushed": False, "reason": "publicação desativada (NLINUX_ADMIN_GIT_PUSH=0)"}
+
+    repo = _registered_source() or os.path.dirname(SRC_ROOT)
+    root = _git(repo, "rev-parse", "--show-toplevel")
+    if root.returncode != 0:
+        return {"pushed": False, "reason": f"checkout Git não encontrado em {repo}"}
+    repo = os.path.realpath(root.stdout.strip())
+    upstream = _git(repo, "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{upstream}")
+    if upstream.returncode != 0:
+        return {"pushed": False, "reason": "branch da curadoria sem upstream configurado"}
+
+    try:
+        status = _git(repo, "status", "--porcelain")
+        if status.returncode != 0:
+            return {"pushed": False, "reason": status.stderr.strip() or "git status falhou"}
+        committed = False
+        if status.stdout.strip():
+            add = _git(repo, "add", "-A")
+            if add.returncode != 0:
+                return {"pushed": False, "reason": add.stderr.strip() or "git add falhou"}
+            commit_env = os.environ.copy()
+            commit_env.setdefault("GIT_AUTHOR_NAME", GIT_PUSH_USER)
+            commit_env.setdefault("GIT_AUTHOR_EMAIL", GIT_PUSH_EMAIL)
+            commit_env.setdefault("GIT_COMMITTER_NAME", GIT_PUSH_USER)
+            commit_env.setdefault("GIT_COMMITTER_EMAIL", GIT_PUSH_EMAIL)
+            commit = subprocess.run(
+                ["git", "-C", repo, "commit", "-m",
+                 f"NLinux Software Admin: publicação v{rev}"],
+                capture_output=True, text=True, env=commit_env,
+            )
+            if commit.returncode != 0:
+                return {"pushed": False,
+                        "reason": commit.stderr.strip() or "git commit falhou"}
+            committed = True
+
+        push = _git(repo, "push")
+        if push.returncode != 0:
+            return {"pushed": False, "committed": committed,
+                    "reason": (push.stderr or push.stdout).strip() or "git push falhou"}
+    except (OSError, subprocess.SubprocessError) as exc:
+        return {"pushed": False, "reason": str(exc)}
+    return {"pushed": True, "committed": committed,
+            "branch": upstream.stdout.strip(), "repo": repo}
 
 
 def _iso_commit(subdir: str, rev: int) -> dict:
@@ -2680,6 +2729,7 @@ def apply_remote_catalog(force: bool = False) -> bool:
         except OSError as exc:
             print(f"[nlinux] falha ao gravar o catálogo remoto: {exc}")
             return False
+        _gc_assets(remote)
         rebuild_payload()
         revision = remote.get("stats", {}).get("revision")
         _REMOTE_SYNC["applied"] = _catalog_fingerprint(remote)
