@@ -1,7 +1,7 @@
 "use strict";
 
 /* ============================== Estado ================================== */
-const state = { data: null, cat: "all", q: "", installedOnly: false, busy: false };
+const state = { data: null, cat: "all", q: "", installedOnly: false, busy: false, sysUpdate: null };
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => [...document.querySelectorAll(sel)];
 
@@ -745,21 +745,61 @@ function bindModalActions() {
 }
 
 function openSysUpdatesModal() {
+  renderSysUpdatesModal(!!state.sysUpdate?.active);
+}
+
+function renderSysUpdatesModal(showProgress) {
   const updates = state.updates || {};
   const pacotes = updates.pacotes || [];
-  
-  if (pacotes.length === 0) return;
-  
+  if (pacotes.length === 0 && !showProgress) return;
+
   $("#modal").hidden = false;
-  
   const sizeInfo = updates.sized === updates.total && updates.total_bytes
     ? `<div><dt>${tr("sysupd.modal.size")}</dt><dd>${esc(fmtBytes(updates.total_bytes))}</dd></div>`
     : "";
-  
   const pacotesList = pacotes
     .map((p) => `<li><span class="ver-from">${esc(p.pacote)}</span><span class="ver-arrow">→</span><span class="ver-to">${esc(p.para)}</span></li>`)
     .join("");
-  
+  const sysUpdate = showProgress ? state.sysUpdate : null;
+  const progressMarkup = sysUpdate
+    ? `<section class="sysupd-output" aria-live="polite">
+        <div class="sysupd-ring-wrap" role="img" aria-label="${tr("status.updating")}">
+          <svg class="sysupd-ring" viewBox="0 0 200 200" aria-hidden="true">
+            <defs>
+              <linearGradient id="sysupd-ring-gradient" gradientUnits="userSpaceOnUse" x1="12" y1="100" x2="188" y2="100">
+                <stop offset="0" stop-color="#0d5ad6"/>
+                <stop offset=".42" stop-color="#17a2d3"/>
+                <stop offset=".5" stop-color="#b7f2ff"/>
+                <stop offset=".58" stop-color="#17a2d3"/>
+                <stop offset="1" stop-color="#0d5ad6"/>
+              </linearGradient>
+            </defs>
+            <circle class="sysupd-ring-bg" cx="100" cy="100" r="88"/>
+            <circle id="sysupd-ring-fg" class="sysupd-ring-fg" cx="100" cy="100" r="88"/>
+            <circle class="sysupd-ring-loader" cx="100" cy="100" r="88"/>
+          </svg>
+          <div class="sysupd-ring-center"><span id="sysupd-ring-pct">0%</span></div>
+        </div>
+        <h4>${tr("sysupd.modal.logs")}</h4>
+        <pre id="sysupd-log" class="sysupd-log"></pre>
+        <form id="sysupd-answer-form" class="sysupd-answer" hidden>
+          <label for="sysupd-answer">${tr("sysupd.modal.reply")}</label>
+          <div>
+            <input id="sysupd-answer" name="answer" autocomplete="off" required>
+            <button class="btn btn-primary" type="submit">${tr("sysupd.modal.send")}</button>
+          </div>
+        </form>
+      </section>`
+    : "";
+  const buttonLabel = sysUpdate
+    ? (sysUpdate.active ? tr("status.updating") : tr("ui.close"))
+    : tr("sysupd.modal.button");
+  const buttonIcon = sysUpdate
+    ? (sysUpdate.active ? "ti-refresh" : "ti-check")
+    : "ti-download";
+  const buttonState = sysUpdate?.active ? "disabled" : "";
+  const closeAction = sysUpdate && !sysUpdate.active ? "data-close" : "";
+
   $("#modal-content").innerHTML = `
     <div class="m-head">
       <div class="m-titles">
@@ -773,30 +813,110 @@ function openSysUpdatesModal() {
         ${sizeInfo}
       </div>
       <div class="packages-list">
-        <h4>Pacotes</h4>
-        <ul class="pkg-list">
-          ${pacotesList}
-        </ul>
+        <details class="packages-details">
+          <summary><span><i class="ti ti-package"></i> ${tr("modal.packages")} (${pacotes.length})</span><i class="ti ti-chevron-down packages-chevron"></i></summary>
+          <ul class="pkg-list">${pacotesList}</ul>
+        </details>
       </div>
+      ${progressMarkup}
     </div>
     <div class="m-actions">
-      <button class="btn btn-primary" id="sysupd-install-btn"><i class="ti ti-download"></i> ${tr("sysupd.modal.button")}</button>
+      <button class="btn btn-primary" id="sysupd-install-btn" ${buttonState} ${closeAction}><i class="ti ${buttonIcon}"></i> ${buttonLabel}</button>
     </div>`;
-  
+
+  if (sysUpdate) updateSysUpdateModal();
   const installBtn = $("#sysupd-install-btn");
-  if (installBtn) {
-    installBtn.addEventListener("click", startSysUpdate);
+  if (installBtn && !sysUpdate) installBtn.addEventListener("click", startSysUpdate);
+  const answerForm = $("#sysupd-answer-form");
+  if (answerForm) answerForm.addEventListener("submit", answerSysUpdatePrompt);
+}
+
+function updateSysUpdateModal() {
+  const job = state.sysUpdate;
+  if (!job) return;
+  const log = $("#sysupd-log");
+  if (log) {
+    log.textContent = (job.lines || []).join("\n");
+    log.scrollTop = log.scrollHeight;
+  }
+  paintSysUpdateRing(Number.isFinite(job.ringPct) ? job.ringPct : 0);
+  const answerForm = $("#sysupd-answer-form");
+  if (answerForm) answerForm.hidden = !(job.active && job.waitingForAnswer);
+  const button = $("#sysupd-install-btn");
+  if (button && !job.active) {
+    button.disabled = false;
+    button.setAttribute("data-close", "");
+    const icon = document.createElement("i");
+    icon.className = "ti ti-check";
+    button.replaceChildren(icon, document.createTextNode(` ${tr("ui.close")}`));
+  }
+}
+
+function paintSysUpdateRing(progress) {
+  const ring = $("#sysupd-ring-fg");
+  const label = $("#sysupd-ring-pct");
+  if (!ring || !label) return;
+  const pct = Math.max(0, Math.min(100, progress));
+  label.textContent = Math.round(pct) + "%";
+  ring.style.strokeDashoffset = String(553 - (553 * pct) / 100);
+}
+
+function tweenSysUpdateRing(progress) {
+  const job = state.sysUpdate;
+  if (!job) return;
+  const target = Number.isFinite(progress)
+    ? Math.max(0, Math.min(100, progress))
+    : (Number.isFinite(job.ringPct) ? job.ringPct : 0);
+  if (job.ringFrame != null) cancelAnimationFrame(job.ringFrame);
+  let current = Number.isFinite(job.ringPct) ? job.ringPct : 0;
+  const frame = () => {
+    const diff = target - current;
+    if (Math.abs(diff) <= 0.5) {
+      current = target;
+      job.ringFrame = null;
+    } else {
+      current += diff * 0.35;
+      job.ringFrame = requestAnimationFrame(frame);
+    }
+    job.ringPct = current;
+    paintSysUpdateRing(current);
+  };
+  frame();
+}
+
+async function answerSysUpdatePrompt(ev) {
+  ev.preventDefault();
+  const job = state.sysUpdate;
+  const input = $("#sysupd-answer");
+  const submit = $("#sysupd-answer-form button[type=submit]");
+  const text = input.value.trim();
+  if (!job?.id || !text) return;
+  submit.disabled = true;
+  try {
+    await api("/api/answer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: job.id, text }),
+    });
+    input.value = "";
+    job.waitingForAnswer = false;
+    updateSysUpdateModal();
+  } catch (e) {
+    toast(e.message || tr("toast.failUpdate"), "err");
+  } finally {
+    submit.disabled = !job.active;
   }
 }
 
 async function startSysUpdate() {
   if (state.busy) { toast(tr("toast.busyInstall"), "info"); return; }
-  
   state.busy = true;
   setBusy(true);
-  
+  state.sysUpdate = { active: true, lines: [tr("status.waiting")], progress: null };
+  renderSysUpdatesModal(true);
+  renderSysUpdateProgress(null);
   statusCard(`${tr("status.updating").replace(/…$/, "")}…`, tr("status.waiting"), "");
-  
+
   let job;
   try {
     job = await api("/api/sysupdate", {
@@ -807,14 +927,26 @@ async function startSysUpdate() {
   } catch (e) {
     state.busy = false;
     setBusy(false);
-    toast(tr("toast.startFailUpdate"), "err");
+    let detail = e.message || tr("toast.startFailUpdate");
+    try {
+      const response = JSON.parse(detail);
+      detail = [response.error, response.detalhe].filter(Boolean).join(": ") || detail;
+    } catch (_) { /* resposta não estruturada */ }
+    state.sysUpdate = { active: false, success: false, lines: [detail] };
+    renderSysUpdatesModal(true);
+    renderSysUpdates(state.updates || {});
+    toast(detail, "err");
     return;
   }
-  
+  state.sysUpdate.id = job.id;
+
   let currentProgress = null;
   (async function poll() {
     const st = await api("/api/status?id=" + job.id).catch(() => null);
     if (!st) {
+      state.sysUpdate.lines = [tr("status.checking")];
+      updateSysUpdateModal();
+      renderSysUpdateProgress(currentProgress);
       statusCard(`${tr("status.updating").replace(/…$/, "")}…`, tr("status.checking"), "", currentProgress);
       setTimeout(poll, 1400);
     }
@@ -822,26 +954,31 @@ async function startSysUpdate() {
       currentProgress = Number.isFinite(st.progress)
         ? Math.max(currentProgress ?? 0, Math.min(99, st.progress))
         : null;
+      state.sysUpdate.lines = st.lines || [];
+      state.sysUpdate.progress = currentProgress;
+      state.sysUpdate.waitingForAnswer = !!st.esperando_resposta;
+      updateSysUpdateModal();
+      renderSysUpdateProgress(currentProgress);
       const waiting = st.lines.length <= 1;
-      const last = waiting
-        ? tr("status.waiting")
-        : st.lines[st.lines.length - 1];
+      const last = waiting ? tr("status.waiting") : st.lines[st.lines.length - 1];
       statusCard(`${tr("status.updating").replace(/…$/, "")}…`, last, "", currentProgress);
       setTimeout(poll, 1400);
     } else {
       const ok = st.done && st.success;
+      state.sysUpdate.active = false;
+      state.sysUpdate.success = ok;
+      state.sysUpdate.lines = st.lines || [];
+      updateSysUpdateModal();
+      if (ok) tweenSysUpdateRing(100);
       state.busy = false;
       setBusy(false);
+      renderSysUpdates(state.updates || {});
       if (ok) {
         const last = st.lines[st.lines.length - 1] || "";
         statusCard(tr("status.updated"), last, "done");
         toast(tr("toast.successUpdate"), "succ");
-        setTimeout(() => { 
-          $("#install-status").hidden = true;
-          $("#modal").hidden = true;
-          // Atualizar a lista de atualizações
-          checkSystemUpdates();
-        }, 4200);
+        setTimeout(() => { $("#install-status").hidden = true; }, 4200);
+        checkSystemUpdates();
       } else {
         const last = st.lines[st.lines.length - 1] || "";
         statusCard(tr("status.failUpdate"), last, "error");
@@ -1173,6 +1310,20 @@ function renderSysUpdates(d) {
     (completo ? `<span class="su-b">${esc(fmtBytes(d.total_bytes))}</span>` : "");
   el.dataset.tip = tip;
   el.hidden = false;
+}
+
+function renderSysUpdateProgress(progress) {
+  const el = $("#sysupd-badge");
+  if (!el) return;
+  const label = tr("sysupd.progress", Number.isFinite(progress) ? progress : 0);
+  const icon = document.createElement("i");
+  icon.className = "ti ti-refresh";
+  const text = document.createElement("span");
+  text.textContent = label;
+  el.replaceChildren(icon, text);
+  el.dataset.tip = label;
+  el.hidden = false;
+  tweenSysUpdateRing(progress);
 }
 
 /* Versões dos programas: o servidor pergunta ao pacman (com cache, porque a

@@ -569,14 +569,97 @@ a.m-link:hover { border-bottom-style: solid; }
   margin-top: 16px;
 }
 
-.packages-list h4 {
-  margin-bottom: 12px;
+.packages-details > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  cursor: pointer;
+  list-style: none;
+  color: var(--faint);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.packages-details > summary::-webkit-details-marker { display: none; }
+.packages-details > summary span { display: inline-flex; align-items: center; gap: 7px; }
+.packages-chevron { transition: transform .2s ease; }
+.packages-details[open] .packages-chevron { transform: rotate(180deg); }
+.packages-details .pkg-list { margin-top: 10px; }
+.sysupd-output { margin-top: 18px; }
+.sysupd-output h4 {
+  margin: 0 0 8px;
   font-size: 13px;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
   color: var(--faint);
-  font-weight: 700;
 }
+.sysupd-ring-wrap { position: relative; width: 190px; margin: 8px auto 16px; }
+.sysupd-ring { width: 190px; height: 190px; transform: rotate(-90deg); }
+.sysupd-ring-bg, .sysupd-ring-fg {
+  fill: none;
+  stroke-width: 12;
+  stroke-linecap: round;
+}
+.sysupd-ring-bg { stroke: var(--line); }
+.sysupd-ring-fg {
+  stroke: url("#sysupd-ring-gradient");
+  stroke-dasharray: 553;
+  stroke-dashoffset: 553;
+  transition: stroke-dashoffset .3s cubic-bezier(.4, 0, .2, 1);
+  filter: drop-shadow(0 0 4px rgba(23, 162, 211, .5));
+  animation: sysupdRingGlow 1.8s ease-in-out infinite;
+}
+.sysupd-ring-loader {
+  fill: none;
+  stroke: #b7f2ff;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 18 535;
+  transform-box: view-box;
+  transform-origin: center;
+  animation: sysupdRingRotate 1.4s linear infinite;
+}
+.sysupd-ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#sysupd-ring-pct { font-size: 2.9rem; font-weight: 800; }
+.sysupd-log {
+  max-height: 190px;
+  overflow: auto;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel-2);
+  color: var(--text);
+  font: 12px/1.5 var(--mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.sysupd-answer { margin-top: 12px; }
+.sysupd-answer[hidden] { display: none; }
+.sysupd-answer label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 13px; }
+.sysupd-answer > div { display: flex; gap: 8px; }
+.sysupd-answer input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+}
+#sysupd-install-btn[disabled] i { animation: spin 1.2s linear infinite; }
+@keyframes sysupdRingGlow {
+  0%, 100% { filter: drop-shadow(0 0 3px rgba(23, 162, 211, .35)); }
+  50% { filter: drop-shadow(0 0 7px rgba(23, 162, 211, .7)); }
+}
+@keyframes sysupdRingRotate { to { transform: rotate(360deg); } }
 
 .pkg-list {
   list-style: none;

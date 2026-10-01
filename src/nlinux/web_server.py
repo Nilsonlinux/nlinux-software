@@ -286,16 +286,18 @@ class InstallJob:
 
     def _update_progress(self, line: str) -> None:
         text = line.lower()
-        if "synchronizing package databases" in text:
+        if "synchronizing package databases" in text or "sincronizando" in text:
             self._progress_phase = "database"
             self._set_progress(2)
-        elif "resolving dependencies" in text:
+        elif "resolving dependencies" in text or "resolvendo depend" in text:
             self._progress_phase = "dependencies"
             self._set_progress(8)
-        elif "looking for conflicting packages" in text:
+        elif ("looking for conflicting packages" in text
+              or "pacotes conflitantes" in text or "pacotes em conflito" in text):
             self._progress_phase = "dependencies"
             self._set_progress(12)
-        elif "retrieving packages" in text or "downloading" in text:
+        elif ("retrieving packages" in text or "downloading" in text
+              or "baixando" in text or "transferindo" in text):
             self._progress_phase = "download"
             self._set_progress(15)
 
@@ -315,14 +317,17 @@ class InstallJob:
                 return
 
         match = re.search(
-            r"\(\s*(\d+)\s*/\s*(\d+)\s*\)\s*(installing|upgrading|reinstalling|removing)\b",
+            r"(?:\(|\[)\s*(\d+)\s*/\s*(\d+)\s*(?:\)|\])\s*"
+            r"(installing|upgrading|reinstalling|removing|instalando|"
+            r"atualizando|reinstalando|removendo)\b",
             text,
         )
         if match:
             self._update_counted_step(match, transaction=True)
             return
 
-        count_match = re.search(r"\(\s*(\d+)\s*/\s*(\d+)\s*\)", text)
+        count_match = re.search(
+            r"(?:\(|\[)\s*(\d+)\s*/\s*(\d+)\s*(?:\)|\])", text)
         if count_match and (
             ".pkg.tar." in text or re.search(r"\btotal\s*\(", text)
         ):
@@ -769,8 +774,10 @@ _atualizacoes_cache: dict = {"quando": 0.0, "pacotes": [], "erro": None}
 # pior erro possível — não reconhecer uma — não trava nada, porque a caixa
 # fica disponível durante a execução inteira.
 PROMPT_RE = re.compile(
-    r"(\[\?\]|\[[Yy]/[Nn]\]|do you want|would you like|\[y/N\]|enter |"
-    r"proceed with|import pgp|replacing|choose |select )",
+    r"(\[\?\]|\[[YySs]/[Nn]\]|\[[Nn]/[YySs]\]|do you want|"
+    r"would you like|\[y/N\]|enter |proceed with|import pgp|replacing|"
+    r"choose |select |(?:deseja|prosseguir|continuar|substituir|importar)"
+    r".{0,120}\?)",
     re.IGNORECASE,
 )
 
