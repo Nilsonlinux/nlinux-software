@@ -7,6 +7,7 @@
     "assets/anydesk.png": "790185e0502cc4d7e7fcdac9ff153d44cc39db1a82503f60d80a6a176019c216",
     "assets/audacity-1.jpg": "70aa0d01f23692049a500ad1d75b439c028677d76822a50de1254775a3eb6211",
     "assets/audacity.png": "0bee9ba2e8547b9eb23a1a5c78ba9f2739e39e60df45e79cf2bbf9727647e0e9",
+    "assets/bazaar.png": "a60a95c52ec4898f70eea352b19e40a847cb27b94eba268ff1ff2f0d9426f7c7",
     "assets/blender-1.jpg": "afe5851fc25693b3e86a1c2c6f7541acb743728fea050731aa9814d29d51de69",
     "assets/blender-2.jpg": "bf355e1b41c6d8db34a754c401d65c5793ae730171e03e5848e302ca4ec64c8a",
     "assets/blender.png": "55d470b4c285c654f552650194e4882a66531253689001b1028c7f15d1dae75d",
@@ -37,6 +38,7 @@
     "assets/frozenbubble.png": "3b5de3859fb413a5ef0b3caf44801ea2523bff102bd68e4ea86673933a2d044d",
     "assets/geany-1.jpg": "ca7c7d258e0e27549a0d710103d8686fb2651da3b9789c77cc4ab860552d5448",
     "assets/geany.png": "3122e49c5943ac16130c4975826478390629707d0ed79b2a5048868b9b0aa9e3",
+    "assets/ghostty.png": "5600e59b62c134b746e7c91672ef5d46fa3a6c163cf5e197e92f6b2fe0d74a20",
     "assets/gimp-1.jpg": "d8aa606284a3a0d8b148fd7437cd6b13cce74b582f28d810b98ccd5021cf1e92",
     "assets/gimp-2.jpg": "2729f9d1e4414e2975e8f3b9315cf1176ef1e71149f8fc195bebae86968a3dcc",
     "assets/gimp.png": "858b5821cae40a40acf99db86a8f677c157c15c86f45ad044a3a0f3e8499c98d",
@@ -98,5 +100,5 @@
     "assets/zenmap-1.jpg": "136b7f268bd14d829843cb878c4f57db3fae8b4f551b392823e50d27d83efaa8",
     "assets/zenmap.png": "a18cd769f13f92d7ee70983893c977eaac5cce11f418314d337bf468ee745c17"
   },
-  "revision": 337
+  "revision": 341
 }

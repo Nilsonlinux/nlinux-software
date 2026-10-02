@@ -41,22 +41,20 @@
       "alternate-to": null,
       "listed": true
     },
-    "amberol": {
-      "name": "Amberol",
-      "summary": "Small and simple sound and music player that is well integrated with GNOME",
-      "description": "Small and simple sound and music player that is well integrated with GNOME",
-      "icon": "assets/amberol.png",
-      "screenshots": [
-        "assets/amberol-1.png"
-      ],
-      "developer-name": "Balló György",
-      "developer-url": "https://apps.gnome.org/Amberol/",
+    "ghostty": {
+      "name": "ghostty",
+      "summary": "Fast, native, feature-rich terminal emulator pushing modern features",
+      "description": "Fast, native, feature-rich terminal emulator pushing modern features",
+      "icon": "assets/ghostty.png",
+      "screenshots": [],
+      "developer-name": "Ghostty org",
+      "developer-url": "https://github.com/ghostty-org/ghostty",
       "urls": {
-        "info": "https://apps.gnome.org/Amberol/",
+        "info": "https://github.com/ghostty-org/ghostty",
         "android-app": "",
         "ios-app": ""
       },
-      "launch-cmd": "amberol",
+      "launch-cmd": "ghostty",
       "arch": [
         "x86_64"
       ],
@@ -69,12 +67,12 @@
       "pacman": {
         "default": {
           "source": "arch",
-          "main-package": "amberol",
+          "main-package": "ghostty",
           "install-packages": [
-            "amberol"
+            "ghostty"
           ],
           "remove-packages": [
-            "amberol"
+            "ghostty"
           ]
         }
       },
@@ -125,45 +123,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "code": {
-      "name": "Code",
-      "summary": "The Open Source build of Visual Studio Code (vscode) editor",
-      "description": "The Open Source build of Visual Studio Code (vscode) editor",
-      "icon": "assets/code.png",
-      "screenshots": [],
-      "developer-name": "",
-      "developer-url": "https://github.com/microsoft/vscode",
-      "urls": {
-        "info": "https://github.com/microsoft/vscode",
-        "android-app": "",
-        "ios-app": ""
-      },
-      "launch-cmd": "code",
-      "arch": [
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "code",
-          "install-packages": [
-            "code"
-          ],
-          "remove-packages": [
-            "code"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "geany": {
       "name": "Geany",
       "summary": "Simple and lightweight IDE with powerful extensions",
@@ -201,6 +160,45 @@
           ],
           "remove-packages": [
             "geany"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "code": {
+      "name": "Code",
+      "summary": "The Open Source build of Visual Studio Code (vscode) editor",
+      "description": "The Open Source build of Visual Studio Code (vscode) editor",
+      "icon": "assets/code.png",
+      "screenshots": [],
+      "developer-name": "Microsoft",
+      "developer-url": "https://github.com/microsoft/vscode",
+      "urls": {
+        "info": "https://github.com/microsoft/vscode",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "code",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "code",
+          "install-packages": [
+            "code"
+          ],
+          "remove-packages": [
+            "code"
           ]
         }
       },
@@ -1957,6 +1955,47 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
+    },
+    "amberol": {
+      "name": "Amberol",
+      "summary": "Small and simple sound and music player that is well integrated with GNOME",
+      "description": "Small and simple sound and music player that is well integrated with GNOME",
+      "icon": "assets/amberol.png",
+      "screenshots": [
+        "assets/amberol-1.png"
+      ],
+      "developer-name": "Balló György",
+      "developer-url": "https://apps.gnome.org/Amberol/",
+      "urls": {
+        "info": "https://apps.gnome.org/Amberol/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "amberol",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "amberol",
+          "install-packages": [
+            "amberol"
+          ],
+          "remove-packages": [
+            "amberol"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
     }
   },
   "office": {
@@ -2250,6 +2289,45 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
+    },
+    "bazaar": {
+      "name": "bazaar",
+      "summary": "A fast and modern store for GNOME with focus on Flatpaks, particularly from Flathub",
+      "description": "A fast and modern app store for Linux with a focus on discovering and installing Flatpak apps and add-ons, particularly from Flathub.",
+      "icon": "assets/bazaar.png",
+      "screenshots": [],
+      "developer-name": "by The Bazaar Contributors",
+      "developer-url": "https://apps.gnome.org/Bazaar/",
+      "urls": {
+        "info": "https://apps.gnome.org/Bazaar/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "bazaar",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "bazaar",
+          "install-packages": [
+            "bazaar"
+          ],
+          "remove-packages": [
+            "bazaar"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
     }
   },
   "connectivity": {
@@ -2295,9 +2373,9 @@
   },
   "stats": {
     "version": 7,
-    "revision": 337,
-    "compiled": 1790936477,
-    "apps": 55,
+    "revision": 341,
+    "compiled": 1790937233,
+    "apps": 57,
     "categories": 11
   },
   "distro": {
