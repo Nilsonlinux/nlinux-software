@@ -1575,6 +1575,45 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
+    },
+    "discord": {
+      "name": "Discord",
+      "summary": "All-in-one voice and text chat for gamers",
+      "description": "All-in-one voice and text chat for gamers",
+      "icon": "assets/discord.png",
+      "screenshots": [],
+      "developer-name": "Discord Inc",
+      "developer-url": "https://discord.com",
+      "urls": {
+        "info": "https://discord.com",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "discord",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "discord",
+          "install-packages": [
+            "discord"
+          ],
+          "remove-packages": [
+            "discord"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
     }
   },
   "multimedia": {
@@ -2256,9 +2295,9 @@
   },
   "stats": {
     "version": 7,
-    "revision": 336,
-    "compiled": 1790935797,
-    "apps": 54,
+    "revision": 337,
+    "compiled": 1790936477,
+    "apps": 55,
     "categories": 11
   },
   "distro": {
