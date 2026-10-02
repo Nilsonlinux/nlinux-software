@@ -1,4 +1,4 @@
-NLinux Software v328 - loja de aplicativos (distribuicao)
+NLinux Software v334 - loja de aplicativos (distribuicao)
 Sem opcao de administracao.
 
 Dependencias (veja DEPENDENCIES.txt):

@@ -1965,8 +1965,8 @@
       "alternate-to": null,
       "listed": true
     },
-    "libreoffice-math": {
-      "name": "LibreOffice Math",
+    "libreoffice": {
+      "name": "LibreOffice",
       "summary": "LibreOffice branch which contains new features and program enhancements",
       "description": "The formula editor for the LibreOffice suite. Mathmatical formatting can be invoked in your text documents, spreadsheets, presentations and drawings, to enable you to insert perfectly-formatted mathematical and scientific formulas. Your formulas can include a wide range of elements, from fractions, terms with exponents and indices, integrals, and mathematical functions, to inequalities, systems of equations, and matrices.",
       "icon": "assets/libreoffice-math.png",
@@ -1999,6 +1999,86 @@
           ],
           "remove-packages": [
             "libreoffice-fresh"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "free-office": {
+      "name": "FreeOffice",
+      "summary": "A complete, reliable, lightning-fast and Microsoft Office-compatible office suite with a word processor...",
+      "description": "A complete, reliable, lightning-fast and Microsoft Office-compatible office suite with a word processor, spreadsheet, and presentation graphics software.",
+      "icon": "assets/free-office.png",
+      "screenshots": [
+        "assets/free-office-1.webp"
+      ],
+      "developer-name": "",
+      "developer-url": "http://www.freeoffice.com/",
+      "urls": {
+        "info": "http://www.freeoffice.com/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "freeoffice",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "freeoffice",
+          "install-packages": [
+            "freeoffice"
+          ],
+          "remove-packages": [
+            "freeoffice"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "open-office": {
+      "name": "OpenOffice",
+      "summary": "The Free and Open Productivity Suite",
+      "description": "The Free and Open Productivity Suite",
+      "icon": "assets/open-office.png",
+      "screenshots": [],
+      "developer-name": "Apache",
+      "developer-url": "https://www.openoffice.org",
+      "urls": {
+        "info": "https://www.openoffice.org",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "openoffice-bin",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "openoffice-bin",
+          "install-packages": [
+            "openoffice-bin"
+          ],
+          "remove-packages": [
+            "openoffice-bin"
           ]
         }
       },
@@ -2176,9 +2256,9 @@
   },
   "stats": {
     "version": 7,
-    "revision": 328,
-    "compiled": 1790898923,
-    "apps": 52,
+    "revision": 334,
+    "compiled": 1790935514,
+    "apps": 54,
     "categories": 11
   },
   "distro": {

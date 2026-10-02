@@ -28,6 +28,8 @@
     "assets/filezilla.png": "0fae833f0a90ef6042bb6841566d851d0549a9e82bbb8b8e0497b9c5d778bd46",
     "assets/firefox-1.png": "def3f3196a5ea0df910e5c85f7c3368d1712f5fc0dc9dfeac1dec7bb7065e1d0",
     "assets/firefox.png": "3589aae850b32774c9fb667fb36efd4ef3dce0a67ce0ab011943b14ec565945b",
+    "assets/free-office-1.webp": "3537243aa507153bb9a272905446199576e1e7c03c66eba89188b827353ff2d2",
+    "assets/free-office.png": "5a8396e56d0a682244a9cb106754f98521411604adb911afb09caae657a62f85",
     "assets/freeciv-1.jpg": "42f76c5ed4673475f83f094cd77f15c23b5a0361de422278c472cc90bb57a694",
     "assets/freeciv.png": "ad2c7f03f6c056a5eb1b7a98d0a4c196464472d5c84b543c4d1ef9dd863435d3",
     "assets/frozenbubble-1.jpg": "e8addebcfae27f2c953c246e8b41c9a329c239cc1ce7e03ca16eb3f01b330394",
@@ -53,6 +55,7 @@
     "assets/neverball.png": "1c95dd7719451972e8c675f088a72ca01dc07efa1eed29a725a927bb0b9bd823",
     "assets/obs-studio-1.jpg": "6d4ce3eb941e8de4594679ff949808f544de643ad6f2f489e4aaf4a0e4c44b9a",
     "assets/obs-studio.png": "3381a5840c3d12f1ef6b960176d3c1e8f5e604893c02b7c4004f85f7986d5ac8",
+    "assets/open-office.png": "ef1bda3a70139b926182d7606e2c5e6a63e0c531f1ed0d7c4ae051a94defc223",
     "assets/playonlinux-1.jpg": "e8d94e1ccd67b42f8f1ffe93963a9720776b2c15589f74cfb5c1683358492c66",
     "assets/playonlinux-2.jpg": "92a74f3caa64317d786e01e03eb9329f03751fc14c870a379fbcaa7152a9b20c",
     "assets/playonlinux.png": "4db117e561f6b35cdb1ac0ab487732e80d8e840503755d636a627778c65c0ac4",
@@ -94,5 +97,5 @@
     "assets/zenmap-1.jpg": "136b7f268bd14d829843cb878c4f57db3fae8b4f551b392823e50d27d83efaa8",
     "assets/zenmap.png": "a18cd769f13f92d7ee70983893c977eaac5cce11f418314d337bf468ee745c17"
   },
-  "revision": 328
+  "revision": 334
 }
