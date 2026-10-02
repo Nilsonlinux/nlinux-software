@@ -579,7 +579,30 @@ class InstallJob:
                         os.close(master_fd)
                         master_fd = None
                     self._master_fd = None
-                self.success = process.wait() == 0
+                return_code = process.wait()
+                self.success = return_code == 0
+                if not self.success and self.mode in ("install", "remove"):
+                    try:
+                        installed_result = subprocess.run(
+                            ["pacman", "-Qq"], capture_output=True,
+                            text=True, timeout=30,
+                        )
+                    except (OSError, subprocess.TimeoutExpired):
+                        installed_result = None
+                    if installed_result is not None and installed_result.returncode == 0:
+                        installed_packages = set(installed_result.stdout.split())
+                        state_matches = (
+                            all(package in installed_packages for package in self.packages)
+                            if not removing
+                            else all(package not in installed_packages for package in self.packages)
+                        )
+                        if state_matches:
+                            self.success = True
+                            outcome = "instalados" if not removing else "removidos"
+                            self.lines.append(
+                                f"O processo terminou com código {return_code}, "
+                                f"mas todos os pacotes pedidos estão {outcome}."
+                            )
             except Exception as e:
                 self.success = False
                 self.lines.append(f"Falha ao iniciar o instalador: {e}")
