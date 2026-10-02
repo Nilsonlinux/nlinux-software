@@ -292,45 +292,6 @@
     }
   },
   "games": {
-    "steam": {
-      "name": "Steam",
-      "summary": "Valve's digital software delivery system",
-      "description": "The ultimate entertainment platform. Play games, connect with friends, even create and share content of your own. Join 50 million of your closest friends on Steam. Enjoy exclusive deals, automatic game updates, and cross-platform multiplayer. Plus, now you take advantage of Big Picture mode, designed for use with your TV and game controller.",
-      "icon": "assets/steam.webp",
-      "screenshots": [],
-      "developer-name": "Levente Polyakm, Giancarlo Razzolini, Christian Heusel",
-      "developer-url": "http://www.valvesoftware.com/",
-      "urls": {
-        "info": "http://store.steampowered.com/",
-        "android-app": "",
-        "ios-app": ""
-      },
-      "launch-cmd": "steam",
-      "arch": [
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "steam",
-          "install-packages": [
-            "steam"
-          ],
-          "remove-packages": [
-            "steam"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "0ad": {
       "name": "0 A.D",
       "summary": "Cross-platform real-time strategy (RTS) game of ancient warfare",
@@ -948,6 +909,45 @@
           ],
           "remove-packages": [
             "chromium-bsu"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "steam": {
+      "name": "Steam",
+      "summary": "Valve's digital software delivery system",
+      "description": "The ultimate entertainment platform. Play games, connect with friends, even create and share content of your own. Join 50 million of your closest friends on Steam. Enjoy exclusive deals, automatic game updates, and cross-platform multiplayer. Plus, now you take advantage of Big Picture mode, designed for use with your TV and game controller.",
+      "icon": "assets/steam.webp",
+      "screenshots": [],
+      "developer-name": "Levente Polyakm, Giancarlo Razzolini, Christian Heusel",
+      "developer-url": "http://www.valvesoftware.com/",
+      "urls": {
+        "info": "http://store.steampowered.com/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "steam",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "steam",
+          "install-packages": [
+            "steam"
+          ],
+          "remove-packages": [
+            "steam"
           ]
         }
       },
@@ -2373,8 +2373,8 @@
   },
   "stats": {
     "version": 7,
-    "revision": 342,
-    "compiled": 1790937427,
+    "revision": 343,
+    "compiled": 1790968601,
     "apps": 57,
     "categories": 11
   },
