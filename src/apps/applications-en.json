@@ -1,46 +1,5 @@
 {
   "accessories": {
-    "etcher": {
-      "name": "Etcher",
-      "summary": "Flash OS images to SD cards & USB drives, safely and easily",
-      "description": "Etcher is a cross-platform tool for writing images to USB drives and SD cards, aiming to be really simple to prevent accidental damage to hard drives while checking every bit of data was written correctly.",
-      "icon": "assets/etcher.png",
-      "screenshots": [
-        "assets/etcher-1.jpg"
-      ],
-      "developer-name": "ali.molaei",
-      "developer-url": "https://www.balena.io/etcher/",
-      "urls": {
-        "info": "https://www.balena.io/etcher/",
-        "android-app": "",
-        "ios-app": ""
-      },
-      "launch-cmd": "etcher-bin",
-      "arch": [
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "aur",
-          "main-package": "etcher-bin",
-          "install-packages": [
-            "etcher-bin"
-          ],
-          "remove-packages": [
-            "etcher-bin"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "ghostty": {
       "name": "Ghostty",
       "summary": "Fast, native, feature-rich terminal emulator pushing modern features",
@@ -79,25 +38,23 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
-    }
-  },
-  "development": {
-    "vscode": {
-      "name": "Visual Studio Code",
-      "summary": "Cross-platform source code editor from Microsoft.",
-      "description": "Visual Studio Code is a lightweight but powerful source code editor which runs on your desktop and is available for Windows, macOS and Linux. It comes with built-in support for JavaScript, TypeScript and Node.js and has a rich ecosystem of extensions for other languages (such as C++, C#, Python, PHP, Go) and runtimes (such as .NET and Unity).",
-      "icon": "assets/vscode.png",
+    },
+    "etcher": {
+      "name": "Etcher",
+      "summary": "Flash OS images to SD cards & USB drives, safely and easily",
+      "description": "Etcher is a cross-platform tool for writing images to USB drives and SD cards, aiming to be really simple to prevent accidental damage to hard drives while checking every bit of data was written correctly.",
+      "icon": "assets/etcher.png",
       "screenshots": [
-        "assets/vscode-1.png"
+        "assets/etcher-1.jpg"
       ],
-      "developer-name": "Microsoft Corporation",
-      "developer-url": "https://code.visualstudio.com/",
+      "developer-name": "ali.molaei",
+      "developer-url": "https://www.balena.io/team",
       "urls": {
-        "info": "https://code.visualstudio.com/",
+        "info": "https://etcher.balena.io/",
         "android-app": "",
         "ios-app": ""
       },
-      "launch-cmd": "code",
+      "launch-cmd": "etcher-bin",
       "arch": [
         "x86_64"
       ],
@@ -110,19 +67,21 @@
       "pacman": {
         "default": {
           "source": "aur",
-          "main-package": "visual-studio-code-bin",
+          "main-package": "etcher-bin",
           "install-packages": [
-            "visual-studio-code-bin"
+            "etcher-bin"
           ],
           "remove-packages": [
-            "visual-studio-code-bin"
+            "etcher-bin"
           ]
         }
       },
       "proprietary": false,
       "alternate-to": null,
       "listed": true
-    },
+    }
+  },
+  "development": {
     "geany": {
       "name": "Geany",
       "summary": "Simple and lightweight IDE with powerful extensions",
@@ -167,14 +126,55 @@
       "alternate-to": null,
       "listed": true
     },
+    "vscode": {
+      "name": "Visual Studio Code",
+      "summary": "Cross-platform source code editor from Microsoft.",
+      "description": "Visual Studio Code is a lightweight but powerful source code editor which runs on your desktop and is available for Windows, macOS and Linux. It comes with built-in support for JavaScript, TypeScript and Node.js and has a rich ecosystem of extensions for other languages (such as C++, C#, Python, PHP, Go) and runtimes (such as .NET and Unity).",
+      "icon": "assets/vscode.png",
+      "screenshots": [
+        "assets/vscode-1.png"
+      ],
+      "developer-name": "Microsoft Corporation",
+      "developer-url": "https://www.microsoft.com/",
+      "urls": {
+        "info": "https://code.visualstudio.com/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "code",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "visual-studio-code-bin",
+          "install-packages": [
+            "visual-studio-code-bin"
+          ],
+          "remove-packages": [
+            "visual-studio-code-bin"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
     "code": {
       "name": "Code",
       "summary": "The Open Source build of Visual Studio Code (vscode) editor",
       "description": "The Open Source build of Visual Studio Code (vscode) editor",
       "icon": "assets/code.png",
       "screenshots": [],
-      "developer-name": "Microsoft",
-      "developer-url": "https://github.com/microsoft/vscode",
+      "developer-name": "Microsoft Corporation",
+      "developer-url": "https://github.com/microsoft",
       "urls": {
         "info": "https://github.com/microsoft/vscode",
         "android-app": "",
@@ -257,8 +257,8 @@
       "screenshots": [
         "assets/tuxpaint-1.png"
       ],
-      "developer-name": "eugene",
-      "developer-url": "https://tuxpaint.org/",
+      "developer-name": "Bill Kendrick",
+      "developer-url": "https://tuxpaint.org/developers/",
       "urls": {
         "info": "https://tuxpaint.org/",
         "android-app": "",
@@ -369,48 +369,6 @@
           ],
           "remove-packages": [
             "pysolfc"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
-    "lutris": {
-      "name": "Lutris",
-      "summary": "Open gaming platform for organising games",
-      "description": "Lutris is an open gaming platform for Linux. It helps you install and manage your games in a unified interface.",
-      "icon": "assets/lutris.png",
-      "screenshots": [
-        "assets/lutris-1.jpg"
-      ],
-      "developer-name": "Lutris Gaming",
-      "developer-url": "https://github.com/orgs/lutris/people",
-      "urls": {
-        "info": "http://lutris.net",
-        "android-app": "",
-        "ios-app": ""
-      },
-      "launch-cmd": "lutris",
-      "arch": [
-        "x86_64",
-        "i686"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "lutris",
-          "install-packages": [
-            "lutris"
-          ],
-          "remove-packages": [
-            "lutris"
           ]
         }
       },
@@ -922,10 +880,10 @@
       "description": "The ultimate entertainment platform. Play games, connect with friends, even create and share content of your own. Join 50 million of your closest friends on Steam. Enjoy exclusive deals, automatic game updates, and cross-platform multiplayer. Plus, now you take advantage of Big Picture mode, designed for use with your TV and game controller.",
       "icon": "assets/steam.webp",
       "screenshots": [],
-      "developer-name": "Levente Polyakm, Giancarlo Razzolini, Christian Heusel",
-      "developer-url": "http://www.valvesoftware.com/",
+      "developer-name": "Valve Corporation",
+      "developer-url": "https://www.valvesoftware.com/",
       "urls": {
-        "info": "http://store.steampowered.com/",
+        "info": "https://store.steampowered.com/",
         "android-app": "",
         "ios-app": ""
       },
@@ -954,28 +912,24 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
-    }
-  },
-  "graphics": {
-    "blender": {
-      "name": "Blender",
-      "summary": "3D suite for models, animation and rendering",
-      "description": "An integrated 3D suite for modelling, animation, rendering, post-production, interactive creation and playback (games). Blender has its own particular user interface, which is implemented entirely in OpenGL and designed with speed in mind. Python bindings are available for scripting; import/export features for popular file formats like 3D Studio and Wavefront Obj are implemented as scripts by the community. Stills, animations, models for games or other third party engines and interactive content in the form of a standalone binary are common products of Blender use. ",
-      "icon": "assets/blender.png",
+    },
+    "lutris": {
+      "name": "Lutris",
+      "summary": "Open gaming platform for organising games",
+      "description": "Lutris is an open gaming platform for Linux. It helps you install and manage your games in a unified interface.",
+      "icon": "assets/lutris.png",
       "screenshots": [
-        "assets/blender-1.jpg",
-        "assets/blender-2.jpg"
+        "assets/lutris-1.jpg"
       ],
-      "developer-name": "Various Contributors",
-      "developer-url": "https://www.blender.org/get-involved/",
+      "developer-name": "Lutris Gaming",
+      "developer-url": "https://github.com/orgs/lutris/people",
       "urls": {
-        "info": "https://www.blender.org/",
-        "android-app": null,
-        "ios-app": null
+        "info": "http://lutris.net",
+        "android-app": "",
+        "ios-app": ""
       },
-      "launch-cmd": "blender",
+      "launch-cmd": "lutris",
       "arch": [
-        "i686",
         "x86_64"
       ],
       "releases": [
@@ -987,19 +941,21 @@
       "pacman": {
         "default": {
           "source": "arch",
-          "main-package": "blender",
+          "main-package": "lutris",
           "install-packages": [
-            "blender"
+            "lutris"
           ],
           "remove-packages": [
-            "blender"
+            "lutris"
           ]
         }
       },
       "proprietary": false,
-      "alternate-to": "Adobe&reg; After Effects, Autodesk 3ds Max",
+      "alternate-to": null,
       "listed": true
-    },
+    }
+  },
+  "graphics": {
     "inkscape": {
       "name": "Inkscape",
       "summary": "SVG Editor",
@@ -1085,6 +1041,48 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
+    },
+    "blender": {
+      "name": "Blender",
+      "summary": "3D suite for models, animation and rendering",
+      "description": "An integrated 3D suite for modelling, animation, rendering, post-production, interactive creation and playback (games). Blender has its own particular user interface, which is implemented entirely in OpenGL and designed with speed in mind. Python bindings are available for scripting; import/export features for popular file formats like 3D Studio and Wavefront Obj are implemented as scripts by the community. Stills, animations, models for games or other third party engines and interactive content in the form of a standalone binary are common products of Blender use.",
+      "icon": "assets/blender.png",
+      "screenshots": [
+        "assets/blender-1.jpg",
+        "assets/blender-2.jpg"
+      ],
+      "developer-name": "Various Contributors",
+      "developer-url": "https://www.blender.org/get-involved/",
+      "urls": {
+        "info": "https://www.blender.org/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "blender",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "blender",
+          "install-packages": [
+            "blender"
+          ],
+          "remove-packages": [
+            "blender"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
     }
   },
   "internet": {
@@ -1161,49 +1159,6 @@
           ],
           "remove-packages": [
             "brave-bin"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
-    "chromium": {
-      "name": "Chromium",
-      "summary": "The open source version of Google Chrome",
-      "description": "The project aims to build a safer, faster, and more stable way for all Internet users to experience the web.",
-      "icon": "assets/chromium.png",
-      "screenshots": [
-        "assets/chromium-1.jpg"
-      ],
-      "developer-name": "Christian Heusel, Jonathan Grotelüschen",
-      "developer-url": "https://chromium.googlesource.com/chromium/src/+/master/AUTHORS",
-      "urls": {
-        "info": "https://www.chromium.org/Home",
-        "android-app": "",
-        "ios-app": ""
-      },
-      "launch-cmd": "chromium",
-      "arch": [
-        "x86_64",
-        "i686",
-        "armv7h"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "arch",
-          "main-package": "chromium",
-          "install-packages": [
-            "chromium"
-          ],
-          "remove-packages": [
-            "chromium"
           ]
         }
       },
@@ -1535,45 +1490,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "google-chrome": {
-      "name": "Google Chrome",
-      "summary": "The popular web browser by Google (Stable Channel)",
-      "description": "The popular web browser by Google (Stable Channel)",
-      "icon": "assets/google-chrome.png",
-      "screenshots": [],
-      "developer-name": "gromit",
-      "developer-url": "gromit",
-      "urls": {
-        "info": "https://www.google.com/chrome",
-        "android-app": "",
-        "ios-app": ""
-      },
-      "launch-cmd": "google-chrome",
-      "arch": [
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "aur",
-          "main-package": "google-chrome",
-          "install-packages": [
-            "google-chrome"
-          ],
-          "remove-packages": [
-            "google-chrome"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "discord": {
       "name": "Discord",
       "summary": "All-in-one voice and text chat for gamers",
@@ -1606,6 +1522,88 @@
           ],
           "remove-packages": [
             "discord"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "chromium": {
+      "name": "Chromium",
+      "summary": "The open source version of Google Chrome",
+      "description": "The project aims to build a safer, faster, and more stable way for all Internet users to experience the web.",
+      "icon": "assets/chromium.png",
+      "screenshots": [
+        "assets/chromium-1.jpg"
+      ],
+      "developer-name": "The Chromium Projects, controlled by Google",
+      "developer-url": "https://www.chromium.org/chromium-projects/",
+      "urls": {
+        "info": "https://www.chromium.org/Home",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "chromium",
+      "arch": [
+        "x86_64",
+        "i686",
+        "armv7h"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "chromium",
+          "install-packages": [
+            "chromium"
+          ],
+          "remove-packages": [
+            "chromium"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "google-chrome": {
+      "name": "Google Chrome",
+      "summary": "The popular web browser by Google (Stable Channel)",
+      "description": "The popular web browser by Google (Stable Channel)",
+      "icon": "assets/google-chrome.png",
+      "screenshots": [],
+      "developer-name": "Google",
+      "developer-url": "https://www.google.com/intl/en/chrome/",
+      "urls": {
+        "info": "https://www.google.com/chrome",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "google-chrome",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "google-chrome",
+          "install-packages": [
+            "google-chrome"
+          ],
+          "remove-packages": [
+            "google-chrome"
           ]
         }
       },
@@ -2373,8 +2371,8 @@
   },
   "stats": {
     "version": 7,
-    "revision": 343,
-    "compiled": 1790968601,
+    "revision": 354,
+    "compiled": 1790970883,
     "apps": 57,
     "categories": 11
   },

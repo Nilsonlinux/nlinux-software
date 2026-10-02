@@ -1,4 +1,4 @@
-NLinux Software v343 - loja de aplicativos (distribuicao)
+NLinux Software v354 - loja de aplicativos (distribuicao)
 Sem opcao de administracao.
 
 Dependencias (veja DEPENDENCIES.txt):
