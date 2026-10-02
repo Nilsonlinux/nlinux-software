@@ -2014,7 +2014,7 @@
       "screenshots": [
         "assets/free-office-1.webp"
       ],
-      "developer-name": "",
+      "developer-name": "SoftMaker",
       "developer-url": "http://www.freeoffice.com/",
       "urls": {
         "info": "http://www.freeoffice.com/",
@@ -2256,8 +2256,8 @@
   },
   "stats": {
     "version": 7,
-    "revision": 334,
-    "compiled": 1790935514,
+    "revision": 336,
+    "compiled": 1790935797,
     "apps": 54,
     "categories": 11
   },

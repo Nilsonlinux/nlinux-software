@@ -55,7 +55,7 @@
     "assets/neverball.png": "1c95dd7719451972e8c675f088a72ca01dc07efa1eed29a725a927bb0b9bd823",
     "assets/obs-studio-1.jpg": "6d4ce3eb941e8de4594679ff949808f544de643ad6f2f489e4aaf4a0e4c44b9a",
     "assets/obs-studio.png": "3381a5840c3d12f1ef6b960176d3c1e8f5e604893c02b7c4004f85f7986d5ac8",
-    "assets/open-office.png": "ef1bda3a70139b926182d7606e2c5e6a63e0c531f1ed0d7c4ae051a94defc223",
+    "assets/open-office.png": "5d8794b6c462a3350cc24bd22e994cc52ef8a3522049c8451ee0e39805da80a9",
     "assets/playonlinux-1.jpg": "e8d94e1ccd67b42f8f1ffe93963a9720776b2c15589f74cfb5c1683358492c66",
     "assets/playonlinux-2.jpg": "92a74f3caa64317d786e01e03eb9329f03751fc14c870a379fbcaa7152a9b20c",
     "assets/playonlinux.png": "4db117e561f6b35cdb1ac0ab487732e80d8e840503755d636a627778c65c0ac4",
@@ -97,5 +97,5 @@
     "assets/zenmap-1.jpg": "136b7f268bd14d829843cb878c4f57db3fae8b4f551b392823e50d27d83efaa8",
     "assets/zenmap.png": "a18cd769f13f92d7ee70983893c977eaac5cce11f418314d337bf468ee745c17"
   },
-  "revision": 334
+  "revision": 336
 }
