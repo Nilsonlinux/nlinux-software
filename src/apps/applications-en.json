@@ -42,7 +42,7 @@
       "listed": true
     },
     "ghostty": {
-      "name": "ghostty",
+      "name": "Ghostty",
       "summary": "Fast, native, feature-rich terminal emulator pushing modern features",
       "description": "Fast, native, feature-rich terminal emulator pushing modern features",
       "icon": "assets/ghostty.png",
@@ -2373,8 +2373,8 @@
   },
   "stats": {
     "version": 7,
-    "revision": 341,
-    "compiled": 1790937233,
+    "revision": 342,
+    "compiled": 1790937427,
     "apps": 57,
     "categories": 11
   },
