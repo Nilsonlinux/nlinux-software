@@ -1994,6 +1994,47 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
+    },
+    "ear-tag": {
+      "name": "Ear Tag",
+      "summary": "Simple audio file tag editor",
+      "description": "Simple audio file tag editor",
+      "icon": "assets/ear-tag.png",
+      "screenshots": [
+        "assets/ear-tag-1.png"
+      ],
+      "developer-name": "",
+      "developer-url": "https://apps.gnome.org/EarTag/",
+      "urls": {
+        "info": "https://apps.gnome.org/EarTag/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "eartag",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "eartag",
+          "install-packages": [
+            "eartag"
+          ],
+          "remove-packages": [
+            "eartag"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
     }
   },
   "office": {
@@ -2371,9 +2412,9 @@
   },
   "stats": {
     "version": 7,
-    "revision": 354,
-    "compiled": 1790970883,
-    "apps": 57,
+    "revision": 355,
+    "compiled": 1790977006,
+    "apps": 58,
     "categories": 11
   },
   "distro": {

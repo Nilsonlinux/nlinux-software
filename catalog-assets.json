@@ -22,6 +22,8 @@
     "assets/chromiumbsu.png": "583c43f1c9569893c62aa7132be2cea2f7c867c15a87c2b98033e0783f5dedf0",
     "assets/code.png": "a805fa134cb5f6e46fe2456d8e6e210c3d7e861433eb71c49127958985cfe5c8",
     "assets/discord.png": "07e1eef2f37833579bea47f7d00f9514aef14fcb66a165018c8b41228c3e7ec0",
+    "assets/ear-tag-1.png": "2dad4fd38fd4078758bf4388517093740be0ef37f379a11ea9669621a598b995",
+    "assets/ear-tag.png": "acf8311d8a53e30127380bb68d0372b9bddf343c6de80aea5a554756b143e78e",
     "assets/etcher-1.jpg": "0eeef21c82ddd93561a7896fdffef5d5f8eea2a394c2eb24aadf243657e9e7cd",
     "assets/etcher.png": "5209d3bfcc74ed0d6232e30df8100e1dbc288d6ab5f9f24f462b16c7b478155c",
     "assets/extremetuxracer-1.jpg": "e2427342a4d2a66d1e52089c57a2742aedc4f105811c5322dc64bf3a23e80651",
@@ -100,5 +102,5 @@
     "assets/zenmap-1.jpg": "136b7f268bd14d829843cb878c4f57db3fae8b4f551b392823e50d27d83efaa8",
     "assets/zenmap.png": "a18cd769f13f92d7ee70983893c977eaac5cce11f418314d337bf468ee745c17"
   },
-  "revision": 354
+  "revision": 355
 }

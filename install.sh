@@ -106,4 +106,4 @@ StartupWMClass=nlinuxstore
 X-GNOME-UsesNotifications=false
 EOF
 (command -v update-desktop-database >/dev/null 2>&1 && update-desktop-database /usr/share/applications) || true
-echo "Instalado: NLinux Software v354 (/usr/local/bin/nlinux-software)"
+echo "Instalado: NLinux Software v355 (/usr/local/bin/nlinux-software)"
