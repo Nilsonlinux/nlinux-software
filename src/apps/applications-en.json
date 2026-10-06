@@ -206,8 +206,49 @@
       "alternate-to": null,
       "listed": true
     },
+    "antigravity-cli": {
+      "name": "Antigravity cli",
+      "summary": "Google's agentic development platform (CLI companion)",
+      "description": "The terminal-first surface to interact with Antigravity agents. Stay in your flow without context switching.",
+      "icon": "assets/antigravity-cli.webp",
+      "screenshots": [
+        "assets/antigravity-cli-1.png"
+      ],
+      "developer-name": "Google",
+      "developer-url": "https://about.google/",
+      "urls": {
+        "info": "https://antigravity.google/product/antigravity-cli?ref=producthunt",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "antigravity-cli",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "antigravity-cli",
+          "install-packages": [
+            "antigravity-cli"
+          ],
+          "remove-packages": [
+            "antigravity-cli"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
     "antigravity": {
-      "name": "Antigravity",
+      "name": "Antigravity IDE",
       "summary": "An agentic development platform from Google, evolving the IDE into the agent-first era",
       "description": "An agentic development platform from Google, evolving the IDE into the agent-first era",
       "icon": "assets/antigravity.png",
@@ -245,22 +286,22 @@
       "alternate-to": null,
       "listed": true
     },
-    "antigravity-cli": {
-      "name": "Antigravity cli",
-      "summary": "Google's agentic development platform (CLI companion)",
-      "description": "The terminal-first surface to interact with Antigravity agents. Stay in your flow without context switching.",
-      "icon": "assets/antigravity-cli.webp",
+    "opencode": {
+      "name": "Opencode",
+      "summary": "The open source coding agent",
+      "description": "The open source coding agent",
+      "icon": "assets/opencode.webp",
       "screenshots": [
-        "assets/antigravity-cli-1.png"
+        "assets/opencode-1.png"
       ],
-      "developer-name": "Google",
-      "developer-url": "https://about.google/",
+      "developer-name": "https://opencode.ai/",
+      "developer-url": "https://github.com/anomalyco/opencode",
       "urls": {
-        "info": "https://antigravity.google/product/antigravity-cli?ref=producthunt",
+        "info": "https://github.com/anomalyco/opencode",
         "android-app": "",
         "ios-app": ""
       },
-      "launch-cmd": "antigravity-cli",
+      "launch-cmd": "opencode",
       "arch": [
         "x86_64"
       ],
@@ -272,13 +313,13 @@
       ],
       "pacman": {
         "default": {
-          "source": "aur",
-          "main-package": "antigravity-cli",
+          "source": "arch",
+          "main-package": "opencode",
           "install-packages": [
-            "antigravity-cli"
+            "opencode"
           ],
           "remove-packages": [
-            "antigravity-cli"
+            "opencode"
           ]
         }
       },
@@ -2492,9 +2533,9 @@
   },
   "stats": {
     "version": 7,
-    "revision": 358,
-    "compiled": 1791299952,
-    "apps": 60,
+    "revision": 364,
+    "compiled": 1791300647,
+    "apps": 61,
     "categories": 11
   },
   "distro": {

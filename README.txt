@@ -1,4 +1,4 @@
-NLinux Software v358 - loja de aplicativos (distribuicao)
+NLinux Software v364 - loja de aplicativos (distribuicao)
 Sem opcao de administracao.
 
 Dependencias (veja DEPENDENCIES.txt):
