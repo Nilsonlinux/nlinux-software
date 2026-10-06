@@ -1,4 +1,4 @@
-NLinux Software v365 - loja de aplicativos (distribuicao)
+NLinux Software v369 - loja de aplicativos (distribuicao)
 Sem opcao de administracao.
 
 Dependencias (veja DEPENDENCIES.txt):
