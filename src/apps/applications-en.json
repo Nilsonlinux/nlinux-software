@@ -292,7 +292,8 @@
       "description": "The open source coding agent",
       "icon": "assets/opencode.webp",
       "screenshots": [
-        "assets/opencode-1.png"
+        "assets/opencode-1.png",
+        "assets/opencode-2.png"
       ],
       "developer-name": "https://opencode.ai/",
       "developer-url": "https://github.com/anomalyco/opencode",
@@ -2533,8 +2534,8 @@
   },
   "stats": {
     "version": 7,
-    "revision": 364,
-    "compiled": 1791300647,
+    "revision": 365,
+    "compiled": 1791300715,
     "apps": 61,
     "categories": 11
   },

@@ -65,6 +65,7 @@
     "assets/obs-studio.png": "3381a5840c3d12f1ef6b960176d3c1e8f5e604893c02b7c4004f85f7986d5ac8",
     "assets/open-office.png": "5d8794b6c462a3350cc24bd22e994cc52ef8a3522049c8451ee0e39805da80a9",
     "assets/opencode-1.png": "5658766bcef2c0e1fa45b371d32c4275abfffa57f9b1871bbc40b80d5affa6c9",
+    "assets/opencode-2.png": "14b01372a2589a120ab0d6a0510868e71bceadcbd1f1278fb099d700a03912cb",
     "assets/opencode.webp": "3a3f4d8b3456949568c9b9c12f2c13d131142c6d3351923d7e3b3f7bd8b1ff57",
     "assets/playonlinux-1.jpg": "e8d94e1ccd67b42f8f1ffe93963a9720776b2c15589f74cfb5c1683358492c66",
     "assets/playonlinux-2.jpg": "92a74f3caa64317d786e01e03eb9329f03751fc14c870a379fbcaa7152a9b20c",
@@ -107,5 +108,5 @@
     "assets/zenmap-1.jpg": "136b7f268bd14d829843cb878c4f57db3fae8b4f551b392823e50d27d83efaa8",
     "assets/zenmap.png": "a18cd769f13f92d7ee70983893c977eaac5cce11f418314d337bf468ee745c17"
   },
-  "revision": 364
+  "revision": 365
 }
