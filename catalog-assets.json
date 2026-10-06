@@ -4,6 +4,9 @@
     "assets/aisleriot.png": "ca4af0f1fd98bfa5f0810e1f16ccab28617a185412967cf87eee95181a24a70c",
     "assets/amberol-1.png": "5f9450d3944ae5d7be592cdbec11846b93b2344e1790367b6f977a41450decb7",
     "assets/amberol.png": "5f8cbd485f4f6247ca39f28f9ec8365a0b025d3bb00d3820e48417c4195ac085",
+    "assets/antigravity-cli-1.png": "8daea6794bf81f867ef6e73d8a55d366a22b90d4b510bae1491fedf613bd2dfd",
+    "assets/antigravity-cli.webp": "30b386ed1244e280aa3577083f9969be13284593771ae1ac536b628f7853d32c",
+    "assets/antigravity.png": "e0cd08ccd10cd8d08ccf0ba449823ee88495825c0841619618100d3ab089f51e",
     "assets/anydesk.png": "790185e0502cc4d7e7fcdac9ff153d44cc39db1a82503f60d80a6a176019c216",
     "assets/audacity-1.jpg": "70aa0d01f23692049a500ad1d75b439c028677d76822a50de1254775a3eb6211",
     "assets/audacity.png": "0bee9ba2e8547b9eb23a1a5c78ba9f2739e39e60df45e79cf2bbf9727647e0e9",
@@ -102,5 +105,5 @@
     "assets/zenmap-1.jpg": "136b7f268bd14d829843cb878c4f57db3fae8b4f551b392823e50d27d83efaa8",
     "assets/zenmap.png": "a18cd769f13f92d7ee70983893c977eaac5cce11f418314d337bf468ee745c17"
   },
-  "revision": 355
+  "revision": 358
 }

@@ -205,6 +205,86 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
+    },
+    "antigravity": {
+      "name": "Antigravity",
+      "summary": "An agentic development platform from Google, evolving the IDE into the agent-first era",
+      "description": "An agentic development platform from Google, evolving the IDE into the agent-first era",
+      "icon": "assets/antigravity.png",
+      "screenshots": [],
+      "developer-name": "Google",
+      "developer-url": "https://about.google/",
+      "urls": {
+        "info": "https://antigravity.google/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "antigravity-ide",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "antigravity-ide",
+          "install-packages": [
+            "antigravity-ide"
+          ],
+          "remove-packages": [
+            "antigravity-ide"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "antigravity-cli": {
+      "name": "Antigravity cli",
+      "summary": "Google's agentic development platform (CLI companion)",
+      "description": "The terminal-first surface to interact with Antigravity agents. Stay in your flow without context switching.",
+      "icon": "assets/antigravity-cli.webp",
+      "screenshots": [
+        "assets/antigravity-cli-1.png"
+      ],
+      "developer-name": "Google",
+      "developer-url": "https://about.google/",
+      "urls": {
+        "info": "https://antigravity.google/product/antigravity-cli?ref=producthunt",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "antigravity-cli",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "antigravity-cli",
+          "install-packages": [
+            "antigravity-cli"
+          ],
+          "remove-packages": [
+            "antigravity-cli"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
     }
   },
   "education": {
@@ -2412,9 +2492,9 @@
   },
   "stats": {
     "version": 7,
-    "revision": 355,
-    "compiled": 1790977006,
-    "apps": 58,
+    "revision": 358,
+    "compiled": 1791299952,
+    "apps": 60,
     "categories": 11
   },
   "distro": {
