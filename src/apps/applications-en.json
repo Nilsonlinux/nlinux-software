@@ -39,47 +39,6 @@
       "alternate-to": null,
       "listed": true
     },
-    "etcher": {
-      "name": "Etcher",
-      "summary": "Flash OS images to SD cards & USB drives, safely and easily",
-      "description": "Etcher is a cross-platform tool for writing images to USB drives and SD cards, aiming to be really simple to prevent accidental damage to hard drives while checking every bit of data was written correctly.",
-      "icon": "assets/etcher.png",
-      "screenshots": [
-        "assets/etcher-1.jpg"
-      ],
-      "developer-name": "ali.molaei",
-      "developer-url": "https://www.balena.io/team",
-      "urls": {
-        "info": "https://etcher.balena.io/",
-        "android-app": "",
-        "ios-app": ""
-      },
-      "launch-cmd": "etcher-bin",
-      "arch": [
-        "x86_64"
-      ],
-      "releases": [
-        "rolling"
-      ],
-      "methods": [
-        "pacman"
-      ],
-      "pacman": {
-        "default": {
-          "source": "aur",
-          "main-package": "etcher-bin",
-          "install-packages": [
-            "etcher-bin"
-          ],
-          "remove-packages": [
-            "etcher-bin"
-          ]
-        }
-      },
-      "proprietary": false,
-      "alternate-to": null,
-      "listed": true
-    },
     "ventoy": {
       "name": "Ventoy",
       "summary": "A new bootable USB solution",
@@ -114,6 +73,47 @@
           ],
           "remove-packages": [
             "ventoy-bin"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
+    },
+    "etcher": {
+      "name": "Etcher",
+      "summary": "Flash OS images to SD cards & USB drives, safely and easily",
+      "description": "Etcher is a cross-platform tool for writing images to USB drives and SD cards, aiming to be really simple to prevent accidental damage to hard drives while checking every bit of data was written correctly.",
+      "icon": "assets/etcher.png",
+      "screenshots": [
+        "assets/etcher-1.jpg"
+      ],
+      "developer-name": "ali.molaei",
+      "developer-url": "https://www.balena.io/team",
+      "urls": {
+        "info": "https://etcher.balena.io/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "etcher-bin",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "aur",
+          "main-package": "etcher-bin",
+          "install-packages": [
+            "etcher-bin"
+          ],
+          "remove-packages": [
+            "etcher-bin"
           ]
         }
       },
@@ -2575,8 +2575,8 @@
   },
   "stats": {
     "version": 7,
-    "revision": 369,
-    "compiled": 1791301860,
+    "revision": 370,
+    "compiled": 1791378013,
     "apps": 62,
     "categories": 11
   },
