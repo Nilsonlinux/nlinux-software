@@ -1,5 +1,4 @@
 #!/bin/sh
-# SPDX-License-Identifier: GPL-3.0-or-later
 set -e
 if [ "$(id -u)" -ne 0 ]; then
   echo "Executando com sudo..."
@@ -107,4 +106,4 @@ StartupWMClass=nlinuxstore
 X-GNOME-UsesNotifications=false
 EOF
 (command -v update-desktop-database >/dev/null 2>&1 && update-desktop-database /usr/share/applications) || true
-echo "Instalado: NLinux Software v370 (/usr/local/bin/nlinux-software)"
+echo "Instalado: NLinux Software v372 (/usr/local/bin/nlinux-software)"

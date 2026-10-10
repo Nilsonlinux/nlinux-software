@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
 """Metadados de pacotes: repositório, tamanho e versão vinda do Arch.
 
 A fonte é o **banco de sincronização do próprio pacman**

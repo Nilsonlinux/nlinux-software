@@ -1,4 +1,3 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
 def _pick_runner():
     try:
         from nlinux.native_window import run_window

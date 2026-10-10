@@ -1,4 +1,4 @@
-NLinux Software v370 - loja de aplicativos (distribuicao)
+NLinux Software v372 - loja de aplicativos (distribuicao)
 Sem opcao de administracao.
 
 Dependencias (veja DEPENDENCIES.txt):
