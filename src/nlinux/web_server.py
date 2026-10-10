@@ -458,12 +458,15 @@ class InstallJob:
         está testando.
         """
         if self.mode == "sysupdate":
-            # Sem `--noconfirm`, de propósito. É o `--noconfirm` que faz o
-            # pacman responder sozinho "sim, sobrescrever" quando um arquivo
-            # conflita — e o arquivo em conflito é justamente a configuração
-            # que alguém editou à mão. Aqui a pergunta chega na janela e a
-            # pessoa decide.
-            return ["pkexec", "pacman", "-Syu"], []
+            # Automático: o `--noconfirm` responde "sim" a todas as perguntas
+            # do pacman (prosseguir, importar chave PGP, substituir arquivo no
+            # caminho). Antes, cada pergunta chegava na janela pedindo s/y — e
+            # a letra variava com o idioma do sistema. Arquivos de configuração
+            # de pacotes atualizados continuam seguros: o pacman os salva como
+            # `.pacnew` sem perguntar; o único caso que passa a ser resolvido
+            # sozinho é substituir um arquivo **não-donado** que esteja no
+            # caminho da extração.
+            return ["pkexec", "pacman", "-Syu", "--noconfirm"], []
         if self.mode == "remove":
             return ["pkexec", "pacman", "-Rns", "--noconfirm"] + self.packages, []
         if self.source == "aur":
