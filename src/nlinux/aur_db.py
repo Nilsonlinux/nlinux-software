@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Existência de pacotes na AUR, com cache em disco.
 
 O `pacman_db` responde sobre o Arch a partir do banco local, e é por isso que

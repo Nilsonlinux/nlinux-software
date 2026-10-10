@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Gera a versão de distribuição sob autorização do polkit.
 
 A curadoria chama este script via `pkexec`, então o usuário vê exatamente a
