@@ -2054,6 +2054,18 @@ def admin_build(progress=None):
             shutil.copytree(SRC_ROOT, os.path.join(pkg_root, "src"),
                             ignore=ignore, dirs_exist_ok=True)
 
+            # Licença e avisos de terceiros têm que sair do próprio build: o
+            # repositório público é regerado a cada publicação (git_publish
+            # apaga e recopia tudo), então adicioná-los à mão no público seria
+            # perdido na próxima geração. Procura na raiz do projeto e, como
+            # fallback, em src/ (curadoria instalada em /opt).
+            for doc in ("LICENSE", "THIRD_PARTY_NOTICES.md"):
+                for base in (os.path.dirname(SRC_ROOT), SRC_ROOT):
+                    origem = os.path.join(base, doc)
+                    if os.path.exists(origem):
+                        shutil.copy2(origem, os.path.join(pkg_root, doc))
+                        break
+
             # Fora do projeto de desenvolvimento o catálogo e a mídia não moram
             # em src/apps, e sim na pasta gravável do usuário. O build tem que
             # levar o catálogo vivo, não o snapshot que veio no pacote.
@@ -2086,6 +2098,7 @@ def admin_build(progress=None):
             launch = os.path.join(pkg_root, "nlinux-software")
             with open(launch, "w") as fh:
                 fh.write("#!/bin/sh\n"
+                         "# SPDX-License-Identifier: GPL-3.0-or-later\n"
                          "cd \"$(dirname \"$0\")\"\n"
                          "exec /usr/bin/python3 src/main.py \"$@\"\n")
             os.chmod(launch, 0o755)
@@ -2094,6 +2107,7 @@ def admin_build(progress=None):
             with open(os.path.join(pkg_root, "install.sh"), "w") as fh:
                 fh.write(
                     "#!/bin/sh\n"
+                    "# SPDX-License-Identifier: GPL-3.0-or-later\n"
                     "set -e\n"
                     "if [ \"$(id -u)\" -ne 0 ]; then\n"
                     "  echo \"Executando com sudo...\"\n"
