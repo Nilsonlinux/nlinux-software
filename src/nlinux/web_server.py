@@ -555,7 +555,16 @@ class InstallJob:
                         # nada para responder, que é o pior dos dois mundos.
                         # A barra de progresso também deixa linha pela metade,
                         # mas ela é encerrada por \r e chega aqui esvaziada.
-                        if PROMPT_RE.search(pending):
+                        # Só acende a caixa de resposta quando a pergunta é
+                        # real. Na atualização do sistema não pode haver
+                        # pergunta: o `pacman -Syu` roda com `--noconfirm`, e o
+                        # PROMPT_RE (largo de propósito) batia em mensagens
+                        # comuns e acendia a caixa à toa — o usuário via
+                        # "Resposta solicitada pelo pacman" sem nada para
+                        # responder. Instalação/remoção/AUR continuam
+                        # detectando: paru/yay ainda podem pedir confirmação
+                        # (ex.: escolha de provedor, importação de PGP).
+                        if self.mode != "sysupdate" and PROMPT_RE.search(pending):
                             self.esperando_resposta = True
                             self._espera_desde = time.time()
                             self._record_output(pending)
