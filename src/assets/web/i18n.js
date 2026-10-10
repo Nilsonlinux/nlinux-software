@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
 "use strict";
 
 /* Tabelas de tradução da loja. A língua ativa é definida pelo idioma escolhido

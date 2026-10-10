@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: GPL-3.0-or-later
 set -e
 if [ "$(id -u)" -ne 0 ]; then
   echo "Executando com sudo..."
