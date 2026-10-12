@@ -49,6 +49,8 @@
     "assets/gimp.png": "858b5821cae40a40acf99db86a8f677c157c15c86f45ad044a3a0f3e8499c98d",
     "assets/gnome-software.png": "f2f36fa70a6a9541fbf3a3f3a46ec06535c812ff5e0957f8940ac658c8651e93",
     "assets/google-chrome.png": "c0e62b9671b6186283074a91e262f26ca70714208f2390e00dc438e733931c8e",
+    "assets/guvcview-1.png": "73f30c61c6749af97a09e1aea93c85fa000aff5e8c8d434830f00c44134845db",
+    "assets/guvcview.png": "2e7bb247a32b25494da053b074be9d4d8289aded41cf51228f88a19fe7a299f9",
     "assets/hexchat.png": "c751788d48986e7283621e98f051b066ca7772a605b41d0a0b9fcc49e2b05d36",
     "assets/inkscape-1.jpg": "38fcd7027cdd5593ed57bb0020a58628794dd20e2b6411af860ace11adec3b27",
     "assets/inkscape.png": "85d8f7e51959acbe77e641f6be4e40961a25b947e6d361a21ddd92932db30ef6",
@@ -110,5 +112,5 @@
     "assets/zenmap-1.jpg": "136b7f268bd14d829843cb878c4f57db3fae8b4f551b392823e50d27d83efaa8",
     "assets/zenmap.png": "a18cd769f13f92d7ee70983893c977eaac5cce11f418314d337bf468ee745c17"
   },
-  "revision": 372
+  "revision": 373
 }

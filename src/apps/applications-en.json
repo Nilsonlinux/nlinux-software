@@ -120,6 +120,47 @@
       "proprietary": false,
       "alternate-to": null,
       "listed": true
+    },
+    "guvcview": {
+      "name": "Guvcview",
+      "summary": "Simple GTK interface for capturing and viewing video from V4L2 devices",
+      "description": "Simple GTK interface for capturing and viewing video from V4L2 devices",
+      "icon": "assets/guvcview.png",
+      "screenshots": [
+        "assets/guvcview-1.png"
+      ],
+      "developer-name": "",
+      "developer-url": "https://guvcview.sourceforge.net/",
+      "urls": {
+        "info": "https://guvcview.sourceforge.net/",
+        "android-app": "",
+        "ios-app": ""
+      },
+      "launch-cmd": "guvcview",
+      "arch": [
+        "x86_64"
+      ],
+      "releases": [
+        "rolling"
+      ],
+      "methods": [
+        "pacman"
+      ],
+      "pacman": {
+        "default": {
+          "source": "arch",
+          "main-package": "guvcview",
+          "install-packages": [
+            "guvcview"
+          ],
+          "remove-packages": [
+            "guvcview"
+          ]
+        }
+      },
+      "proprietary": false,
+      "alternate-to": null,
+      "listed": true
     }
   },
   "development": {
@@ -2575,9 +2616,9 @@
   },
   "stats": {
     "version": 7,
-    "revision": 372,
-    "compiled": 1791378162,
-    "apps": 62,
+    "revision": 373,
+    "compiled": 1791842320,
+    "apps": 63,
     "categories": 11
   },
   "distro": {
